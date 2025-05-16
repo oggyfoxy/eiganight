@@ -1,4 +1,5 @@
 <?php
+// Connexion à la base et clé TMDB
 $TMDB_API_KEY = 'cf536f66b460a5cf45e5e4bc648f5e81';
 
 $conn = new mysqli("localhost", "root", "", "eiganights");

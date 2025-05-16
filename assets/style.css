@@ -1,0 +1,77 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #222;
+    color: #eee;
+    margin: 0;
+    padding: 20px;
+}
+
+a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+nav a {
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+h1, h2 {
+    color: #4CAF50;
+}
+
+input[type="text"], input[type="password"], textarea {
+    padding: 8px;
+    margin: 5px 0 10px 0;
+    border: none;
+    border-radius: 3px;
+    width: 100%;
+    max-width: 300px;
+    font-size: 16px;
+}
+
+input[type="submit"], button {
+    background: #4CAF50;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 16px;
+}
+
+input[type="submit"]:hover, button:hover {
+    background: #45a049;
+}
+
+.error {
+    color: #f44336;
+    font-weight: bold;
+}
+
+.movie {
+    display: flex;
+    margin: 20px 0;
+    border-bottom: 1px solid #444;
+    padding-bottom: 15px;
+}
+
+.movie img {
+    width: 100px;
+    margin-right: 20px;
+}
+
+.movie-info {
+    max-width: 600px;
+}
+
+.movie-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}

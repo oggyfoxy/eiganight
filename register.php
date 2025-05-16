@@ -2,49 +2,57 @@
 session_start();
 include('config.php');
 
+if (isset($_SESSION['user_id'])) {
+    header('Location: profile.php');
+    exit;
+}
+
+$error = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
+    $password_confirm = $_POST['password_confirm'];
 
-    if (!$username || !$password) {
-        $error = "Tous les champs sont obligatoires.";
+    if ($password !== $password_confirm) {
+        $error = "Les mots de passe ne correspondent pas.";
     } else {
+        $username = $conn->real_escape_string($username);
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
         // Vérifier si username existe déjà
-        $stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $stmt->store_result();
-        if ($stmt->num_rows > 0) {
+        $checkQuery = "SELECT id FROM users WHERE username = '$username'";
+        $result = $conn->query($checkQuery);
+
+        if ($result && $result->num_rows > 0) {
             $error = "Nom d'utilisateur déjà pris.";
         } else {
-            $hash = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-            $stmt->bind_param("ss", $username, $hash);
-            if ($stmt->execute()) {
-                $_SESSION['user_id'] = $stmt->insert_id;
-                $_SESSION['username'] = $username;
-                header("Location: profile.php");
+            $insertQuery = "INSERT INTO users (username, password) VALUES ('$username', '$hashedPassword')";
+            if ($conn->query($insertQuery)) {
+                $_SESSION['user_id'] = $conn->insert_id;
+                header('Location: profile.php');
                 exit;
             } else {
                 $error = "Erreur lors de l'inscription.";
             }
         }
-        $stmt->close();
     }
 }
+
+include('includes/header.php');
 ?>
 
-<!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"><title>Inscription – Eiganights</title></head>
-<body>
-<h2>Inscription</h2>
-<?php if (!empty($error)) echo "<p style='color:red;'>$error</p>"; ?>
-<form method="post" action="">
-    <input type="text" name="username" placeholder="Nom d'utilisateur" required><br>
-    <input type="password" name="password" placeholder="Mot de passe" required><br>
-    <button type="submit">S'inscrire</button>
+<h1>Inscription</h1>
+
+<?php if ($error): ?>
+    <p style="color:red;"><?php echo $error; ?></p>
+<?php endif; ?>
+
+<form method="POST" action="">
+    <input type="text" name="username" placeholder="Nom d'utilisateur" required />
+    <input type="password" name="password" placeholder="Mot de passe" required />
+    <input type="password" name="password_confirm" placeholder="Confirmer le mot de passe" required />
+    <input type="submit" value="S'inscrire" />
 </form>
-<p>Tu as déjà un compte ? <a href="login.php">Connecte-toi ici</a></p>
-</body>
-</html>
+
+<?php include('includes/footer.php'); ?>

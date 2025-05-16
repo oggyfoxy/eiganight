@@ -2,37 +2,46 @@
 session_start();
 include('config.php');
 
+if (isset($_SESSION['user_id'])) {
+    header('Location: profile.php');
+    exit;
+}
+
+$error = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username']);
+    $username = $conn->real_escape_string($_POST['username']);
     $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT id, password FROM users WHERE username = ?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $stmt->bind_result($id, $hash);
-    if ($stmt->fetch() && password_verify($password, $hash)) {
-        $_SESSION['user_id'] = $id;
-        $_SESSION['username'] = $username;
-        header("Location: profile.php");
-        exit;
+    $query = "SELECT id, password FROM users WHERE username = '$username'";
+    $result = $conn->query($query);
+
+    if ($result && $result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];
+            header('Location: profile.php');
+            exit;
+        } else {
+            $error = "Mot de passe incorrect.";
+        }
     } else {
-        $error = "Identifiants incorrects.";
+        $error = "Utilisateur non trouvé.";
     }
-    $stmt->close();
 }
+
+include('includes/header.php');
 ?>
 
-<!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"><title>Connexion – Eiganights</title></head>
-<body>
-<h2>Connexion</h2>
-<?php if (!empty($error)) echo "<p style='color:red;'>$error</p>"; ?>
-<form method="post" action="">
-    <input type="text" name="username" placeholder="Nom d'utilisateur" required><br>
-    <input type="password" name="password" placeholder="Mot de passe" required><br>
-    <button type="submit">Se connecter</button>
+<h1>Connexion</h1>
+<?php if ($error): ?>
+    <p style="color:red;"><?php echo $error; ?></p>
+<?php endif; ?>
+
+<form method="POST" action="">
+    <input type="text" name="username" placeholder="Nom d'utilisateur" required />
+    <input type="password" name="password" placeholder="Mot de passe" required />
+    <input type="submit" value="Se connecter" />
 </form>
-<p>Pas encore de compte ? <a href="register.php">Inscris-toi ici</a></p>
-</body>
-</html>
+
+<?php include('includes/footer.php'); ?>

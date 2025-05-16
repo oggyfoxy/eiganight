@@ -1,0 +1,21 @@
+CREATE DATABASE IF NOT EXISTS eiganights CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE eiganights;
+
+DROP TABLE IF EXISTS watchlist;
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    bio TEXT DEFAULT NULL
+);
+
+CREATE TABLE watchlist (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    movie_id INT NOT NULL,
+    movie_title VARCHAR(255) NOT NULL,
+    poster_path VARCHAR(255) DEFAULT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
