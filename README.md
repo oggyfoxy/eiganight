@@ -44,10 +44,9 @@ Welcome, contributor! Here's how to get eiganights running locally.
 #### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone git@github.com:grgisep/eiganights.git
 cd eiganights
 ```
-*(Replace `<repository-url>` with the actual URL of your Git repository)*
 
 #### 2. Database Setup
 
@@ -153,3 +152,4 @@ Open your web browser and navigate to your local development URL (e.g., `http://
 ---
 
 Happy annotating! 🍿
+:
