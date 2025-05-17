@@ -650,6 +650,59 @@ select {
     max-width: 300px;
 }
 
+/* --------------------
+   STATIC PAGES (FAQ, Terms, etc.)
+   -------------------- */
+.static-page h1 {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.faq-list {
+    list-style: none;
+    padding: 0;
+}
+.faq-item {
+    background-color: #252525; /* Card background */
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.faq-item dt { /* Question */
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #00bfa5; /* Teal for questions */
+    margin-bottom: 10px;
+}
+.faq-item dd { /* Answer */
+    margin-left: 0; /* Reset browser default */
+    color: #d0d0d0;
+    line-height: 1.7;
+}
+
+.terms-content {
+    background-color: #252525; /* Card background */
+    padding: 25px 30px;
+    border-radius: 8px;
+    line-height: 1.7;
+}
+.terms-content h2 {
+    font-size: 1.5rem;
+    margin-top: 1.8em;
+    margin-bottom: 0.8em;
+    border-bottom: 1px solid #444;
+    padding-bottom: 8px;
+}
+.terms-content p {
+    margin-bottom: 1.2em;
+}
+.terms-content strong, .terms-content b {
+    color: #e0e0e0;
+}
+.terms-content em {
+    color: #ccc;
+}
 
 /* --------------------
    SITE FOOTER
@@ -672,6 +725,319 @@ select {
 .site-footer-main a:hover {
     color: #00bfa5; /* Teal on hover */
 }
+
+
+
+/* --------------------
+   FORUM STYLES
+   -------------------- */
+.forum-page .create-thread-link,
+.create-thread-page .card, /* Card for create thread form */
+.view-thread-page .card {   /* Card for posts and reply form */
+    margin-bottom: 25px;
+}
+.forum-page .create-thread-link {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.forum-threads-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.forum-threads-table th,
+.forum-threads-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #3a3a3a;
+    text-align: left;
+    vertical-align: middle;
+}
+.forum-threads-table th {
+    background-color: #2c2c2c;
+    color: #00bfa5;
+    font-weight: 600;
+}
+.forum-threads-table tbody tr:hover {
+    background-color: #282828;
+}
+.forum-threads-table td:nth-child(1) { /* Thread title column */
+    font-weight: 500;
+}
+.forum-threads-table td:nth-child(4), /* Replies */
+.forum-threads-table td:nth-child(5) { /* Last Activity */
+    text-align: center;
+    font-size: 0.85rem;
+    color: #aaa;
+}
+
+/* Movie Search Dropdown for Create Thread */
+.movie-search-results-dropdown {
+    position: relative; /* Or absolute if you position it precisely */
+    background-color: #2c2c2c;
+    border: 1px solid #555;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000; /* Ensure it's above other elements */
+    display: none; /* Hidden by default */
+}
+.movie-search-results-dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.movie-search-results-dropdown li {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #3a3a3a;
+}
+.movie-search-results-dropdown li:last-child {
+    border-bottom: none;
+}
+.movie-search-results-dropdown li:hover {
+    background-color: #00bfa5;
+    color: #111;
+}
+.selected-movie-text {
+    margin-top: 8px;
+    font-size: 0.9em;
+    color: #ccc;
+}
+.selected-movie-text strong {
+    color: #00bfa5;
+}
+
+
+/* View Thread Page */
+.forum-breadcrumb {
+    margin-bottom: 20px;
+    font-size: 0.9em;
+}
+.forum-breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.forum-breadcrumb li {
+    display: inline;
+    color: #aaa;
+}
+.forum-breadcrumb li:not(:last-child)::after {
+    content: ' / ';
+    margin: 0 5px;
+    color: #777;
+}
+.forum-breadcrumb a {
+    color: #00bfa5;
+}
+.view-thread-page h1 {
+    margin-bottom: 5px;
+}
+.thread-meta {
+    font-size: 0.9em;
+    color: #aaa;
+    margin-bottom: 25px;
+}
+
+.forum-post { /* Applies to original post and replies */
+    padding: 15px 20px;
+    margin-bottom: 20px;
+}
+.forum-post .post-header {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+    font-size: 0.9em;
+}
+.forum-post .post-header strong {
+    font-size: 1.1em; /* Make author username slightly bigger */
+}
+.forum-post .post-date {
+    color: #888;
+    margin-left: 10px;
+}
+.forum-post .post-content {
+    line-height: 1.7;
+    word-wrap: break-word; /* Ensure long words/links break */
+}
+.forum-post footer {
+    margin-top: 15px;
+    text-align: right;
+}
+.reply-to-post-link {
+    font-size: 0.85em;
+}
+
+.reply-form-section h2 {
+    margin-bottom: 15px;
+}
+
+/* Responsive Forum Table */
+@media (max-width: 768px) {
+    .forum-threads-table th:nth-child(3), /* Author */
+    .forum-threads-table td:nth-child(3),
+    .forum-threads-table th:nth-child(5), /* Last Activity */
+    .forum-threads-table td:nth-child(5) {
+        display: none; /* Hide less critical columns on small screens */
+    }
+     .forum-threads-table th:nth-child(2), /* Film */
+    .forum-threads-table td:nth-child(2) {
+        /* Optionally hide film too if very cramped, or make it stack */
+    }
+}
+
+
+
+/* Scene Annotation Specifics in Create Thread Form */
+.scene-details-fieldset {
+    border: 1px solid #444;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+}
+.scene-details-fieldset legend {
+    padding: 0 10px;
+    font-weight: 500;
+    color: #00bfa5;
+}
+
+/* Scene Info Display in View Thread */
+.scene-annotation-info.card {
+    background-color: #2a2a2a; /* Slightly different bg for emphasis */
+    border-left: 4px solid #008c7a;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+.scene-annotation-info h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: #e0e0e0;
+}
+.scene-annotation-info .scene-desc,
+.scene-annotation-info .scene-time {
+    margin-bottom: 5px;
+    color: #ccc;
+}
+.scene-annotation-info .scene-time strong,
+.scene-annotation-info .scene-desc strong {
+    color: #d5d5d5;
+}
+
+/* Annotations List on Movie Details & Profile */
+.annotate-scene-action.card {
+    text-align: center;
+}
+.annotate-scene-action h2 {
+    margin-bottom: 10px;
+}
+.annotate-scene-action p {
+    margin-bottom: 15px;
+}
+
+.annotations-list {
+    list-style: none;
+    padding: 0;
+}
+.annotations-list .annotation-item {
+    background-color: #2c2c2c;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border-left: 3px solid #00bfa5;
+}
+.annotations-list .annotation-item:last-child {
+    margin-bottom: 0;
+}
+.annotations-list .annotation-title strong {
+    font-size: 1.1rem;
+    color: #e0e0e0;
+}
+.annotations-list .annotation-title:hover strong {
+    color: #00bfa5;
+}
+.annotations-list .scene-desc-preview,
+.annotations-list .scene-time-preview,
+.annotations-list .movie-link { /* For profile page */
+    font-size: 0.9em;
+    color: #b0b0b0;
+    margin: 5px 0;
+}
+.annotations-list .annotation-meta {
+    font-size: 0.85em;
+    color: #888;
+    margin-top: 8px;
+}
+
+/* assets/style.css */
+/* ... (inside FORUM STYLES or a new section) ... */
+
+.scene-annotation-tag {
+    font-size: 0.8em;
+    color: #00bfa5; /* Teal to match theme */
+    margin-left: 5px;
+    font-weight: normal;
+    display: inline-block; /* Or block if you want it on a new line */
+    background-color: rgba(0, 191, 165, 0.1); /* Light teal background */
+    padding: 2px 5px;
+    border-radius: 3px;
+
+}
+
+.profile-annotations-private.card p { /* Or just .profile-annotations-private p */
+    font-style: italic;
+    color: #aaa;
+}
+
+
+/* --------------------
+   ADMIN PANEL (General Styles)
+   -------------------- */
+.admin-panel-page .card {
+    padding: 20px 25px;
+}
+
+.admin-users-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+
+.admin-users-table th,
+.admin-users-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+.admin-users-table th {
+    background-color: #2c2c2c;
+    color: #00bfa5;
+    font-weight: 600;
+}
+
+.admin-users-table tbody tr:nth-child(even) {
+    background-color: #272727;
+}
+.admin-users-table tbody tr:hover {
+    background-color: #303030;
+}
+
+.admin-users-table .status-banned {
+    color: #e57373;
+    font-weight: bold;
+}
+.admin-users-table .status-active {
+    color: #81c784;
+}
+
+.admin-users-table .inline-form {
+    margin: 0;
+}
+
 
 /* --------------------
    MEDIA QUERIES (Responsive Adjustments)
@@ -701,7 +1067,7 @@ select {
 
 /* Tablets */
 @media (min-width: 768px) {
-    html { font-size: 17px; } /* Slightly larger base font for tablets */
+    html { font-size: 17px; } 
     .container { padding: 0 20px; }
     h1 { font-size: 2.8rem; }
     h2 { font-size: 2.2rem; }
@@ -714,12 +1080,12 @@ select {
         align-items: flex-start;
     }
     .movie-detail-header .poster-container {
-        width: 250px; /* Fixed width for poster */
-        margin: 0; /* Reset mobile margin */
+        width: 250px; 
+        margin: 0; 
     }
     
     .friend-request-list li, .friend-list li, .users-list-page .user-list li {
-        flex-wrap: nowrap; /* Prevent wrapping */
+        flex-wrap: nowrap; 
     }
 }
 
@@ -741,7 +1107,7 @@ select {
 
 /* Large Desktops */
 @media (min-width: 1200px) {
-    html { font-size: 18px; } /* Larger base font for very large screens */
+    html { font-size: 18px; } 
     .movies-grid, .watchlist-grid {
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     }
@@ -750,5 +1116,40 @@ select {
     }
     .movie-detail-header .poster-container {
         width: 300px;
+    }
+}
+
+/* Admin Table Specific Responsiveness (and other small screen adjustments) */
+@media (max-width: 768px) {
+    /* Admin Table Responsiveness */
+    .user-management-section { /* This is the .card containing the table */
+        display: block; 
+        width: 100%;    
+        overflow-x: auto; 
+        -webkit-overflow-scrolling: touch; 
+    }
+
+    .admin-users-table {
+        min-width: 800px; /* Increased min-width for the table */
+    }
+
+    .admin-users-table th,
+    .admin-users-table td {
+        white-space: nowrap; /* CRITICAL: Prevents text wrapping in headers and cells */
+    }
+
+    /* Adjust navigation for smaller screens if needed */
+    .main-navigation .nav-link {
+        margin: 0 5px; /* Reduce margin for nav links */
+        padding: 8px 8px; /* Slightly reduce padding */
+        font-size: 0.9rem; /* Optionally reduce font size */
+    }
+    /* You might want to consider a hamburger menu for very small screens
+       or make nav-links stack vertically */
+    .main-navigation {
+        /* Example: Allow wrapping if links don't fit */
+        /* display: flex;
+        flex-wrap: wrap;
+        justify-content: center; */
     }
 }

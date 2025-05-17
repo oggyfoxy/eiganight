@@ -131,6 +131,32 @@ if ($canViewFullProfile) {
     }
 }
 
+        // >> NEW: Fetch Profile User's Scene Annotations <<
+        $profileUserSceneAnnotations = [];
+        $annotationsError = null;
+        $sqlProfileUserAnnotations = "SELECT id, title, movie_title, movie_id, scene_start_time, scene_description_short, created_at 
+                                 FROM forum_threads 
+                                 WHERE user_id = ? AND (scene_start_time IS NOT NULL OR scene_description_short IS NOT NULL)
+                                 ORDER BY created_at DESC";
+        $stmtProfileUserAnnotations = $conn->prepare($sqlProfileUserAnnotations);
+        if (!$stmtProfileUserAnnotations) {
+            error_log("Prepare failed (VP_USER_ANNOT_SEL): " . $conn->error);
+            $annotationsError = "Erreur lors du chargement des annotations de l'utilisateur. (VP05)";
+        } else {
+            $stmtProfileUserAnnotations->bind_param("i", $profileUserId); // Use $profileUserId here
+            if ($stmtProfileUserAnnotations->execute()) {
+                $resultProfileUserAnnotations = $stmtProfileUserAnnotations->get_result();
+                while ($row = $resultProfileUserAnnotations->fetch_assoc()) {
+                    $profileUserSceneAnnotations[] = $row;
+                }
+            } else {
+                error_log("Execute failed (VP_USER_ANNOT_SEL): " . $stmtProfileUserAnnotations->error);
+                $annotationsError = "Erreur lors du chargement des annotations de l'utilisateur. (VP06)";
+            }
+            $stmtProfileUserAnnotations->close();
+        }
+    // The if ($canViewFullProfile) block continues or ends after this.
+
 $pageTitle = "Profil de " . htmlspecialchars($profileUser['username'], ENT_QUOTES, 'UTF-8') . " - Eiganights";
 include_once 'includes/header.php';
 ?>
@@ -250,6 +276,47 @@ include_once 'includes/header.php';
             <p><em>La watchlist de cet utilisateur est privée.</em></p>
         </section>
     <?php endif; ?>
+
+    <?php if ($canViewFullProfile): ?>
+    <section class="profile-annotations card">
+        <h2>Annotations de Scènes par <?php echo htmlspecialchars($profileUser['username'], ENT_QUOTES, 'UTF-8'); ?> (<?php echo count($profileUserSceneAnnotations); ?>)</h2>
+        <?php if ($annotationsError): ?>
+            <div class="alert alert-warning"><?php echo htmlspecialchars($annotationsError); ?></div>
+        <?php elseif (!empty($profileUserSceneAnnotations)): ?>
+            <ul class="annotations-list profile-annotations-list">
+                <?php foreach ($profileUserSceneAnnotations as $annotation): ?>
+                    <li class="annotation-item">
+                        <a href="forum_view_thread.php?id=<?php echo (int)$annotation['id']; ?>" class="annotation-title">
+                            <strong><?php echo htmlspecialchars($annotation['title']); ?></strong>
+                        </a>
+                        <p class="movie-link">Pour le film: <a href="movie_details.php?id=<?php echo (int)$annotation['movie_id']; ?>"><?php echo htmlspecialchars($annotation['movie_title']); ?></a></p>
+                        <?php if (!empty($annotation['scene_description_short'])): ?>
+                            <p class="scene-desc-preview"><em>Scène : <?php echo htmlspecialchars($annotation['scene_description_short']); ?></em></p>
+                        <?php endif; ?>
+                        <?php if (!empty($annotation['scene_start_time'])): ?>
+                            <p class="scene-time-preview">Temps : <?php echo htmlspecialchars($annotation['scene_start_time']); ?></p>
+                        <?php endif; ?>
+                        <p class="annotation-meta">
+                            Créé le <?php echo date('d/m/Y', strtotime($annotation['created_at'])); ?>
+                        </p>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <p><?php echo htmlspecialchars($profileUser['username'], ENT_QUOTES, 'UTF-8'); ?> n'a pas encore créé d'annotations de scènes.</p>
+        <?php endif; ?>
+    </section>
+<?php elseif ($profileUser['profile_visibility'] === 'friends_only' && !$canViewFullProfile): // Not friends, so can't see annotations ?>
+    <section class="profile-annotations-private card">
+        <h2>Annotations de Scènes</h2>
+        <p><em>Les annotations de scènes de cet utilisateur sont visibles uniquement par ses amis.</em></p>
+    </section>
+<?php elseif ($profileUser['profile_visibility'] === 'private'): // Profile is private ?>
+     <section class="profile-annotations-private card">
+        <h2>Annotations de Scènes</h2>
+        <p><em>Les annotations de scènes de cet utilisateur sont privées.</em></p>
+    </section>
+<?php endif; ?>
 </main>
 
 <?php

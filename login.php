@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username_value = htmlspecialchars($username, ENT_QUOTES, 'UTF-8');
 
         // Prepare SQL to prevent SQL injection (even though we only fetch)
-        $sql = "SELECT id, username, password FROM users WHERE username = ?";
+        $sql = "SELECT id, username, password, role, is_banned FROM users WHERE username = ?";
         $stmt = $conn->prepare($sql);
 
         if (!$stmt) {
@@ -64,16 +64,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $result = $stmt->get_result();
                 if ($result->num_rows === 1) {
                     $user = $result->fetch_assoc();
-                    if (password_verify($password, $user['password'])) {
-                        // Password is correct, set session variables
-                        $_SESSION['user_id'] = $user['id'];
-                        $_SESSION['username'] = $user['username']; // Store username in session for convenience
+                    // Check if user is banned FIRST
+                    if ($user['is_banned'] == 1) {
+                       $error_message = "Votre compte a été suspendu. Veuillez contacter l'assistance.";
+                    } elseif (password_verify($password, $user['password'])) { // If not banned, verify password
+    // Password is correct, set session variables
+                       $_SESSION['user_id'] = $user['id'];
+                       $_SESSION['username'] = $user['username'];
+                       $_SESSION['role'] = $user['role']; // Store the user's role
+
 
                         // Regenerate session ID upon successful login to prevent session fixation
                         session_regenerate_id(true); 
 
                         $_SESSION['message'] = "Connexion réussie ! Bienvenue, " . htmlspecialchars($user['username']) . ".";
-                        header('Location: ' . $redirectAfterLogin);
+
+                          if ($user['role'] === 'admin') {
+                            header('Location: admin_panel.php'); 
+                          } else { 
+                            header('Location: ' . $redirectAfterLogin);
+                          }
                         exit;
                     } else {
                         $error_message = "Nom d'utilisateur ou mot de passe incorrect.";
