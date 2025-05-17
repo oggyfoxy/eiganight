@@ -1334,3 +1334,192 @@ select {
         width: 300px;
     }
 }
+
+/* assets/style.css */
+
+/* ... (vos styles existants pour .advertisement-slot et .placeholder-ad-content) ... */
+
+/* Styles pour le contenu des fausses publicités générées */
+.fake-ad-content {
+    padding: var(--spacing-md);
+    text-align: left; /* Ou center si vous préférez pour le contenu de la pub */
+    border-left: 5px solid var(--color-primary); /* Couleur par défaut */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Aligner à gauche */
+    gap: var(--spacing-sm);
+}
+
+.fake-ad-title {
+    color: var(--color-primary); /* Couleur par défaut */
+    margin-bottom: var(--spacing-xs);
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.fake-ad-text {
+    font-size: 0.9em;
+    line-height: 1.5;
+    color: var(--color-text-dark); /* Un peu plus clair que le texte normal muted */
+    margin-bottom: var(--spacing-sm);
+}
+
+.fake-ad-cta { /* Style pour le bouton Call To Action */
+    border-color: var(--color-primary); /* Couleur par défaut */
+    color: var(--color-primary);
+    align-self: flex-start; /* Bouton à gauche */
+}
+.fake-ad-cta:hover {
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+}
+
+/* Exemple de style thématique si vous utilisez des classes comme .ad-theme-blockbuster-de-l-ete */
+.ad-theme-blockbuster-de-l-ete .fake-ad-title,
+.ad-theme-blockbuster-de-l-ete .fake-ad-cta {
+    color: #FFD700; /* Or */
+    border-color: #FFD700;
+}
+.ad-theme-blockbuster-de-l-ete { border-left-color: #FFD700; }
+
+.ad-theme-soiree-cinema-parfaite .fake-ad-title,
+.ad-theme-soiree-cinema-parfaite .fake-ad-cta {
+    color: #DA70D6; /* Orchidée */
+    border-color: #DA70D6;
+}
+.ad-theme-soiree-cinema-parfaite { border-left-color: #DA70D6; }
+
+/* Ajoutez des styles similaires pour les autres thèmes... */
+.ad-theme-les-classiques-remasterises .fake-ad-title,
+.ad-theme-les-classiques-remasterises .fake-ad-cta {
+    color: #77B5FE; /* Bleu ciel */
+    border-color: #77B5FE;
+}
+.ad-theme-les-classiques-remasterises { border-left-color: #77B5FE; }
+
+.ad-theme-festival-du-film-independant .fake-ad-title,
+.ad-theme-festival-du-film-independant .fake-ad-cta {
+    color: #32CD32; /* Vert citron */
+    border-color: #32CD32;
+}
+.ad-theme-festival-du-film-independant { border-left-color: #32CD32; }
+
+.ad-theme-le-podcast-cinema .fake-ad-title,
+.ad-theme-le-podcast-cinema .fake-ad-cta {
+    color: #FF7F50; /* Corail */
+    border-color: #FF7F50;
+}
+.ad-theme-le-podcast-cinema { border-left-color: #FF7F50; }
+
+
+/* Assurez-vous que .advertisement-slot est bien stylé */
+.advertisement-slot {
+    background-color: var(--color-bg-medium); /* Ou une autre couleur de fond pour la pub */
+    border: 1px solid var(--color-border-medium); /* Une bordure pour délimiter */
+    padding: var(--spacing-sm); /* Un peu de padding interne pour ne pas coller le contenu */
+    /* text-align: center; (si le contenu interne doit être centré, sinon left) */
+}
+
+/* assets/style.css */
+
+/* Styles pour le conteneur global du slot publicitaire */
+.advertisement-slot {
+    /* Vos styles existants sont probablement bons :
+       margin, padding, background-color, border, border-radius */
+}
+
+/* Contenu interne généré par la fonction PHP */
+.simulated-ad-content {
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    position: relative; /* Pour le positionnement du tag "Publicité" */
+    background-color: var(--color-bg-lighter); /* Un fond pour le contenu de la pub elle-même */
+    border-radius: var(--border-radius-sm); /* Coins arrondis */
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1); /* Légère ombre intérieure */
+}
+
+.ad-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text-light); /* Couleur de base */
+}
+
+.ad-text {
+    font-size: 0.9em;
+    line-height: 1.4;
+    color: var(--color-text-dark);
+    margin-bottom: var(--spacing-sm);
+}
+
+.ad-price {
+    font-size: 1em;
+    font-weight: bold;
+    color: var(--color-success); /* Vert pour le prix, par exemple */
+    margin-bottom: var(--spacing-sm);
+}
+
+.ad-cta { /* Style du bouton Call To Action */
+    /* Hérite des styles .button .button-small */
+    /* Des styles spécifiques peuvent être ajoutés ici ou via les classes thématiques */
+    align-self: flex-start; /* Pour les pubs textuelles */
+}
+
+.ad-image-banner { /* Pour les images de type bannière */
+    width: 100%;
+    height: auto;
+    border-radius: var(--border-radius-sm);
+    display: block;
+}
+
+.ad-image-product { /* Pour les images de produits */
+    max-width: 150px; /* Ou une taille appropriée */
+    height: auto;
+    margin: 0 auto var(--spacing-sm) auto; /* Centrer l'image produit */
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--color-border-light);
+}
+
+.ad-sponsored-tag {
+    position: absolute;
+    top: var(--spacing-xs);
+    right: var(--spacing-xs);
+    font-size: 0.7em;
+    color: var(--color-text-muted);
+    background-color: color-mix(in srgb, var(--color-bg-dark) 50%, transparent);
+    padding: 2px 5px;
+    border-radius: var(--border-radius-sm);
+}
+
+/* Styles thématiques (exemples, à développer) */
+.ad-theme-gold .ad-title, .ad-theme-gold .ad-cta { color: #FFD700; border-color: #FFD700; }
+.ad-theme-gold.simulated-ad-content { border-left: 5px solid #FFD700; } /* si vous voulez la bordure latérale */
+
+.ad-theme-blue .ad-title, .ad-theme-blue .ad-cta { color: #77B5FE; border-color: #77B5FE; }
+.ad-theme-blue.simulated-ad-content { border-left: 5px solid #77B5FE; }
+
+.ad-theme-scifi .ad-title { color: #DA70D6; /* Orchidée pour sci-fi */ }
+.ad-theme-scifi .ad-cta { color: #DA70D6; border-color: #DA70D6; }
+.ad-theme-scifi.simulated-ad-content { border-left: 5px solid #DA70D6; }
+
+.ad-theme-classic .ad-title { color: #D2B48C; /* Tan pour classique */ }
+.ad-theme-classic .ad-cta { color: #D2B48C; border-color: #D2B48C; }
+.ad-theme-classic.simulated-ad-content { border-left: 5px solid #D2B48C; }
+
+.ad-theme-brand .ad-title { color: var(--color-primary); /* Utilise la couleur primaire du site */ }
+.ad-theme-brand .ad-cta { color: var(--color-primary); border-color: var(--color-primary); }
+.ad-theme-brand.simulated-ad-content { border-left: 5px solid var(--color-primary); }
+
+.ad-theme-tech .ad-title { color: #00C1D4; /* Un bleu tech/cyan */ }
+.ad-theme-tech .ad-cta { color: #00C1D4; border-color: #00C1D4; }
+.ad-theme-tech.simulated-ad-content { border-left: 5px solid #00C1D4; }
+
+/* Ajustement pour que les boutons CTA ne prennent pas toute la largeur dans certains flex contexts */
+.simulated-ad-content > .ad-cta {
+    align-self: flex-start;
+}
+.simulated-ad-content.ad-banner > a { /* L'image bannière est le lien, pas de bouton séparé */
+    display:block;
+}
