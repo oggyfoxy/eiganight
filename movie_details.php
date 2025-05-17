@@ -177,6 +177,28 @@ if ($movieDetailsAPI) {
     }
 }
 
+
+$sceneAnnotationThreads = [];
+if ($movieDetailsAPI) { // Only if movie details were loaded
+    $sqlSceneThreads = "SELECT ft.id, ft.title, ft.scene_start_time, ft.scene_description_short, 
+                               u.username as author_username, u.id as author_id, ft.created_at
+                        FROM forum_threads ft
+                        JOIN users u ON ft.user_id = u.id
+                        WHERE ft.movie_id = ? AND (ft.scene_start_time IS NOT NULL OR ft.scene_description_short IS NOT NULL)
+                        ORDER BY ft.created_at DESC"; // Or by scene_start_time
+    $stmtSceneThreads = $conn->prepare($sqlSceneThreads);
+    if ($stmtSceneThreads) {
+        $stmtSceneThreads->bind_param("i", $movieId);
+        if ($stmtSceneThreads->execute()) {
+            $resultSceneThreads = $stmtSceneThreads->get_result();
+            while ($row = $resultSceneThreads->fetch_assoc()) {
+                $sceneAnnotationThreads[] = $row;
+            }
+        } else { error_log("Execute failed (MD_SCENE_THREADS_SEL): " . $stmtSceneThreads->error); }
+        $stmtSceneThreads->close();
+    } else { error_log("Prepare failed (MD_SCENE_THREADS_SEL): " . $conn->error); }
+}
+
 include_once 'includes/header.php';
 ?>
 
@@ -306,6 +328,50 @@ include_once 'includes/header.php';
                     </form>
                 </section>
             <?php endif; ?>
+
+            <?php if ($loggedInUserId): // Only show annotate button if logged in ?>
+                <section class="annotate-scene-action card">
+                    <h2>Annoter une Scène / Démarrer une Discussion</h2>
+                    <p>Avez-vous une scène spécifique de "<?php echo $displayTitle; ?>" que vous souhaitez analyser ou discuter ?</p>
+                    <a href="forum_create_thread.php?movie_id=<?php echo (int)$movieId; ?>&movie_title=<?php echo urlencode($displayTitle); ?>" class="button-primary">
+                        Annoter une Scène & Lancer la Discussion
+                    </a>
+                </section>
+            <?php endif; ?>
+
+
+            <section class="scene-annotations-list-section card">
+                <h2>Annotations de Scènes & Discussions (<?php echo count($sceneAnnotationThreads); ?>)</h2>
+                <?php if (!empty($sceneAnnotationThreads)): ?>
+                    <ul class="annotations-list">
+                        <?php foreach ($sceneAnnotationThreads as $saThread): ?>
+                            <li class="annotation-item">
+                                <a href="forum_view_thread.php?id=<?php echo (int)$saThread['id']; ?>" class="annotation-title">
+                                    <strong><?php echo htmlspecialchars($saThread['title']); ?></strong>
+                                </a>
+                                <?php if (!empty($saThread['scene_description_short'])): ?>
+                                    <p class="scene-desc-preview"><em>Scène : <?php echo htmlspecialchars($saThread['scene_description_short']); ?></em></p>
+                                <?php endif; ?>
+                                <?php if (!empty($saThread['scene_start_time'])): ?>
+                                    <p class="scene-time-preview">Temps : <?php echo htmlspecialchars($saThread['scene_start_time']); ?></p>
+                                <?php endif; ?>
+                                <p class="annotation-meta">
+                                    Par <a href="view_profile.php?id=<?php echo (int)$saThread['author_id']; ?>"><?php echo htmlspecialchars($saThread['author_username']); ?></a>
+                                    le <?php echo date('d/m/Y', strtotime($saThread['created_at'])); ?>
+                                </p>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p>Aucune annotation de scène pour ce film pour le moment.
+                        <?php if ($loggedInUserId): ?>
+                            Soyez le premier à en <a href="forum_create_thread.php?movie_id=<?php echo (int)$movieId; ?>&movie_title=<?php echo urlencode($displayTitle); ?>">créer une !</a>
+                        <?php else: ?>
+                            <a href="login.php?redirect=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>">Connectez-vous</a> pour annoter.
+                        <?php endif; ?>
+                    </p>
+                <?php endif; ?>
+            </section>
 
             <section class="public-comments-section">
                 <h2>Commentaires des Utilisateurs (<?php echo count($publicComments); ?>)</h2>

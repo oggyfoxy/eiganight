@@ -26,7 +26,7 @@ if (!empty($searchUsernameParam)) {
     $searchTermSQL = "%" . $searchUsernameParam . "%"; // Wildcards for LIKE search
     // Exclude the logged-in user from search results if they are logged in
     if ($loggedInUserId) {
-        $sql = "SELECT id, username FROM users WHERE username LIKE ? AND id != ? ORDER BY username ASC";
+        $sql = "SELECT id, username FROM users WHERE username LIKE ? AND id != ? AND role != 'admin' AND is_banned = 0 ORDER BY username ASC";
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
             error_log("Prepare failed (UL_SEARCH_LID): " . $conn->error);
@@ -35,7 +35,8 @@ if (!empty($searchUsernameParam)) {
             $stmt->bind_param("si", $searchTermSQL, $loggedInUserId);
         }
     } else { // User not logged in, search all users
-        $sql = "SELECT id, username FROM users WHERE username LIKE ? ORDER BY username ASC";
+        $sql = "SELECT id, username FROM users WHERE username LIKE ? AND role != 'admin' AND is_banned = 0 ORDER BY username ASC";
+// No change to bind_param needed
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
             error_log("Prepare failed (UL_SEARCH_NOLID): " . $conn->error);
@@ -47,7 +48,7 @@ if (!empty($searchUsernameParam)) {
 } else { // No search query, display a list of recent/all users (excluding logged-in user if applicable)
     $limit = 20; // Limit the number of users displayed by default
     if ($loggedInUserId) {
-        $sql = "SELECT id, username FROM users WHERE id != ? ORDER BY created_at DESC, username ASC LIMIT ?";
+        $sql = "SELECT id, username FROM users WHERE id != ? AND role != 'admin' AND is_banned = 0 ORDER BY created_at DESC, username ASC LIMIT ?";
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
             error_log("Prepare failed (UL_LIST_LID): " . $conn->error);
@@ -56,7 +57,8 @@ if (!empty($searchUsernameParam)) {
             $stmt->bind_param("ii", $loggedInUserId, $limit);
         }
     } else { // User not logged in, show generic list
-        $sql = "SELECT id, username FROM users ORDER BY created_at DESC, username ASC LIMIT ?";
+        $sql = "SELECT id, username FROM users WHERE role != 'admin' AND is_banned = 0 ORDER BY created_at DESC, username ASC LIMIT ?";
+// No change to bind_param needed
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
             error_log("Prepare failed (UL_LIST_NOLID): " . $conn->error);

@@ -7,15 +7,13 @@
 </div> <!-- Closing .container .page-content (or just .container) from header.php -->
 
 <footer class="site-footer-main">
-    <div class="container footer-content"> <?php // Optional: another container if footer has a different width or background full-bleed ?>
+    <div class="container footer-content">
         <p>© <?php echo date("Y"); ?> <?php echo defined('SITE_NAME') ? htmlspecialchars(SITE_NAME, ENT_QUOTES, 'UTF-8') : 'Eiganights'; ?> - Tous droits réservés.</p>
-        <?php /* Add other footer links or information here if needed
         <p>
-            <a href="about.php">À Propos</a> | 
-            <a href="contact.php">Contact</a> | 
-            <a href="privacy.php">Politique de Confidentialité</a>
+            <a href="faq.php">FAQ</a> |
+            <a href="terms.php">Conditions d'Utilisation</a> |
+            <a href="contact.php">Contactez-nous</a>
         </p>
-        */ ?>
     </div>
 </footer>
 

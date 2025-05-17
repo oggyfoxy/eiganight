@@ -27,6 +27,8 @@ logs/
 *.log 
 php-error.log 
 
+
+config.php
 # XAMPP or local server specific config files (if any are generated in project dir)
 # Usually not needed if your XAMPP config is global
 

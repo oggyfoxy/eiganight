@@ -76,8 +76,12 @@ if (function_exists('mb_convert_case')) {
 <header class="site-header">
     <nav class="main-navigation">
         <a href="index.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>">Accueil</a>
+        <a href="forum.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'forum.php' || basename($_SERVER['PHP_SELF']) == 'forum_view_thread.php' || basename($_SERVER['PHP_SELF']) == 'forum_create_thread.php' ? 'active' : ''; ?>">Forum</a> 
         <a href="users_list.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'users_list.php' ? 'active' : ''; ?>">Utilisateurs</a>
         <?php if (isset($_SESSION['user_id'])): ?>
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                <a href="admin_panel.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'admin_panel.php' ? 'active' : ''; ?>">Admin Panel</a>
+            <?php endif; ?>
             <a href="profile.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">Mon Profil</a>
             <a href="logout.php" class="nav-link"><?php echo htmlspecialchars($logoutText, ENT_QUOTES, 'UTF-8'); ?></a>
         <?php else: ?>

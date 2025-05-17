@@ -215,6 +215,29 @@ if (!$stmtFriends) {
     $stmtFriends->close();
 }
 
+$mySceneAnnotations = [];
+$sqlMyAnnotations = "SELECT id, title, movie_title, movie_id, scene_start_time, scene_description_short, created_at 
+                     FROM forum_threads 
+                     WHERE user_id = ? AND (scene_start_time IS NOT NULL OR scene_description_short IS NOT NULL)
+                     ORDER BY created_at DESC";
+$stmtMyAnnotations = $conn->prepare($sqlMyAnnotations);
+if (!$stmtMyAnnotations) {
+    error_log("Prepare failed (PROF_MY_ANNOT_SEL): " . $conn->error);
+    $_SESSION['error_annotations'] = "Erreur chargement annotations. (P13)";
+} else {
+    $stmtMyAnnotations->bind_param("i", $loggedInUserId);
+    if ($stmtMyAnnotations->execute()) {
+        $resultMyAnnotations = $stmtMyAnnotations->get_result();
+        while ($row = $resultMyAnnotations->fetch_assoc()) {
+            $mySceneAnnotations[] = $row;
+        }
+    } else {
+        error_log("Execute failed (PROF_MY_ANNOT_SEL): " . $stmtMyAnnotations->error);
+        $_SESSION['error_annotations'] = "Erreur chargement annotations. (P14)";
+    }
+    $stmtMyAnnotations->close();
+}
+
 include_once 'includes/header.php';
 ?>
 
@@ -358,6 +381,39 @@ include_once 'includes/header.php';
         <?php endif; ?>
     </section>
 </main>
+
+
+<hr>
+
+<section class="my-annotations-section card">
+    <h2>Mes Annotations de Scènes (<?php echo count($mySceneAnnotations); ?>)</h2>
+    <?php if (!empty($_SESSION['error_annotations'])): ?>
+        <div class="alert alert-danger"><?php echo htmlspecialchars($_SESSION['error_annotations']); unset($_SESSION['error_annotations']); ?></div>
+    <?php endif; ?>
+    <?php if (!empty($mySceneAnnotations)): ?>
+        <ul class="annotations-list profile-annotations-list">
+            <?php foreach ($mySceneAnnotations as $annotation): ?>
+                <li class="annotation-item">
+                    <a href="forum_view_thread.php?id=<?php echo (int)$annotation['id']; ?>" class="annotation-title">
+                        <strong><?php echo htmlspecialchars($annotation['title']); ?></strong>
+                    </a>
+                    <p class="movie-link">Pour le film: <a href="movie_details.php?id=<?php echo (int)$annotation['movie_id']; ?>"><?php echo htmlspecialchars($annotation['movie_title']); ?></a></p>
+                    <?php if (!empty($annotation['scene_description_short'])): ?>
+                        <p class="scene-desc-preview"><em>Scène : <?php echo htmlspecialchars($annotation['scene_description_short']); ?></em></p>
+                    <?php endif; ?>
+                    <?php if (!empty($annotation['scene_start_time'])): ?>
+                        <p class="scene-time-preview">Temps : <?php echo htmlspecialchars($annotation['scene_start_time']); ?></p>
+                    <?php endif; ?>
+                    <p class="annotation-meta">
+                        Créé le <?php echo date('d/m/Y', strtotime($annotation['created_at'])); ?>
+                    </p>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php elseif (empty($_SESSION['error_annotations'])): ?>
+        <p>Vous n'avez pas encore créé d'annotations de scènes. <a href="index.php">Trouvez un film et lancez-vous !</a></p>
+    <?php endif; ?>
+</section>
 
 <?php
 // $conn->close(); // Optional.
