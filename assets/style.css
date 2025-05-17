@@ -1523,3 +1523,333 @@ select {
 .simulated-ad-content.ad-banner > a { /* L'image bannière est le lien, pas de bouton séparé */
     display:block;
 }
+/* --------------------
+   SITE HEADER & NAVIGATION (Mises à jour)
+   -------------------- */
+.site-header {
+    background-color: #1f1f1f;
+    padding: 10px 0; /* Ajuster le padding */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    margin-bottom: 30px;
+    position: sticky; /* Optionnel: rendre le header collant en haut */
+    top: 0;
+    z-index: 1000; /* Assurer qu'il est au-dessus des autres contenus si collant */
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between; /* Éléments espacés */
+    align-items: center;
+    flex-wrap: wrap; /* Permettre le retour à la ligne sur petits écrans */
+    gap: 15px; /* Espace entre les éléments du header */
+}
+
+.site-branding .site-logo-link {
+    text-decoration: none;
+}
+.site-branding .site-title-header {
+    font-size: 1.8rem; /* Ajuster la taille */
+    font-weight: 700;
+    color: #00bfa5; /* Couleur du thème */
+    text-decoration: none;
+}
+.site-branding .site-title-header:hover {
+    color: #008c7a;
+}
+
+
+.main-navigation ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex; /* Aligner les liens horizontalement */
+    flex-wrap: wrap; /* Permettre le retour à la ligne */
+    gap: 5px; /* Espace entre les liens */
+}
+
+.main-navigation li {
+    /* Pas de style spécifique nécessaire pour li ici si gap est sur ul */
+}
+
+.main-navigation .nav-link {
+    color: #e0e0e0;
+    font-weight: 500;
+    margin: 0; /* Retirer les marges si gap est utilisé sur ul/li */
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    display: inline-block;
+    text-decoration: none; /* Assurer qu'il n'y a pas de soulignement par défaut */
+}
+.main-navigation .nav-link:hover,
+.main-navigation .nav-link:focus,
+.main-navigation .nav-link.active {
+    background-color: #00bfa5;
+    color: #111;
+    text-decoration: none;
+}
+
+/* Barre de recherche dans le header */
+.header-search-bar {
+    /* Flex grow/shrink/basis peuvent être utilisés si vous voulez un contrôle plus fin
+       par rapport à la navigation sur les grands écrans */
+    /* min-width: 200px; /* Assurer une largeur minimale */
+}
+
+.search-form-header {
+    display: flex;
+    align-items: center;
+    background-color: #2c2c2c; /* Fond similaire aux inputs */
+    border-radius: 20px; /* Coins arrondis pour la barre */
+    padding: 2px 5px 2px 10px; /* Petit padding interne */
+    border: 1px solid #444;
+    max-width: 300px; /* Limiter la largeur maximale */
+}
+.search-form-header:focus-within { /* Style quand l'input a le focus */
+    border-color: #00bfa5;
+    box-shadow: 0 0 0 2px rgba(0, 191, 165, 0.2);
+}
+
+.search-form-header input[type="text"] {
+    flex-grow: 1; /* L'input prend l'espace disponible */
+    background-color: transparent; /* Fond transparent, hérite de .search-form-header */
+    color: #e0e0e0;
+    border: none; /* Pas de bordure pour l'input lui-même */
+    padding: 8px 5px; /* Padding pour l'input */
+    font-size: 0.9rem;
+    outline: none; /* Pas d'outline par défaut */
+    width: 100%; /* S'assurer qu'il remplit l'espace */
+}
+.search-form-header input[type="text"]::placeholder {
+    color: #888;
+}
+
+.search-form-header .search-button-header {
+    background-color: transparent;
+    border: none;
+    color: #aaa; /* Couleur de l'icône */
+    padding: 8px;
+    cursor: pointer;
+    display: flex; /* Pour bien centrer l'icône SVG */
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Bouton rond */
+}
+.search-form-header .search-button-header:hover,
+.search-form-header .search-button-header:focus {
+    color: #00bfa5; /* Couleur au survol/focus */
+    background-color: rgba(0, 191, 165, 0.1); /* Léger fond au survol */
+}
+.search-form-header .search-button-header svg {
+    width: 1em;  /* Taille de l'icône relative à la police */
+    height: 1em;
+}
+
+/* Media Queries pour la responsivité du header */
+@media (max-width: 992px) { /* Ajuster ce point de rupture si nécessaire */
+    .header-container {
+        flex-direction: column; /* Empiler les éléments verticalement */
+        align-items: flex-start; /* Aligner à gauche */
+    }
+    .main-navigation {
+        width: 100%; /* La navigation prend toute la largeur */
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .main-navigation ul {
+        justify-content: flex-start; /* Aligner les liens de nav à gauche */
+    }
+    .header-search-bar {
+        width: 100%; /* La barre de recherche prend toute la largeur */
+        margin-top: 10px;
+    }
+    .search-form-header {
+        max-width: none; /* Permettre à la barre de recherche de prendre toute la largeur */
+    }
+}
+
+@media (max-width: 768px) {
+    .site-branding .site-title-header {
+        font-size: 1.5rem;
+    }
+    .main-navigation .nav-link {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+     .main-navigation ul {
+        gap: 0px 5px; /* réduire l'espacement horizontal sur mobile */
+        justify-content: center; /* Centrer les liens sur très petits écrans */
+    }
+}
+
+/* --------------------
+   SITE HEADER & NAVIGATION (Mises à jour pour logo et style de recherche)
+   -------------------- */
+.site-header {
+    background-color: #1f1f1f; /* Ou #1a1a1a si vous voulez qu'il corresponde exactement au fond du body */
+    padding: 10px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    margin-bottom: 30px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* --- Site Branding avec Logo --- */
+.site-branding .site-logo-link {
+    display: flex; /* Pour aligner le logo et le titre sur la même ligne */
+    align-items: center; /* Centrer verticalement */
+    text-decoration: none;
+    color: #00bfa5; /* Couleur du thème pour le titre à côté du logo */
+}
+.site-branding .site-logo-link:hover {
+    color: #008c7a; /* Assombrir au survol */
+}
+
+.site-branding .site-logo-image {
+    height: 40px; /* Ajustez la hauteur de votre logo */
+    width: auto;   /* La largeur s'ajustera proportionnellement */
+    margin-right: 10px; /* Espace entre le logo et le titre */
+    object-fit: contain; /* S'assure que le logo n'est pas déformé */
+}
+
+.site-branding .site-title-header {
+    font-size: 1.8rem;
+    font-weight: 700;
+    /* La couleur est héritée de .site-logo-link ou peut être définie ici */
+}
+
+
+.main-navigation ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.main-navigation .nav-link {
+    color: #e0e0e0;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    display: inline-block;
+    text-decoration: none;
+}
+.main-navigation .nav-link:hover,
+.main-navigation .nav-link:focus,
+.main-navigation .nav-link.active {
+    background-color: #00bfa5; /* Turquoise pour le lien actif/survol */
+    color: #111; /* Texte foncé pour le contraste */
+}
+
+/* --- Barre de recherche dans le header (style de la page d'accueil) --- */
+.header-search-bar {
+    /* margin-left: auto; /* Pour pousser la barre de recherche vers la droite sur les grands écrans si besoin */
+}
+
+.search-form-header {
+    display: flex;
+    align-items: center;
+    /* Style inspiré de votre image de page d'accueil */
+    background-color: #2c2c2c; /* Fond un peu plus clair que #1a1a1a */
+    border: 1px solid #444; /* Bordure subtile */
+    border-radius: 6px; /* Coins légèrement arrondis, comme sur l'image */
+    padding: 0; /* Le padding sera sur l'input et le bouton */
+    max-width: 350px; /* Ou la largeur désirée */
+    overflow: hidden; /* Pour que les coins arrondis s'appliquent bien */
+}
+.search-form-header:focus-within {
+    border-color: #00bfa5;
+    box-shadow: 0 0 0 2px rgba(0, 191, 165, 0.2);
+}
+
+.search-form-header input[type="text"] {
+    flex-grow: 1;
+    background-color: transparent;
+    color: #e0e0e0;
+    border: none;
+    padding: 10px 15px; /* Padding plus généreux */
+    font-size: 0.95rem; /* Un peu plus grand */
+    outline: none;
+    width: calc(100% - 40px); /* Laisser de la place pour le bouton */
+}
+.search-form-header input[type="text"]::placeholder {
+    color: #888;
+}
+
+.search-form-header .search-button-header {
+    background-color: transparent; /* Pas de fond pour le bouton de l'icône */
+    border: none;
+    color: #aaa;
+    padding: 10px; /* Padding pour que l'icône soit cliquable facilement */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid #444; /* Séparateur optionnel entre input et bouton */
+    transition: color 0.2s ease;
+}
+.search-form-header .search-button-header:hover,
+.search-form-header .search-button-header:focus {
+    color: #00bfa5;
+    background-color: transparent; /* Pas de changement de fond au survol ici */
+}
+.search-form-header .search-button-header svg {
+    width: 1em;
+    height: 1em;
+}
+
+/* Media Queries pour la responsivité du header */
+@media (max-width: 1024px) { /* Ajuster le point de rupture pour quand la nav et la recherche doivent s'empiler */
+    .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .site-branding {
+        width: 100%; /* Le logo/titre prend toute la largeur */
+        margin-bottom: 10px;
+        text-align: center; /* Centrer le logo/titre sur mobile */
+    }
+    .site-branding .site-logo-link {
+        justify-content: center; /* Centrer le logo et le titre si flex */
+    }
+
+    .main-navigation {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .main-navigation ul {
+        justify-content: center; /* Centrer les liens de navigation */
+        flex-wrap: wrap;
+    }
+    .header-search-bar {
+        width: 100%; /* La barre de recherche prend toute la largeur */
+    }
+    .search-form-header {
+        max-width: none; /* S'étend sur toute la largeur disponible */
+    }
+}
+
+@media (max-width: 768px) {
+    .site-branding .site-title-header {
+        font-size: 1.6rem; /* Un peu plus petit */
+    }
+    .site-branding .site-logo-image {
+        height: 35px; /* Logo un peu plus petit */
+    }
+    .main-navigation .nav-link {
+        padding: 8px 8px;
+        font-size: 0.85rem;
+    }
+}

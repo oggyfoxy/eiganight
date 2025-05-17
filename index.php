@@ -56,11 +56,14 @@ if (isset($_GET['search'])) {
 
 include_once 'includes/header.php'; // Sets $pageTitle in <title>
 ?>
+<?php
+// echo '<main class="container">';
+// echo '<h1>' . (defined('SITE_NAME') ? htmlspecialchars(SITE_NAME) : 'Eiganights') . '</h1>';
+// // Display session messages (ensure CSS for these classes exists)
+?>
 
-<main class="container">
-    <h1><?php echo defined('SITE_NAME') ? htmlspecialchars(SITE_NAME) : 'Eiganights'; ?></h1>
 
-    <?php // Display session messages (ensure CSS for these classes exists) ?>
+    
     <?php if (!empty($_SESSION['message'])): ?>
         <div class="alert alert-success">
             <?php echo htmlspecialchars($_SESSION['message']); unset($_SESSION['message']); ?>
