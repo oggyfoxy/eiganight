@@ -1,77 +1,754 @@
-body {
-    font-family: Arial, sans-serif;
-    background: #222;
-    color: #eee;
+/* --------------------
+   RESET & BASE STYLES
+   -------------------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
     margin: 0;
-    padding: 20px;
+    padding: 0;
 }
 
+html {
+    font-size: 16px; /* Base font size */
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    background-color: #1a1a1a; /* Darker background */
+    color: #e0e0e0; /* Light grey text for readability */
+    line-height: 1.65;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Consistent Container for centered content */
+.container {
+    width: 90%;
+    max-width: 1200px; /* Max width for large screens */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 15px; /* Horizontal padding */
+}
+
+/* Page content wrapper if header/footer are full-width */
+.page-content {
+    padding-top: 20px;
+    padding-bottom: 40px;
+    min-height: calc(100vh - 150px); /* Adjust 150px based on actual header/footer height */
+}
+
+
+/* Links */
 a {
-    color: #4CAF50;
+    color: #00bfa5; /* Teal accent */
     text-decoration: none;
+    transition: color 0.2s ease-in-out;
 }
-
-a:hover {
+a:hover, a:focus {
+    color: #008c7a; /* Darker teal on hover */
     text-decoration: underline;
 }
 
-nav a {
-    font-weight: bold;
-    margin-right: 15px;
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-style: none; /* Remove border from linked images */
+}
+.movie-poster-placeholder {
+    border: 1px solid #444;
+    object-fit: contain; /* Ensures full placeholder image is visible */
+    background-color: #303030;
 }
 
-h1, h2 {
-    color: #4CAF50;
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: #00bfa5; /* Teal accent for headings */
+    margin-top: 1.5em;
+    margin-bottom: 0.75em;
+    line-height: 1.3;
+    font-weight: 600; /* Slightly bolder headings */
+}
+h1 { font-size: 2.5rem; } /* Responsive font sizes */
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+
+h1:first-child, h2:first-child, h3:first-child, h4:first-child {
+    margin-top: 0;
 }
 
-input[type="text"], input[type="password"], textarea {
-    padding: 8px;
-    margin: 5px 0 10px 0;
-    border: none;
-    border-radius: 3px;
+/* Horizontal Rule */
+hr {
+    border: 0;
+    height: 1px;
+    background-color: #444; /* Subtle separator */
+    margin: 40px 0;
+}
+
+/* Accessibility: Visually Hidden Class */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* --------------------
+   SITE HEADER & NAVIGATION
+   -------------------- */
+.site-header {
+    background-color: #1f1f1f; /* Slightly different dark shade */
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    margin-bottom: 30px; /* Space below header */
+}
+
+.main-navigation {
+    text-align: center;
+}
+
+.main-navigation .nav-link {
+    color: #e0e0e0;
+    font-weight: 500; /* Medium weight for nav links */
+    margin: 0 10px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    display: inline-block;
+}
+.main-navigation .nav-link:hover,
+.main-navigation .nav-link:focus,
+.main-navigation .nav-link.active {
+    background-color: #00bfa5;
+    color: #111; /* Dark text on active/hover for contrast */
+    text-decoration: none;
+}
+
+/* --------------------
+   FORMS & BUTTONS
+   -------------------- */
+.form-group {
+    margin-bottom: 20px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #c0c0c0; /* Lighter label color */
+}
+.form-text { /* Helper text below inputs */
+    display: block;
+    font-size: 0.875em;
+    color: #888;
+    margin-top: 5px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+textarea,
+select {
+    background-color: #2c2c2c; /* Dark input background */
+    color: #e0e0e0;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 12px 15px;
     width: 100%;
-    max-width: 300px;
-    font-size: 16px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+textarea:focus,
+select:focus {
+    border-color: #00bfa5; /* Teal border on focus */
+    box-shadow: 0 0 0 3px rgba(0, 191, 165, 0.25); /* Subtle glow */
+    outline: none;
+}
+textarea {
+    min-height: 120px;
+    resize: vertical; /* Allow vertical resize */
+}
+select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ababab%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 12px auto;
+    padding-right: 40px;
 }
 
-input[type="submit"], button {
-    background: #4CAF50;
-    border: none;
-    padding: 10px 20px;
-    color: white;
-    font-weight: bold;
+
+/* Base Button Style */
+.button, button, input[type="submit"], input[type="button"], input[type="reset"] {
+    display: inline-block;
+    font-weight: 500;
+    text-align: center;
+    vertical-align: middle;
     cursor: pointer;
-    border-radius: 3px;
-    font-size: 16px;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 10px 20px;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 4px;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+/* Primary Button */
+.button-primary, input[type="submit"] {
+    color: #111;
+    background-color: #00bfa5; /* Teal */
+    border-color: #00bfa5;
+}
+.button-primary:hover, input[type="submit"]:hover {
+    color: #fff;
+    background-color: #008c7a; /* Darker Teal */
+    border-color: #007a6c;
+    text-decoration: none;
+}
+/* Danger Button */
+.button-danger {
+    color: #fff;
+    background-color: #e53935; /* Red */
+    border-color: #e53935;
+}
+.button-danger:hover {
+    color: #fff;
+    background-color: #c62828; /* Darker Red */
+    border-color: #b71c1c;
+    text-decoration: none;
+}
+/* Warning Button */
+.button-warning {
+    color: #111;
+    background-color: #ffb300; /* Amber */
+    border-color: #ffb300;
+}
+.button-warning:hover {
+    color: #111;
+    background-color: #ffa000; /* Darker Amber */
+    border-color: #ff8f00;
+    text-decoration: none;
+}
+/* Success Button */
+.button-success {
+    color: #fff;
+    background-color: #43a047; /* Green */
+    border-color: #43a047;
+}
+.button-success:hover {
+    color: #fff;
+    background-color: #388e3c; /* Darker Green */
+    border-color: #2e7d32;
+    text-decoration: none;
+}
+/* Secondary/Outline Button */
+.button-secondary {
+    color: #00bfa5;
+    border-color: #00bfa5;
+}
+.button-secondary:hover {
+    color: #111;
+    background-color: #00bfa5;
+    text-decoration: none;
+}
+/* Small Button Variant */
+.button-small {
+    padding: 6px 12px;
+    font-size: 0.875rem;
 }
 
-input[type="submit"]:hover, button:hover {
-    background: #45a049;
+/* Forms within lists or inline contexts */
+.inline-form {
+    display: inline-block; /* Or flex if multiple elements inside */
+    margin: 0 5px; /* Adjust spacing */
+}
+.inline-form button, .inline-form input[type="submit"] {
+    padding: 6px 12px; /* Smaller padding for inline buttons */
+    font-size: 0.9em;
 }
 
-.error {
-    color: #f44336;
-    font-weight: bold;
+/* Auth Forms (Login, Register) */
+.auth-form-container {
+    max-width: 480px; /* Slightly wider */
+    margin: 40px auto;
+    padding: 25px 30px;
+    background-color: #252525; /* Darker card background */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.auth-form-container h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 2rem;
+}
+.auth-form-container .button-primary,
+.auth-form-container input[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+}
+.auth-links {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.95em;
+}
+.auth-links a {
+    font-weight: 500;
 }
 
-.movie {
+/* Search Box */
+.search-box {
     display: flex;
-    margin: 20px 0;
-    border-bottom: 1px solid #444;
-    padding-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+    align-items: stretch; /* Make items same height */
+}
+.search-box input[type="text"] {
+    flex-grow: 1;
+    margin-bottom: 0; /* Handled by gap */
+    min-width: 200px;
+}
+.search-box input[type="submit"], .search-box button {
+    margin-bottom: 0;
+    flex-shrink: 0;
 }
 
-.movie img {
-    width: 100px;
-    margin-right: 20px;
+/* --------------------
+   ALERTS / MESSAGES
+   -------------------- */
+.alert {
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-weight: 500;
+}
+.alert-success {
+    color: #a5d6a7; /* Light green text */
+    background-color: #2a522a; /* Dark green background */
+    border-color: #388e3c;
+}
+.alert-danger {
+    color: #f4c7c3; /* Light red text */
+    background-color: #5c2222; /* Dark red background */
+    border-color: #c62828;
+}
+.alert-warning {
+    color: #111; /* Dark text for yellow background */
+    background-color: #fff3cd; /* Light yellow */
+    border-color: #ffeeba;
+}
+.alert-info {
+    color: #abdefa; /* Light blue text */
+    background-color: #1e3a5f; /* Dark blue background */
+    border-color: #3e7ab7;
 }
 
-.movie-info {
-    max-width: 600px;
+/* --------------------
+   CARDS (General purpose)
+   -------------------- */
+.card {
+    background-color: #252525; /* Consistent card background */
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+.card-list li { /* For lists styled as cards */
+    background-color: #2c2c2c; /* Slightly lighter than card for depth */
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border-left: 4px solid #00bfa5; /* Accent border */
 }
 
-.movie-title {
-    font-size: 20px;
-    font-weight: bold;
+
+/* --------------------
+   MOVIE GRIDS & ITEMS (Homepage, Watchlist)
+   -------------------- */
+.movies-grid, .watchlist-grid, .trending-movies-container {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Base for mobile */
+}
+
+.movie, .movie-in-watchlist, .trending-movie-item {
+    background-color: #2c2c2c; /* Card background */
+    border-radius: 6px;
+    overflow: hidden; /* To contain image border-radius */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+.movie:hover, .movie-in-watchlist:hover, .trending-movie-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+.movie img, .movie-in-watchlist img, .trending-movie-item img {
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    width: 100%;
+}
+.movie-info, .movie-info-watchlist {
+    padding: 15px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.movie-title, .movie-title-watchlist {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    color: #e0e0e0; /* Title color for movie cards */
+}
+.movie-title a, .movie-title-watchlist a {
+    color: inherit;
+}
+.movie-title a:hover, .movie-title-watchlist a:hover {
+    color: #00bfa5;
+}
+.movie-overview {
+    font-size: 0.9rem;
+    color: #b0b0b0; /* Lighter grey for overview */
+    margin-bottom: 12px;
+    flex-grow: 1;
+}
+.movie-info .add-watchlist-form,
+.movie-info-watchlist .remove-watchlist-form {
+    margin-top: auto; /* Push form to bottom */
+}
+.movie-info .add-watchlist-form input[type="submit"],
+.movie-info-watchlist .remove-watchlist-form button {
+    width: 100%;
+    padding: 8px;
+    font-size: 0.9rem;
+}
+.login-prompt {
+    margin-top: auto;
+    font-size: 0.9rem;
+}
+
+/* Trending specifically: usually just posters */
+.trending-movies-container {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+}
+
+
+/* --------------------
+   MOVIE DETAIL PAGE
+   -------------------- */
+.movie-detail-page .card { /* Use .card for main container */
+    padding: 25px 30px;
+}
+.movie-detail-header {
+    display: flex;
+    flex-direction: column; /* Mobile first */
+    gap: 25px;
+    margin-bottom: 30px;
+}
+.movie-detail-header .poster-container {
+    flex-shrink: 0;
+    width: 100%; /* Mobile full width */
+    max-width: 300px; /* Limit on larger screens */
+    margin: 0 auto; /* Center on mobile */
+}
+.movie-detail-poster {
+    border-radius: 6px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.movie-detail-main-info {
+    flex-grow: 1;
+}
+.movie-detail-main-info h1 {
+    font-size: 2.2rem; /* Slightly smaller for details page */
     margin-bottom: 5px;
+}
+.movie-detail-main-info .release-year {
+    font-size: 1.5rem;
+    color: #aaa;
+    font-weight: 400;
+}
+.movie-detail-main-info .tagline {
+    font-style: italic;
+    color: #ccc;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+.movie-detail-main-info p {
+    margin-bottom: 10px;
+    color: #c0c0c0;
+}
+.movie-detail-main-info p strong {
+    color: #e0e0e0;
+}
+.movie-actions {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column; /* Stack buttons on mobile */
+    gap: 10px;
+}
+.movie-actions .button-primary, .movie-actions .button-danger {
+    width: 100%; /* Full width buttons on mobile */
+}
+
+.movie-detail-page section { /* Sections within movie details */
+    margin-bottom: 30px;
+}
+.movie-detail-page section h2 {
+    border-bottom: 1px solid #444;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 1.6rem;
+}
+
+.trailer-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 6px;
+    background-color: #000;
+}
+.trailer-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.cast-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 20px;
+}
+.actor {
+    background-color: #2c2c2c;
+    border-radius: 6px;
+    padding: 12px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.actor img {
+    max-width: 100px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin: 0 auto 10px auto;
+}
+.actor p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #b0b0b0;
+}
+.actor p strong {
+    color: #e0e0e0;
+    display: block; /* Name on its own line */
+}
+
+/* User Rating/Comment Form */
+.user-interaction-section label {
+    font-weight: 500;
+}
+.user-interaction-section select#rating {
+    max-width: 220px; /* Don't let select be too wide */
+}
+
+/* Public Comments List */
+.comments-list .comment-item {
+    background-color: #2c2c2c;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    border-left: 4px solid #008c7a; /* Darker teal accent */
+}
+.comments-list .comment-meta {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+.comments-list .comment-meta strong a {
+    font-weight: 600;
+}
+.comments-list .comment-date {
+    color: #888;
+    margin-left: 8px;
+}
+.comments-list .comment-text {
+    color: #d0d0d0;
+    word-wrap: break-word; /* Or overflow-wrap */
+}
+
+
+/* --------------------
+   USER PROFILES (Own and View) & USER LISTS
+   -------------------- */
+.profile-page .card, .view-profile-page .card, .users-list-page .card {
+    /* Using general .card styles */
+}
+.profile-header .meta-info {
+    font-size: 0.95em;
+    color: #aaa;
+    margin-bottom: 15px;
+}
+.profile-header .friend-actions {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #444;
+    display: flex;
+    flex-wrap: wrap; /* Allow buttons to wrap */
+    gap: 10px;
+}
+.profile-header .friend-actions p { margin: 0; align-self: center;}
+
+
+/* Friend Request & Friend Lists on profile.php */
+.friend-request-list, .friend-list, .users-list-page .user-list {
+    list-style: none;
+    padding: 0;
+}
+.friend-request-list li, .friend-list li, .users-list-page .user-list li {
+    /* Using .card-list li styles */
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+.friend-request-list li .actions, .friend-list li .inline-form,
+.users-list-page .user-list li .button {
+    margin-left: auto; /* Push actions to the right if space allows */
+    flex-shrink: 0; /* Prevent actions from shrinking too much */
+    display: flex; /* For multiple buttons in .actions */
+    gap: 10px;
+}
+
+
+/* Profile Management Form (profile.php) */
+.profile-management label[for="profile_visibility"],
+.profile-management label[for="bio"] {
+    margin-top: 10px;
+}
+.profile-management select#profile_visibility {
+    max-width: 300px;
+}
+
+
+/* --------------------
+   SITE FOOTER
+   -------------------- */
+.site-footer-main {
+    background-color: #1f1f1f;
+    color: #888;
+    padding: 30px 0;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 40px; /* Space above footer */
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+}
+.site-footer-main .footer-content p {
+    margin-bottom: 5px;
+}
+.site-footer-main a {
+    color: #aaa; /* Lighter grey for footer links */
+}
+.site-footer-main a:hover {
+    color: #00bfa5; /* Teal on hover */
+}
+
+/* --------------------
+   MEDIA QUERIES (Responsive Adjustments)
+   -------------------- */
+
+/* Tablets and larger mobiles (e.g., landscape) */
+@media (min-width: 576px) {
+    .movies-grid, .watchlist-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+    .trending-movies-container {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    .cast-list {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    }
+    .movie-actions {
+        flex-direction: row; /* Buttons side-by-side */
+    }
+    .movie-actions .button-primary, .movie-actions .button-danger {
+        width: auto; /* Auto width for buttons */
+    }
+    .comments-list .comment-date { /* Display date inline on larger screens */
+        display: inline;
+    }
+}
+
+/* Tablets */
+@media (min-width: 768px) {
+    html { font-size: 17px; } /* Slightly larger base font for tablets */
+    .container { padding: 0 20px; }
+    h1 { font-size: 2.8rem; }
+    h2 { font-size: 2.2rem; }
+
+    .main-navigation .nav-link { margin: 0 15px; }
+    .search-box { flex-wrap: nowrap; }
+
+    .movie-detail-header {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    .movie-detail-header .poster-container {
+        width: 250px; /* Fixed width for poster */
+        margin: 0; /* Reset mobile margin */
+    }
+    
+    .friend-request-list li, .friend-list li, .users-list-page .user-list li {
+        flex-wrap: nowrap; /* Prevent wrapping */
+    }
+}
+
+/* Desktops */
+@media (min-width: 992px) {
+    .movies-grid, .watchlist-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+     .trending-movies-container {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+    .cast-list {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+    .movie-detail-header .poster-container {
+        width: 280px;
+    }
+}
+
+/* Large Desktops */
+@media (min-width: 1200px) {
+    html { font-size: 18px; } /* Larger base font for very large screens */
+    .movies-grid, .watchlist-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+     .trending-movies-container {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+    .movie-detail-header .poster-container {
+        width: 300px;
+    }
 }
