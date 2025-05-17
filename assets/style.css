@@ -1,6 +1,6 @@
-/* --------------------
-   RESET & BASE STYLES
-   -------------------- */
+/* ==========================================================================
+   1. RESET & BASE STYLES
+   ========================================================================== */
 *,
 *::before,
 *::after {
@@ -12,86 +12,104 @@
 html {
     font-size: 16px; /* Base font size */
     scroll-behavior: smooth;
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    background-color: #1a1a1a; /* Darker background */
-    color: #e0e0e0; /* Light grey text for readability */
-    line-height: 1.65;
-    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Consistent Container for centered content */
-.container {
-    width: 90%;
-    max-width: 1200px; /* Max width for large screens */
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 15px; /* Horizontal padding */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    background-color: var(--color-bg-dark);
+    color: var(--color-text-light);
+    line-height: 1.65;
+    font-weight: 400;
 }
 
-/* Page content wrapper if header/footer are full-width */
-.page-content {
-    padding-top: 20px;
-    padding-bottom: 40px;
-    min-height: calc(100vh - 150px); /* Adjust 150px based on actual header/footer height */
-}
+/* ==========================================================================
+   2. CSS CUSTOM PROPERTIES (VARIABLES)
+   ========================================================================== */
+:root {
+    /* Colors */
+    --color-primary: #00bfa5;          /* Teal accent */
+    --color-primary-dark: #008c7a;
+    --color-primary-darker: #007a6c;
+    --color-primary-contrast: #111111; /* Text color on primary bg */
+    --color-primary-contrast-hover: #ffffff;
+
+    --color-bg-dark: #1a1a1a;
+    --color-bg-medium: #1f1f1f;        /* Header, Footer */
+    --color-bg-light: #252525;         /* Cards */
+    --color-bg-lighter: #2c2c2c;       /* Movie items, form inputs */
+    --color-bg-lightest: #303030;      /* Placeholder bg */
+
+    --color-text-light: #e0e0e0;
+    --color-text-medium: #c0c0c0;
+    --color-text-dark: #b0b0b0;
+    --color-text-darker: #a0a0a0;
+    --color-text-muted: #888888;
+
+    --color-border-dark: #333333;
+    --color-border-medium: #444444;
+    --color-border-light: #555555;
+
+    --color-danger: #e53935;
+    --color-danger-dark: #c62828;
+    --color-danger-darker: #b71c1c;
+    --color-danger-contrast: #ffffff;
+    --color-danger-bg-alert: #5c2222;
+    --color-danger-text-alert: #f4c7c3;
 
 
-/* Links */
-a {
-    color: #00bfa5; /* Teal accent */
-    text-decoration: none;
-    transition: color 0.2s ease-in-out;
-}
-a:hover, a:focus {
-    color: #008c7a; /* Darker teal on hover */
-    text-decoration: underline;
-}
-
-/* Images */
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    border-style: none; /* Remove border from linked images */
-}
-.movie-poster-placeholder {
-    border: 1px solid #444;
-    object-fit: contain; /* Ensures full placeholder image is visible */
-    background-color: #303030;
-}
+    --color-warning: #ffb300;
+    --color-warning-dark: #ffa000;
+    --color-warning-darker: #ff8f00;
+    --color-warning-contrast: #111111;
+    --color-warning-bg-alert: #fff3cd; /* Exception for light bg for readability */
+    --color-warning-text-alert: #111111;
+    --color-warning-border-alert: #ffeeba;
 
 
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
-    color: #00bfa5; /* Teal accent for headings */
-    margin-top: 1.5em;
-    margin-bottom: 0.75em;
-    line-height: 1.3;
-    font-weight: 600; /* Slightly bolder headings */
-}
-h1 { font-size: 2.5rem; } /* Responsive font sizes */
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
-h4 { font-size: 1.25rem; }
+    --color-success: #43a047;
+    --color-success-dark: #388e3c;
+    --color-success-darker: #2e7d32;
+    --color-success-contrast: #ffffff;
+    --color-success-bg-alert: #2a522a;
+    --color-success-text-alert: #a5d6a7;
 
-h1:first-child, h2:first-child, h3:first-child, h4:first-child {
-    margin-top: 0;
+    --color-info-bg-alert: #1e3a5f;
+    --color-info-text-alert: #abdefa;
+    --color-info-border-alert: #3e7ab7;
+
+    --color-streaming-link-hover: #007bff; /* Example for streaming links if different from primary */
+
+    /* Typography */
+    --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --font-size-base: 1rem; /* Corresponds to html font-size */
+    --line-height-base: 1.65;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;  /* 4px */
+    --spacing-sm: 0.5rem;   /* 8px */
+    --spacing-md: 1rem;     /* 16px */
+    --spacing-lg: 1.5rem;   /* 24px */
+    --spacing-xl: 2rem;     /* 32px */
+    --spacing-xxl: 2.5rem;  /* 40px */
+
+    /* Borders */
+    --border-radius-sm: 4px;
+    --border-radius-md: 6px;
+    --border-radius-lg: 8px;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 5px rgba(0,0,0,0.1);
+    --shadow-md: 0 3px 10px rgba(0,0,0,0.15);
+    --shadow-lg: 0 4px 15px rgba(0,0,0,0.2);
+    --shadow-header: 0 2px 10px rgba(0,0,0,0.3);
+    --shadow-footer: 0 -2px 10px rgba(0,0,0,0.2);
 }
 
-/* Horizontal Rule */
-hr {
-    border: 0;
-    height: 1px;
-    background-color: #444; /* Subtle separator */
-    margin: 40px 0;
-}
-
-/* Accessibility: Visually Hidden Class */
+/* ==========================================================================
+   3. UTILITY CLASSES
+   ========================================================================== */
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -104,14 +122,32 @@ hr {
     border: 0;
 }
 
-/* --------------------
-   SITE HEADER & NAVIGATION
-   -------------------- */
+.text-center {
+    text-align: center;
+}
+
+/* ==========================================================================
+   4. LAYOUT (Container, Header, Footer, Page Content)
+   ========================================================================== */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 var(--spacing-md);
+}
+
+.page-content {
+    padding-top: var(--spacing-lg);    /* Was 20px */
+    padding-bottom: var(--spacing-xxl); /* Was 40px */
+    min-height: calc(100vh - 180px); /* Adjusted for typical header/footer height, update if needed */
+}
+
 .site-header {
-    background-color: #1f1f1f; /* Slightly different dark shade */
-    padding: 15px 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    margin-bottom: 30px; /* Space below header */
+    background-color: var(--color-bg-medium);
+    padding: var(--spacing-md) 0;
+    box-shadow: var(--shadow-header);
+    margin-bottom: var(--spacing-xl); /* Was 30px */
 }
 
 .main-navigation {
@@ -119,39 +155,114 @@ hr {
 }
 
 .main-navigation .nav-link {
-    color: #e0e0e0;
-    font-weight: 500; /* Medium weight for nav links */
-    margin: 0 10px;
-    padding: 8px 12px;
-    border-radius: 4px;
+    color: var(--color-text-light);
+    font-weight: 500;
+    margin: 0 var(--spacing-sm); /* Was 10px */
+    padding: var(--spacing-sm) var(--spacing-md); /* Was 8px 12px */
+    border-radius: var(--border-radius-sm);
     transition: background-color 0.2s ease, color 0.2s ease;
     display: inline-block;
+    text-decoration: none;
 }
 .main-navigation .nav-link:hover,
 .main-navigation .nav-link:focus,
 .main-navigation .nav-link.active {
-    background-color: #00bfa5;
-    color: #111; /* Dark text on active/hover for contrast */
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
     text-decoration: none;
 }
 
-/* --------------------
-   FORMS & BUTTONS
-   -------------------- */
+.site-footer-main {
+    background-color: var(--color-bg-medium);
+    color: var(--color-text-muted);
+    padding: var(--spacing-xl) 0; /* Was 30px */
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: var(--spacing-xxl); /* Was 40px */
+    box-shadow: var(--shadow-footer);
+}
+.site-footer-main .footer-content p {
+    margin-bottom: var(--spacing-xs); /* Was 5px */
+}
+.site-footer-main a {
+    color: var(--color-text-darker); /* Was #aaa */
+}
+.site-footer-main a:hover {
+    color: var(--color-primary);
+}
+
+/* ==========================================================================
+   5. HTML ELEMENT STYLING (Typography, Links, Images, HR)
+   ========================================================================== */
+/* Links */
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+a:hover, a:focus {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-style: none;
+}
+.movie-poster-placeholder { /* Specific to movie posters */
+    border: 1px solid var(--color-border-medium);
+    object-fit: contain;
+    background-color: var(--color-bg-lightest);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--color-primary);
+    margin-top: 1.5em;
+    margin-bottom: 0.75em;
+    line-height: 1.3;
+    font-weight: 600;
+}
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.1rem; }
+h6 { font-size: 1rem; }
+
+h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child {
+    margin-top: 0;
+}
+
+/* Horizontal Rule */
+hr {
+    border: 0;
+    height: 1px;
+    background-color: var(--color-border-medium);
+    margin: var(--spacing-xxl) 0; /* Was 40px */
+}
+
+/* ==========================================================================
+   6. COMPONENTS (Buttons, Forms, Alerts, Cards)
+   ========================================================================== */
+/* --- Forms --- */
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-lg); /* Was 20px */
 }
 .form-group label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: var(--spacing-sm); /* Was 8px */
     font-weight: 500;
-    color: #c0c0c0; /* Lighter label color */
+    color: var(--color-text-medium);
 }
-.form-text { /* Helper text below inputs */
+.form-text {
     display: block;
     font-size: 0.875em;
-    color: #888;
-    margin-top: 5px;
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-xs); /* Was 5px */
 }
 
 input[type="text"],
@@ -159,13 +270,13 @@ input[type="password"],
 input[type="email"],
 textarea,
 select {
-    background-color: #2c2c2c; /* Dark input background */
-    color: #e0e0e0;
-    border: 1px solid #555;
-    border-radius: 4px;
-    padding: 12px 15px;
+    background-color: var(--color-bg-lighter);
+    color: var(--color-text-light);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--border-radius-sm);
+    padding: var(--spacing-sm) var(--spacing-md); /* Was 12px 15px, using sm for vertical */
     width: 100%;
-    font-size: 1rem;
+    font-size: var(--font-size-base);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 input[type="text"]:focus,
@@ -173,25 +284,24 @@ input[type="password"]:focus,
 input[type="email"]:focus,
 textarea:focus,
 select:focus {
-    border-color: #00bfa5; /* Teal border on focus */
-    box-shadow: 0 0 0 3px rgba(0, 191, 165, 0.25); /* Subtle glow */
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent); /* Teal glow */
     outline: none;
 }
 textarea {
     min-height: 120px;
-    resize: vertical; /* Allow vertical resize */
+    resize: vertical;
 }
 select {
     appearance: none;
     background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ababab%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
     background-repeat: no-repeat;
-    background-position: right 15px center;
+    background-position: right var(--spacing-md) center;
     background-size: 12px auto;
-    padding-right: 40px;
+    padding-right: calc(var(--spacing-md) * 2 + 12px); /* Adjust padding for arrow */
 }
 
-
-/* Base Button Style */
+/* --- Buttons --- */
 .button, button, input[type="submit"], input[type="button"], input[type="reset"] {
     display: inline-block;
     font-weight: 500;
@@ -201,321 +311,350 @@ select {
     user-select: none;
     background-color: transparent;
     border: 1px solid transparent;
-    padding: 10px 20px;
-    font-size: 1rem;
-    line-height: 1.5;
-    border-radius: 4px;
+    padding: var(--spacing-sm) var(--spacing-lg); /* Was 10px 20px */
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    border-radius: var(--border-radius-sm);
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    text-decoration: none; /* Ensure buttons don't get underlined by default 'a' styles */
 }
-/* Primary Button */
-.button-primary, input[type="submit"] {
-    color: #111;
-    background-color: #00bfa5; /* Teal */
-    border-color: #00bfa5;
-}
-.button-primary:hover, input[type="submit"]:hover {
-    color: #fff;
-    background-color: #008c7a; /* Darker Teal */
-    border-color: #007a6c;
+.button:hover, button:hover, input[type="submit"]:hover, input[type="button"]:hover, input[type="reset"]:hover {
     text-decoration: none;
 }
+
+/* Primary Button */
+.button-primary, input[type="submit"].button-primary, input[type="submit"] { /* Added .button-primary to input[type="submit"] for consistency */
+    color: var(--color-primary-contrast);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+.button-primary:hover, input[type="submit"].button-primary:hover, input[type="submit"]:hover {
+    color: var(--color-primary-contrast-hover);
+    background-color: var(--color-primary-dark);
+    border-color: var(--color-primary-darker);
+}
+
 /* Danger Button */
 .button-danger {
-    color: #fff;
-    background-color: #e53935; /* Red */
-    border-color: #e53935;
+    color: var(--color-danger-contrast);
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
 }
 .button-danger:hover {
-    color: #fff;
-    background-color: #c62828; /* Darker Red */
-    border-color: #b71c1c;
-    text-decoration: none;
+    background-color: var(--color-danger-dark);
+    border-color: var(--color-danger-darker);
 }
+
 /* Warning Button */
 .button-warning {
-    color: #111;
-    background-color: #ffb300; /* Amber */
-    border-color: #ffb300;
+    color: var(--color-warning-contrast);
+    background-color: var(--color-warning);
+    border-color: var(--color-warning);
 }
 .button-warning:hover {
-    color: #111;
-    background-color: #ffa000; /* Darker Amber */
-    border-color: #ff8f00;
-    text-decoration: none;
+    background-color: var(--color-warning-dark);
+    border-color: var(--color-warning-darker);
 }
+
 /* Success Button */
 .button-success {
-    color: #fff;
-    background-color: #43a047; /* Green */
-    border-color: #43a047;
+    color: var(--color-success-contrast);
+    background-color: var(--color-success);
+    border-color: var(--color-success);
 }
 .button-success:hover {
-    color: #fff;
-    background-color: #388e3c; /* Darker Green */
-    border-color: #2e7d32;
-    text-decoration: none;
+    background-color: var(--color-success-dark);
+    border-color: var(--color-success-darker);
 }
+
 /* Secondary/Outline Button */
 .button-secondary {
-    color: #00bfa5;
-    border-color: #00bfa5;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
 }
 .button-secondary:hover {
-    color: #111;
-    background-color: #00bfa5;
-    text-decoration: none;
+    color: var(--color-primary-contrast);
+    background-color: var(--color-primary);
 }
+
 /* Small Button Variant */
 .button-small {
-    padding: 6px 12px;
+    padding: var(--spacing-xs) var(--spacing-md); /* Was 6px 12px */
     font-size: 0.875rem;
 }
 
-/* Forms within lists or inline contexts */
-.inline-form {
-    display: inline-block; /* Or flex if multiple elements inside */
-    margin: 0 5px; /* Adjust spacing */
+/* --- Alerts / Messages --- */
+.alert {
+    padding: var(--spacing-md); /* Was 15px 20px */
+    margin-bottom: var(--spacing-lg); /* Was 20px */
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
 }
-.inline-form button, .inline-form input[type="submit"] {
-    padding: 6px 12px; /* Smaller padding for inline buttons */
-    font-size: 0.9em;
+.alert-success {
+    color: var(--color-success-text-alert);
+    background-color: var(--color-success-bg-alert);
+    border-color: var(--color-success-dark); /* Or a specific border color for alerts */
+}
+.alert-danger {
+    color: var(--color-danger-text-alert);
+    background-color: var(--color-danger-bg-alert);
+    border-color: var(--color-danger-dark);
+}
+.alert-warning {
+    color: var(--color-warning-text-alert);
+    background-color: var(--color-warning-bg-alert);
+    border-color: var(--color-warning-border-alert);
+}
+.alert-info {
+    color: var(--color-info-text-alert);
+    background-color: var(--color-info-bg-alert);
+    border-color: var(--color-info-border-alert);
 }
 
-/* Auth Forms (Login, Register) */
+/* --- Cards --- */
+.card {
+    background-color: var(--color-bg-light);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg); /* Was 20px, now consistent */
+    margin-bottom: var(--spacing-xl); /* Was 30px */
+    box-shadow: var(--shadow-md);
+}
+
+/* For lists where each item is styled like a card entry */
+.card-list { /* Parent ul/ol */
+    list-style: none;
+    padding: 0;
+}
+.card-list li {
+    background-color: var(--color-bg-lighter);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm); /* Was 10px */
+    border-radius: var(--border-radius-md);
+    border-left: 4px solid var(--color-primary);
+}
+.card-list li:last-child {
+    margin-bottom: 0;
+}
+
+/* ==========================================================================
+   7. PAGE-SPECIFIC SECTIONS
+   ========================================================================== */
+
+/* --- Auth Pages (Login, Register) --- */
 .auth-form-container {
-    max-width: 480px; /* Slightly wider */
-    margin: 40px auto;
-    padding: 25px 30px;
-    background-color: #252525; /* Darker card background */
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    max-width: 480px;
+    margin: var(--spacing-xxl) auto; /* Was 40px */
+    padding: var(--spacing-lg) var(--spacing-xl); /* Was 25px 30px */
+    background-color: var(--color-bg-light); /* Consistent with .card */
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
 }
 .auth-form-container h1 {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: var(--spacing-lg); /* Was 25px */
     font-size: 2rem;
 }
-.auth-form-container .button-primary,
+.auth-form-container .button-primary, /* Adjusted selector */
 .auth-form-container input[type="submit"] {
     width: 100%;
-    padding: 12px;
+    padding: var(--spacing-sm) var(--spacing-md); /* Consistent button padding */
     font-size: 1.1rem;
 }
 .auth-links {
     text-align: center;
-    margin-top: 25px;
+    margin-top: var(--spacing-lg); /* Was 25px */
     font-size: 0.95em;
 }
 .auth-links a {
     font-weight: 500;
 }
 
-/* Search Box */
-.search-box {
+/* --- Search Boxes --- */
+.search-box { /* General search box, e.g., homepage movie search, user search */
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 30px;
-    align-items: stretch; /* Make items same height */
+    flex-wrap: wrap; /* Allow wrapping */
+    gap: var(--spacing-sm); /* Was 10px */
+    margin-bottom: var(--spacing-xl); /* Was 30px */
+    align-items: stretch;
 }
 .search-box input[type="text"] {
     flex-grow: 1;
-    margin-bottom: 0; /* Handled by gap */
-    min-width: 200px;
+    margin-bottom: 0; /* Gap handles spacing */
+    min-width: 200px; /* Minimum width before wrapping */
 }
 .search-box input[type="submit"], .search-box button {
-    margin-bottom: 0;
-    flex-shrink: 0;
+    margin-bottom: 0; /* Gap handles spacing */
+    flex-shrink: 0; /* Prevent button from shrinking too much */
 }
 
-/* --------------------
-   ALERTS / MESSAGES
-   -------------------- */
-.alert {
-    padding: 15px 20px;
-    margin-bottom: 20px;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    font-weight: 500;
-}
-.alert-success {
-    color: #a5d6a7; /* Light green text */
-    background-color: #2a522a; /* Dark green background */
-    border-color: #388e3c;
-}
-.alert-danger {
-    color: #f4c7c3; /* Light red text */
-    background-color: #5c2222; /* Dark red background */
-    border-color: #c62828;
-}
-.alert-warning {
-    color: #111; /* Dark text for yellow background */
-    background-color: #fff3cd; /* Light yellow */
-    border-color: #ffeeba;
-}
-.alert-info {
-    color: #abdefa; /* Light blue text */
-    background-color: #1e3a5f; /* Dark blue background */
-    border-color: #3e7ab7;
-}
-
-/* --------------------
-   CARDS (General purpose)
-   -------------------- */
-.card {
-    background-color: #252525; /* Consistent card background */
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 30px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-}
-.card-list li { /* For lists styled as cards */
-    background-color: #2c2c2c; /* Slightly lighter than card for depth */
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    border-left: 4px solid #00bfa5; /* Accent border */
-}
-
-
-/* --------------------
-   MOVIE GRIDS & ITEMS (Homepage, Watchlist)
-   -------------------- */
-.movies-grid, .watchlist-grid, .trending-movies-container {
+/* --- Movie Grids & Items (Homepage, Watchlist) --- */
+.movies-grid, .watchlist-grid { /* Generic grid for movie cards */
     display: grid;
-    gap: 20px;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Base for mobile */
+    gap: var(--spacing-lg); /* Was 20px */
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Mobile first */
+}
+.trending-movies-container { /* Could be merged if styling is identical */
+    display: grid;
+    gap: var(--spacing-lg);
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
 }
 
-.movie, .movie-in-watchlist, .trending-movie-item {
-    background-color: #2c2c2c; /* Card background */
-    border-radius: 6px;
-    overflow: hidden; /* To contain image border-radius */
+.movie, .movie-in-watchlist, .trending-movie-item { /* Individual movie card */
+    background-color: var(--color-bg-lighter);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow-sm); /* Was 0 4px 8px rgba(0,0,0,0.2) */
     transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
 }
 .movie:hover, .movie-in-watchlist:hover, .trending-movie-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow-md); /* Was 0 8px 16px rgba(0,0,0,0.3) */
 }
 .movie img, .movie-in-watchlist img, .trending-movie-item img {
-    aspect-ratio: 2 / 3;
+    aspect-ratio: 2 / 3; /* Maintain aspect ratio */
     object-fit: cover;
     width: 100%;
 }
-.movie-info, .movie-info-watchlist {
-    padding: 15px;
-    flex-grow: 1;
+.movie-info, .movie-info-watchlist { /* Text content of movie card */
+    padding: var(--spacing-md);
+    flex-grow: 1; /* Allow this part to grow to fill space */
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Stack elements vertically */
 }
 .movie-title, .movie-title-watchlist {
     font-size: 1.05rem;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: var(--spacing-sm); /* Was 8px */
     line-height: 1.3;
-    color: #e0e0e0; /* Title color for movie cards */
+    color: var(--color-text-light);
 }
 .movie-title a, .movie-title-watchlist a {
     color: inherit;
 }
 .movie-title a:hover, .movie-title-watchlist a:hover {
-    color: #00bfa5;
+    color: var(--color-primary);
 }
 .movie-overview {
     font-size: 0.9rem;
-    color: #b0b0b0; /* Lighter grey for overview */
-    margin-bottom: 12px;
-    flex-grow: 1;
+    color: var(--color-text-dark);
+    margin-bottom: var(--spacing-md); /* Was 12px */
+    flex-grow: 1; /* Allow overview to take available space */
 }
-.movie-info .add-watchlist-form,
+.movie-info .add-watchlist-form, /* Forms at the bottom of movie card */
 .movie-info-watchlist .remove-watchlist-form {
-    margin-top: auto; /* Push form to bottom */
+    margin-top: auto; /* Push to bottom */
 }
 .movie-info .add-watchlist-form input[type="submit"],
 .movie-info-watchlist .remove-watchlist-form button {
     width: 100%;
-    padding: 8px;
+    padding: var(--spacing-sm); /* Was 8px */
     font-size: 0.9rem;
 }
-.login-prompt {
-    margin-top: auto;
+.login-prompt { /* For "Login to add" text */
+    margin-top: auto; /* Push to bottom */
     font-size: 0.9rem;
 }
 
-/* Trending specifically: usually just posters */
-.trending-movies-container {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+/* --- Movie Detail Page --- */
+.movie-detail-page .card { /* The main container for movie details */
+    padding: var(--spacing-lg) var(--spacing-xl); /* Was 25px 30px */
+}
+.movie-detail-page section:not(:last-child) { /* Sections within movie details like synopsis, cast */
+    margin-bottom: var(--spacing-xl); /* Was 30px, now consistent */
+}
+.movie-detail-page section h2 { /* Headings for these sections */
+    border-bottom: 1px solid var(--color-border-medium);
+    padding-bottom: var(--spacing-sm); /* Was 10px */
+    margin-bottom: var(--spacing-md); /* Was 15px */
+    font-size: 1.6rem;
 }
 
-
-/* --------------------
-   MOVIE DETAIL PAGE
-   -------------------- */
-.movie-detail-page .card { /* Use .card for main container */
-    padding: 25px 30px;
-}
-.movie-detail-header {
+.movie-main-header { /* Contains poster and main meta info */
     display: flex;
     flex-direction: column; /* Mobile first */
-    gap: 25px;
-    margin-bottom: 30px;
+    gap: var(--spacing-lg); /* Was 25px */
+    margin-bottom: var(--spacing-xl); /* Space before content columns */
 }
-.movie-detail-header .poster-container {
+.movie-main-header .movie-poster { /* Container for poster image */
     flex-shrink: 0;
-    width: 100%; /* Mobile full width */
-    max-width: 300px; /* Limit on larger screens */
+    width: 100%;
+    max-width: 300px; /* Max width for poster */
     margin: 0 auto; /* Center on mobile */
 }
-.movie-detail-poster {
-    border-radius: 6px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+.movie-detail-poster { /* The poster image itself */
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-lg); /* Was 0 5px 15px rgba(0,0,0,0.3) */
 }
-.movie-detail-main-info {
+.movie-main-header .movie-meta-info { /* Text info next to poster */
     flex-grow: 1;
 }
-.movie-detail-main-info h1 {
-    font-size: 2.2rem; /* Slightly smaller for details page */
-    margin-bottom: 5px;
+.movie-meta-info h1 { /* Movie Title */
+    font-size: 2.2rem;
+    margin-bottom: var(--spacing-xs); /* Was 5px */
 }
-.movie-detail-main-info .release-year {
+.movie-meta-info .release-year {
     font-size: 1.5rem;
-    color: #aaa;
+    color: var(--color-text-darker); /* Was #aaa */
     font-weight: 400;
 }
-.movie-detail-main-info .tagline {
+.movie-meta-info .tagline {
     font-style: italic;
-    color: #ccc;
-    margin-bottom: 15px;
+    color: var(--color-text-medium); /* Was #ccc */
+    margin-bottom: var(--spacing-md); /* Was 15px */
     font-size: 1.1rem;
 }
-.movie-detail-main-info p {
-    margin-bottom: 10px;
-    color: #c0c0c0;
+.movie-meta-info .meta-grid { /* For genre, duration etc. */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-xs) var(--spacing-md); /* Was 5px 15px */
+    margin: var(--spacing-md) 0;
+    font-size: 0.9em;
 }
-.movie-detail-main-info p strong {
-    color: #e0e0e0;
+.movie-meta-info .meta-grid p {
+    margin-bottom: 0; /* Grid handles spacing */
+    color: var(--color-text-medium); /* Was #c0c0c0 */
 }
-.movie-actions {
-    margin-top: 20px;
+.movie-meta-info .meta-grid p strong {
+    color: var(--color-text-light);
+}
+.movie-user-actions, .login-prompt-actions { /* Buttons for watchlist, etc. */
+    margin-top: var(--spacing-lg); /* Was 15px/20px */
     display: flex;
-    flex-direction: column; /* Stack buttons on mobile */
-    gap: 10px;
+    flex-direction: column; /* Stack on mobile */
+    gap: var(--spacing-sm); /* Was 10px */
 }
-.movie-actions .button-primary, .movie-actions .button-danger {
-    width: 100%; /* Full width buttons on mobile */
+.movie-user-actions .button-primary, .movie-user-actions .button-danger {
+    width: 100%; /* Full width on mobile */
 }
 
-.movie-detail-page section { /* Sections within movie details */
-    margin-bottom: 30px;
+/* Layout for Main Content and Sidebar on Movie Details */
+.movie-content-columns {
+    display: flex;
+    flex-direction: column; /* Mobile first */
+    gap: var(--spacing-xl); /* Was 25px */
+    /* margin-top: var(--spacing-xl); Already handled by movie-main-header margin-bottom */
 }
-.movie-detail-page section h2 {
-    border-bottom: 1px solid #444;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-    font-size: 1.6rem;
+.main-column {
+    flex: 2; /* Takes more space */
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl); /* Space between sections */
+}
+.sidebar-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+.card-section { /* For sections within the columns, e.g., synopsis, user-interaction */
+    /* Basic card styling is inherited from .card if these are also .card */
+    /* margin-bottom is handled by parent gap */
+}
+.card-section h2 {
+    margin-top: 0; /* Already handled by h*:first-child */
 }
 
 .trailer-container {
@@ -523,8 +662,8 @@ select {
     padding-bottom: 56.25%; /* 16:9 aspect ratio */
     height: 0;
     overflow: hidden;
-    border-radius: 6px;
-    background-color: #000;
+    border-radius: var(--border-radius-md);
+    background-color: #000; /* Black background for iframe */
 }
 .trailer-container iframe {
     position: absolute;
@@ -538,250 +677,224 @@ select {
 .cast-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 20px;
+    gap: var(--spacing-lg); /* Was 20px */
 }
-.actor {
-    background-color: #2c2c2c;
-    border-radius: 6px;
-    padding: 12px;
+.actor { /* Individual actor card */
+    background-color: var(--color-bg-lighter);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md); /* Was 12px */
     text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-sm);
 }
 .actor img {
-    max-width: 100px;
+    width: 100px; /* Fixed width for actor photo */
     height: 150px;
     object-fit: cover;
-    border-radius: 4px;
-    margin: 0 auto 10px auto;
+    border-radius: var(--border-radius-sm);
+    margin: 0 auto var(--spacing-sm) auto; /* Was 10px */
 }
-.actor p {
+.actor figcaption { /* Replaced p for semantic HTML */
     font-size: 0.9rem;
     line-height: 1.4;
-    color: #b0b0b0;
+    color: var(--color-text-dark);
 }
-.actor p strong {
-    color: #e0e0e0;
-    display: block; /* Name on its own line */
+.actor figcaption strong {
+    color: var(--color-text-light);
+    display: block;
 }
 
-/* User Rating/Comment Form */
-.user-interaction-section label {
-    font-weight: 500;
-}
 .user-interaction-section select#rating {
-    max-width: 220px; /* Don't let select be too wide */
+    max-width: 220px; /* Limit width of rating select */
 }
 
-/* Public Comments List */
-.comments-list .comment-item {
-    background-color: #2c2c2c;
-    padding: 15px;
-    border-radius: 6px;
-    margin-bottom: 15px;
-    border-left: 4px solid #008c7a; /* Darker teal accent */
+.comments-list .comment-item { /* Individual comment */
+    background-color: var(--color-bg-lighter);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-md); /* Was 15px */
+    border-left: 4px solid var(--color-primary-dark); /* Consistent with .card-list li but darker */
 }
 .comments-list .comment-meta {
     font-size: 0.9rem;
-    margin-bottom: 8px;
+    margin-bottom: var(--spacing-sm); /* Was 8px */
 }
 .comments-list .comment-meta strong a {
-    font-weight: 600;
+    font-weight: 600; /* Keep if different from normal 'a strong' */
 }
 .comments-list .comment-date {
-    color: #888;
-    margin-left: 8px;
+    color: var(--color-text-muted);
+    margin-left: var(--spacing-sm); /* Was 8px */
 }
 .comments-list .comment-text {
-    color: #d0d0d0;
-    word-wrap: break-word; /* Or overflow-wrap */
+    color: var(--color-text-medium); /* Was #d0d0d0 */
+    word-wrap: break-word;
 }
 
+/* --- User Profiles (Own and View) & User Lists --- */
+/* .profile-page .card, .view-profile-page .card, .users-list-page .card use general .card styles */
 
-/* --------------------
-   USER PROFILES (Own and View) & USER LISTS
-   -------------------- */
-.profile-page .card, .view-profile-page .card, .users-list-page .card {
-    /* Using general .card styles */
+.profile-header { /* Specific to profile pages */
+    /* inherits .card styling */
 }
 .profile-header .meta-info {
     font-size: 0.95em;
-    color: #aaa;
-    margin-bottom: 15px;
+    color: var(--color-text-darker); /* Was #aaa */
+    margin-bottom: var(--spacing-md); /* Was 15px */
 }
 .profile-header .friend-actions {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #444;
+    margin-top: var(--spacing-lg); /* Was 20px */
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--color-border-medium);
     display: flex;
-    flex-wrap: wrap; /* Allow buttons to wrap */
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm); /* Was 10px */
 }
-.profile-header .friend-actions p { margin: 0; align-self: center;}
+.profile-header .friend-actions p {
+    margin: 0;
+    align-self: center;
+}
+.inline-form { /* For forms inside list items or flowing with text */
+    display: inline-block;
+    margin: 0 var(--spacing-xs); /* Was 5px */
+}
+.inline-form button, .inline-form input[type="submit"] {
+    /* Use .button-small styles or define specific smaller padding */
+    padding: var(--spacing-xs) var(--spacing-sm); /* Was 6px 12px */
+    font-size: 0.9em;
+}
 
-
-/* Friend Request & Friend Lists on profile.php */
+/* Friend Request, Friend List, User List (Shared structure) */
 .friend-request-list, .friend-list, .users-list-page .user-list {
-    list-style: none;
-    padding: 0;
+    /* Use .card-list styles */
 }
 .friend-request-list li, .friend-list li, .users-list-page .user-list li {
-    /* Using .card-list li styles */
+    /* Use .card-list li styles */
     display: flex;
-    flex-wrap: wrap; /* Allow wrapping on small screens */
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 10px;
+    gap: var(--spacing-sm); /* Was 10px */
 }
-.friend-request-list li .actions, .friend-list li .inline-form,
-.users-list-page .user-list li .button {
-    margin-left: auto; /* Push actions to the right if space allows */
-    flex-shrink: 0; /* Prevent actions from shrinking too much */
+/* Actions within these list items */
+.friend-request-list li .actions, /* Container for accept/decline buttons */
+.friend-list li .inline-form, /* Unfriend button form */
+.users-list-page .user-list li .button { /* View profile button */
+    margin-left: auto; /* Push to the right */
+    flex-shrink: 0;
     display: flex; /* For multiple buttons in .actions */
-    gap: 10px;
+    gap: var(--spacing-sm); /* Was 10px */
 }
 
-
-/* Profile Management Form (profile.php) */
-.profile-management label[for="profile_visibility"],
-.profile-management label[for="bio"] {
-    margin-top: 10px;
-}
 .profile-management select#profile_visibility {
     max-width: 300px;
 }
-
-/* --------------------
-   STATIC PAGES (FAQ, Terms, etc.)
-   -------------------- */
-.static-page h1 {
-    margin-bottom: 30px;
-    text-align: center;
+.profile-annotations-private.card p {
+    font-style: italic;
+    color: var(--color-text-darker); /* Was #aaa */
 }
 
-.faq-list {
+/* --- Static Pages (FAQ, Terms) --- */
+.static-page h1 {
+    margin-bottom: var(--spacing-xl); /* Was 30px */
+    text-align: center;
+}
+.faq-list { /* Container for FAQ items */
     list-style: none;
     padding: 0;
 }
-.faq-item {
-    background-color: #252525; /* Card background */
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.faq-item { /* Individual Q&A block */
+    background-color: var(--color-bg-light); /* Consistent with .card */
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg); /* Was 20px */
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
 }
 .faq-item dt { /* Question */
     font-weight: 600;
     font-size: 1.2rem;
-    color: #00bfa5; /* Teal for questions */
-    margin-bottom: 10px;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-sm); /* Was 10px */
 }
 .faq-item dd { /* Answer */
-    margin-left: 0; /* Reset browser default */
-    color: #d0d0d0;
+    margin-left: 0;
+    color: var(--color-text-medium); /* Was #d0d0d0 */
     line-height: 1.7;
 }
 
-.terms-content {
-    background-color: #252525; /* Card background */
-    padding: 25px 30px;
-    border-radius: 8px;
+.terms-content { /* Container for Terms text */
+    background-color: var(--color-bg-light);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
     line-height: 1.7;
 }
 .terms-content h2 {
     font-size: 1.5rem;
     margin-top: 1.8em;
     margin-bottom: 0.8em;
-    border-bottom: 1px solid #444;
-    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border-medium);
+    padding-bottom: var(--spacing-sm); /* Was 8px */
 }
 .terms-content p {
     margin-bottom: 1.2em;
 }
-.terms-content strong, .terms-content b {
-    color: #e0e0e0;
+.terms-content strong, .terms-content b { /* More specific than general strong/b if needed */
+    color: var(--color-text-light);
 }
 .terms-content em {
-    color: #ccc;
+    color: var(--color-text-medium); /* Was #ccc */
 }
 
-/* --------------------
-   SITE FOOTER
-   -------------------- */
-.site-footer-main {
-    background-color: #1f1f1f;
-    color: #888;
-    padding: 30px 0;
-    text-align: center;
-    font-size: 0.9rem;
-    margin-top: 40px; /* Space above footer */
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
-}
-.site-footer-main .footer-content p {
-    margin-bottom: 5px;
-}
-.site-footer-main a {
-    color: #aaa; /* Lighter grey for footer links */
-}
-.site-footer-main a:hover {
-    color: #00bfa5; /* Teal on hover */
-}
-
-
-
-/* --------------------
-   FORUM STYLES
-   -------------------- */
-.forum-page .create-thread-link,
-.create-thread-page .card, /* Card for create thread form */
-.view-thread-page .card {   /* Card for posts and reply form */
-    margin-bottom: 25px;
-}
-.forum-page .create-thread-link {
+/* --- Forum Styles --- */
+.forum-page .create-thread-link { /* Link to create new thread */
     text-align: right;
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-lg); /* Was 20px */
+}
+.create-thread-page .card, /* Form for new thread */
+.view-thread-page .card {   /* Cards for posts and reply form */
+    margin-bottom: var(--spacing-xl); /* Was 25px */
 }
 
-.forum-threads-table {
+.forum-threads-table { /* Table listing threads */
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9rem;
 }
 .forum-threads-table th,
 .forum-threads-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid #3a3a3a;
+    padding: var(--spacing-sm) var(--spacing-md); /* Was 10px 12px */
+    border-bottom: 1px solid var(--color-border-dark); /* Was #3a3a3a */
     text-align: left;
     vertical-align: middle;
 }
 .forum-threads-table th {
-    background-color: #2c2c2c;
-    color: #00bfa5;
+    background-color: var(--color-bg-lighter);
+    color: var(--color-primary);
     font-weight: 600;
 }
 .forum-threads-table tbody tr:hover {
-    background-color: #282828;
+    background-color: color-mix(in srgb, var(--color-bg-dark) 50%, var(--color-bg-lighter)); /* Slightly darker than row bg */
 }
-.forum-threads-table td:nth-child(1) { /* Thread title column */
+.forum-threads-table td:first-child { /* Thread title column */
     font-weight: 500;
 }
-.forum-threads-table td:nth-child(4), /* Replies */
-.forum-threads-table td:nth-child(5) { /* Last Activity */
+.forum-threads-table td.replies-column, /* Example class for replies count */
+.forum-threads-table td.activity-column { /* Example class for last activity */
     text-align: center;
     font-size: 0.85rem;
-    color: #aaa;
+    color: var(--color-text-darker); /* Was #aaa */
 }
 
-/* Movie Search Dropdown for Create Thread */
+/* Movie Search Dropdown (for create thread) */
 .movie-search-results-dropdown {
-    position: relative; /* Or absolute if you position it precisely */
-    background-color: #2c2c2c;
-    border: 1px solid #555;
+    position: relative; /* Can be absolute if positioned relative to input */
+    background-color: var(--color-bg-lighter);
+    border: 1px solid var(--color-border-light);
     border-top: none;
-    border-radius: 0 0 4px 4px;
+    border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
     max-height: 200px;
     overflow-y: auto;
-    z-index: 1000; /* Ensure it's above other elements */
-    display: none; /* Hidden by default */
+    z-index: 1000;
+    display: none; /* JS toggles this */
 }
 .movie-search-results-dropdown ul {
     list-style: none;
@@ -789,30 +902,29 @@ select {
     margin: 0;
 }
 .movie-search-results-dropdown li {
-    padding: 8px 12px;
+    padding: var(--spacing-sm) var(--spacing-md); /* Was 8px 12px */
     cursor: pointer;
-    border-bottom: 1px solid #3a3a3a;
+    border-bottom: 1px solid var(--color-border-dark); /* Was #3a3a3a */
 }
 .movie-search-results-dropdown li:last-child {
     border-bottom: none;
 }
 .movie-search-results-dropdown li:hover {
-    background-color: #00bfa5;
-    color: #111;
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
 }
-.selected-movie-text {
-    margin-top: 8px;
+.selected-movie-text { /* Text showing selected movie */
+    margin-top: var(--spacing-sm); /* Was 8px */
     font-size: 0.9em;
-    color: #ccc;
+    color: var(--color-text-medium); /* Was #ccc */
 }
 .selected-movie-text strong {
-    color: #00bfa5;
+    color: var(--color-primary);
 }
 
-
-/* View Thread Page */
+/* View Thread Page Specifics */
 .forum-breadcrumb {
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-lg); /* Was 20px */
     font-size: 0.9em;
 }
 .forum-breadcrumb ol {
@@ -822,228 +934,294 @@ select {
 }
 .forum-breadcrumb li {
     display: inline;
-    color: #aaa;
+    color: var(--color-text-darker); /* Was #aaa */
 }
 .forum-breadcrumb li:not(:last-child)::after {
     content: ' / ';
-    margin: 0 5px;
-    color: #777;
+    margin: 0 var(--spacing-xs); /* Was 5px */
+    color: var(--color-text-muted); /* Was #777 */
 }
 .forum-breadcrumb a {
-    color: #00bfa5;
+    color: var(--color-primary);
 }
-.view-thread-page h1 {
-    margin-bottom: 5px;
+.view-thread-page h1 { /* Thread title */
+    margin-bottom: var(--spacing-xs); /* Was 5px */
 }
-.thread-meta {
+.thread-meta { /* Info about movie associated with thread */
     font-size: 0.9em;
-    color: #aaa;
-    margin-bottom: 25px;
+    color: var(--color-text-darker); /* Was #aaa */
+    margin-bottom: var(--spacing-xl); /* Was 25px */
 }
 
-.forum-post { /* Applies to original post and replies */
-    padding: 15px 20px;
-    margin-bottom: 20px;
+.forum-post { /* Original post and replies container */
+    /* Inherits .card if applied, or define base here */
+    padding: var(--spacing-md) var(--spacing-lg); /* Was 15px 20px */
+    margin-bottom: var(--spacing-lg); /* Was 20px */
 }
 .forum-post .post-header {
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #333;
+    margin-bottom: var(--spacing-sm); /* Was 10px */
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--color-border-dark); /* Was #333 */
     font-size: 0.9em;
 }
-.forum-post .post-header strong {
-    font-size: 1.1em; /* Make author username slightly bigger */
+.forum-post .post-header strong { /* Author username */
+    font-size: 1.1em;
 }
 .forum-post .post-date {
-    color: #888;
-    margin-left: 10px;
+    color: var(--color-text-muted); /* Was #888 */
+    margin-left: var(--spacing-sm); /* Was 10px */
 }
 .forum-post .post-content {
     line-height: 1.7;
-    word-wrap: break-word; /* Ensure long words/links break */
+    word-wrap: break-word;
 }
-.forum-post footer {
-    margin-top: 15px;
+.forum-post footer { /* For reply links, etc. */
+    margin-top: var(--spacing-md); /* Was 15px */
     text-align: right;
 }
 .reply-to-post-link {
     font-size: 0.85em;
 }
-
-.reply-form-section h2 {
-    margin-bottom: 15px;
+.reply-form-section h2 { /* "Leave a Reply" heading */
+    margin-bottom: var(--spacing-md); /* Was 15px */
 }
 
-/* Responsive Forum Table */
-@media (max-width: 768px) {
-    .forum-threads-table th:nth-child(3), /* Author */
-    .forum-threads-table td:nth-child(3),
-    .forum-threads-table th:nth-child(5), /* Last Activity */
-    .forum-threads-table td:nth-child(5) {
-        display: none; /* Hide less critical columns on small screens */
-    }
-     .forum-threads-table th:nth-child(2), /* Film */
-    .forum-threads-table td:nth-child(2) {
-        /* Optionally hide film too if very cramped, or make it stack */
-    }
-}
-
-
-
-/* Scene Annotation Specifics in Create Thread Form */
-.scene-details-fieldset {
-    border: 1px solid #444;
-    padding: 15px 20px;
-    margin-bottom: 20px;
-    border-radius: 6px;
+/* --- Scene Annotation Specifics --- */
+.scene-details-fieldset { /* Fieldset for scene details in create thread form */
+    border: 1px solid var(--color-border-medium);
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin-bottom: var(--spacing-lg); /* Was 20px */
+    border-radius: var(--border-radius-md);
 }
 .scene-details-fieldset legend {
-    padding: 0 10px;
+    padding: 0 var(--spacing-sm); /* Was 10px */
     font-weight: 500;
-    color: #00bfa5;
+    color: var(--color-primary);
+}
+.scene-annotation-tag { /* Small tag in forum list */
+    font-size: 0.8em;
+    color: var(--color-primary);
+    margin-left: var(--spacing-xs); /* Was 5px */
+    font-weight: normal;
+    display: inline-block;
+    background-color: color-mix(in srgb, var(--color-primary) 10%, transparent); /* Light teal background */
+    padding: 2px var(--spacing-xs); /* Was 5px */
+    border-radius: var(--border-radius-sm); /* Was 3px */
 }
 
-/* Scene Info Display in View Thread */
-.scene-annotation-info.card {
-    background-color: #2a2a2a; /* Slightly different bg for emphasis */
-    border-left: 4px solid #008c7a;
-    padding: 15px;
-    margin-bottom: 20px;
+/* Scene Info Display (view thread, movie details) */
+.scene-annotation-info.card { /* Used in view_thread_page */
+    background-color: color-mix(in srgb, var(--color-bg-light) 90%, black); /* Slightly different from default card */
+    border-left: 4px solid var(--color-primary-dark);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg); /* Was 20px */
 }
 .scene-annotation-info h3 {
     margin-top: 0;
-    margin-bottom: 10px;
+    margin-bottom: var(--spacing-sm); /* Was 10px */
     font-size: 1.2rem;
-    color: #e0e0e0;
+    color: var(--color-text-light);
 }
 .scene-annotation-info .scene-desc,
 .scene-annotation-info .scene-time {
-    margin-bottom: 5px;
-    color: #ccc;
+    margin-bottom: var(--spacing-xs); /* Was 5px */
+    color: var(--color-text-medium); /* Was #ccc */
 }
 .scene-annotation-info .scene-time strong,
 .scene-annotation-info .scene-desc strong {
-    color: #d5d5d5;
+    color: var(--color-text-light); /* Was #d5d5d5 */
 }
 
-/* Annotations List on Movie Details & Profile */
-.annotate-scene-action.card {
+/* Annotations List (movie details, profile) */
+.annotate-scene-action.card { /* Card prompting to annotate */
     text-align: center;
 }
 .annotate-scene-action h2 {
-    margin-bottom: 10px;
+    margin-bottom: var(--spacing-sm); /* Was 10px */
 }
 .annotate-scene-action p {
-    margin-bottom: 15px;
+    margin-bottom: var(--spacing-md); /* Was 15px */
 }
 
-.annotations-list {
+.annotations-list { /* ul container */
     list-style: none;
     padding: 0;
 }
-.annotations-list .annotation-item {
-    background-color: #2c2c2c;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 6px;
-    border-left: 3px solid #00bfa5;
+.annotations-list .annotation-item { /* li item */
+    background-color: var(--color-bg-lighter);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md); /* Was 15px */
+    border-radius: var(--border-radius-md);
+    border-left: 3px solid var(--color-primary);
 }
 .annotations-list .annotation-item:last-child {
     margin-bottom: 0;
 }
 .annotations-list .annotation-title strong {
     font-size: 1.1rem;
-    color: #e0e0e0;
+    color: var(--color-text-light);
 }
 .annotations-list .annotation-title:hover strong {
-    color: #00bfa5;
+    color: var(--color-primary);
 }
 .annotations-list .scene-desc-preview,
 .annotations-list .scene-time-preview,
-.annotations-list .movie-link { /* For profile page */
+.annotations-list .movie-link { /* Sub-info for annotation */
     font-size: 0.9em;
-    color: #b0b0b0;
-    margin: 5px 0;
+    color: var(--color-text-dark);
+    margin: var(--spacing-xs) 0; /* Was 5px */
 }
-.annotations-list .annotation-meta {
+.annotations-list .annotation-meta { /* Author, date */
     font-size: 0.85em;
-    color: #888;
-    margin-top: 8px;
+    color: var(--color-text-muted); /* Was #888 */
+    margin-top: var(--spacing-sm); /* Was 8px */
 }
 
-/* assets/style.css */
-/* ... (inside FORUM STYLES or a new section) ... */
-
-.scene-annotation-tag {
-    font-size: 0.8em;
-    color: #00bfa5; /* Teal to match theme */
-    margin-left: 5px;
-    font-weight: normal;
-    display: inline-block; /* Or block if you want it on a new line */
-    background-color: rgba(0, 191, 165, 0.1); /* Light teal background */
-    padding: 2px 5px;
-    border-radius: 3px;
-
-}
-
-.profile-annotations-private.card p { /* Or just .profile-annotations-private p */
-    font-style: italic;
-    color: #aaa;
-}
-
-
-/* --------------------
-   ADMIN PANEL (General Styles)
-   -------------------- */
+/* --- Admin Panel --- */
 .admin-panel-page .card {
-    padding: 20px 25px;
+    padding: var(--spacing-lg) var(--spacing-xl); /* Was 20px 25px */
 }
-
-.admin-users-table {
+.admin-users-table { /* Shared by user management and FAQ list */
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: var(--spacing-lg); /* Was 20px */
     font-size: 0.9rem;
 }
-
 .admin-users-table th,
 .admin-users-table td {
     text-align: left;
-    padding: 10px 12px;
-    border-bottom: 1px solid #3a3a3a;
+    padding: var(--spacing-sm) var(--spacing-md); /* Was 10px 12px */
+    border-bottom: 1px solid var(--color-border-dark); /* Was #3a3a3a */
 }
-
 .admin-users-table th {
-    background-color: #2c2c2c;
-    color: #00bfa5;
+    background-color: var(--color-bg-lighter);
+    color: var(--color-primary);
     font-weight: 600;
 }
-
 .admin-users-table tbody tr:nth-child(even) {
-    background-color: #272727;
+    background-color: color-mix(in srgb, var(--color-bg-dark) 70%, var(--color-bg-lighter)); /* Slightly different for even rows */
 }
 .admin-users-table tbody tr:hover {
-    background-color: #303030;
+    background-color: color-mix(in srgb, var(--color-bg-dark) 50%, var(--color-bg-lighter));
 }
-
 .admin-users-table .status-banned {
-    color: #e57373;
+    color: color-mix(in srgb, var(--color-danger) 80%, var(--color-text-light)); /* Lighter red */
     font-weight: bold;
 }
 .admin-users-table .status-active {
-    color: #81c784;
+    color: color-mix(in srgb, var(--color-success) 80%, var(--color-text-light)); /* Lighter green */
 }
-
-.admin-users-table .inline-form {
+.admin-users-table .inline-form { /* Ensure forms in table cells don't add extra margin */
     margin: 0;
 }
 
+/* ==========================================================================
+   8. MONETIZATION STYLES (Ads, Streaming Links)
+   ========================================================================== */
+/* --- Placeholder Advertisements --- */
+.advertisement-slot {
+    margin: var(--spacing-xl) 0; /* Was 20px or 25px */
+    padding: var(--spacing-lg); /* Was 15px or 20px */
+    background-color: var(--color-bg-medium); /* Was #222 or #2a2a2a */
+    border: 1px dashed var(--color-border-medium);
+    text-align: center;
+    min-height: 100px;
+    border-radius: var(--border-radius-md); /* Was 6px or none */
+}
+/* .advertisement-slot h4 (Removed as it wasn't used consistently) */
+.placeholder-ad-content {
+    /* border: 2px dashed var(--color-border-light); Optional inner border */
+    padding: var(--spacing-md);
+    /* background-color: var(--color-bg-lighter); Optional inner bg */
+    color: var(--color-text-darker); /* Was #aaa */
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.placeholder-ad-content p {
+    margin-bottom: var(--spacing-xs); /* Was 5px or 8px */
+    line-height: 1.4;
+}
+.placeholder-ad-content strong {
+    color: var(--color-text-medium); /* Was #ccc */
+    font-size: 1.1em;
+}
+.ad-sidebar { /* If specific sidebar ad styling is needed */
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+/* .adsbygoogle (Remains as is, for potential real AdSense) */
+.adsbygoogle {
+    display: block;
+}
 
-/* --------------------
-   MEDIA QUERIES (Responsive Adjustments)
-   -------------------- */
+/* --- Streaming Options Section (Movie Details) --- */
+.movie-streaming-options { /* Container for streaming links */
+    margin-top: var(--spacing-lg); /* Was 15px or 20px */
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--color-border-dark); /* Was #333 or #3a3a3a */
+}
+.movie-streaming-options.card { /* If it has .card class */
+    background-color: color-mix(in srgb, var(--color-bg-light) 90%, black); /* Slightly distinct */
+    border-left: 4px solid var(--color-streaming-link-hover); /* Example accent */
+}
+.movie-streaming-options h3 {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md); /* Was 15px */
+    font-size: 1.2rem; /* Consistent with scene-annotation-info h3 */
+    color: var(--color-text-light);
+}
+.streaming-providers-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm); /* Was 10px or 15px */
+    align-items: center;
+    margin-bottom: var(--spacing-sm); /* Was 5px or 10px */
+}
+.streaming-provider-link {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-sm); /* Was 6px 10px or 8px 12px */
+    background-color: var(--color-bg-lighter); /* Was #333 or #383838 */
+    color: var(--color-text-medium); /* Was #e0e0e0 or #d0d0d0 */
+    border-radius: var(--border-radius-sm); /* Was 4px or 5px */
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    border: 1px solid var(--color-border-light); /* Was #484848 or none */
+}
+.streaming-provider-link:hover {
+    background-color: var(--color-primary); /* Was #007bff or #00bfa5 */
+    color: var(--color-primary-contrast); /* Was #fff or #111 */
+    border-color: var(--color-primary);
+}
+.streaming-provider-link img {
+    width: 20px; /* Was 20px or 24px */
+    height: 20px;
+    object-fit: contain;
+    margin-right: var(--spacing-sm); /* Was 8px */
+    vertical-align: middle; /* Good practice */
+}
+.streaming-provider-link span {
+    font-size: 0.85rem; /* Was 0.85rem or 0.9rem */
+    font-weight: 500;
+    white-space: nowrap;
+}
+.affiliate-disclosure {
+    display: block;
+    font-size: 0.8em;
+    color: var(--color-text-muted); /* Was #888 or #999 */
+    margin-top: var(--spacing-sm); /* Was 10px or 15px */
+    text-align: left; /* Or center, consistent with previous */
+}
 
-/* Tablets and larger mobiles (e.g., landscape) */
+
+/* ==========================================================================
+   9. MEDIA QUERIES (Responsive Adjustments)
+   ========================================================================== */
+/* Tablets and larger mobiles */
 @media (min-width: 576px) {
     .movies-grid, .watchlist-grid {
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -1054,38 +1232,73 @@ select {
     .cast-list {
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
     }
-    .movie-actions {
-        flex-direction: row; /* Buttons side-by-side */
+    .movie-user-actions { /* Buttons side-by-side */
+        flex-direction: row;
     }
-    .movie-actions .button-primary, .movie-actions .button-danger {
+    .movie-user-actions .button-primary, .movie-user-actions .button-danger {
         width: auto; /* Auto width for buttons */
     }
-    .comments-list .comment-date { /* Display date inline on larger screens */
-        display: inline;
+    .comments-list .comment-date {
+        display: inline; /* Show date inline */
     }
 }
 
 /* Tablets */
 @media (min-width: 768px) {
-    html { font-size: 17px; } 
-    .container { padding: 0 20px; }
+    html { font-size: 17px; }
+    .container { padding: 0 var(--spacing-lg); } /* Was 20px */
     h1 { font-size: 2.8rem; }
     h2 { font-size: 2.2rem; }
 
-    .main-navigation .nav-link { margin: 0 15px; }
-    .search-box { flex-wrap: nowrap; }
+    .main-navigation .nav-link { margin: 0 var(--spacing-md); } /* Was 15px */
+    .search-box { flex-wrap: nowrap; } /* Prevent search input/button wrapping */
 
-    .movie-detail-header {
-        flex-direction: row;
+    .movie-main-header {
+        flex-direction: row; /* Poster and meta info side-by-side */
         align-items: flex-start;
     }
-    .movie-detail-header .poster-container {
-        width: 250px; 
-        margin: 0; 
+    .movie-main-header .movie-poster {
+        width: 250px;
+        margin: 0; /* Reset mobile margin */
+        margin-right: var(--spacing-xl); /* Space between poster and text */
     }
-    
     .friend-request-list li, .friend-list li, .users-list-page .user-list li {
-        flex-wrap: nowrap; 
+        flex-wrap: nowrap; /* Prevent wrapping of content and actions */
+    }
+
+    /* Responsive Forum Table */
+    .forum-threads-table th.author-column, /* Add classes to th/td for targeting */
+    .forum-threads-table td.author-column,
+    .forum-threads-table th.activity-column,
+    .forum-threads-table td.activity-column {
+        /* display: none; /* Hide less critical columns */
+        /* Consider making them visible but with less priority or smaller font if space is an issue */
+    }
+     .forum-threads-table th.film-column,
+    .forum-threads-table td.film-column {
+        /* display: none; */
+    }
+
+    /* Admin Table Responsiveness */
+    .user-management-section { /* Parent of admin table */
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .admin-users-table {
+        min-width: 800px; /* Ensure table has enough width for all columns */
+    }
+    .admin-users-table th,
+    .admin-users-table td {
+        white-space: nowrap; /* Prevent text wrapping in cells */
+    }
+
+    /* Main Navigation on smaller tablets */
+    .main-navigation .nav-link {
+        margin: 0 var(--spacing-xs); /* Was 5px */
+        padding: var(--spacing-sm); /* Was 8px 8px */
+        font-size: 0.9rem;
     }
 }
 
@@ -1100,56 +1313,24 @@ select {
     .cast-list {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     }
-    .movie-detail-header .poster-container {
+    .movie-main-header .movie-poster {
         width: 280px;
+    }
+    .movie-content-columns { /* Movie details content and sidebar */
+        flex-direction: row;
     }
 }
 
 /* Large Desktops */
 @media (min-width: 1200px) {
-    html { font-size: 18px; } 
+    html { font-size: 18px; }
     .movies-grid, .watchlist-grid {
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     }
      .trending-movies-container {
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     }
-    .movie-detail-header .poster-container {
+    .movie-main-header .movie-poster {
         width: 300px;
-    }
-}
-
-/* Admin Table Specific Responsiveness (and other small screen adjustments) */
-@media (max-width: 768px) {
-    /* Admin Table Responsiveness */
-    .user-management-section { /* This is the .card containing the table */
-        display: block; 
-        width: 100%;    
-        overflow-x: auto; 
-        -webkit-overflow-scrolling: touch; 
-    }
-
-    .admin-users-table {
-        min-width: 800px; /* Increased min-width for the table */
-    }
-
-    .admin-users-table th,
-    .admin-users-table td {
-        white-space: nowrap; /* CRITICAL: Prevents text wrapping in headers and cells */
-    }
-
-    /* Adjust navigation for smaller screens if needed */
-    .main-navigation .nav-link {
-        margin: 0 5px; /* Reduce margin for nav links */
-        padding: 8px 8px; /* Slightly reduce padding */
-        font-size: 0.9rem; /* Optionally reduce font size */
-    }
-    /* You might want to consider a hamburger menu for very small screens
-       or make nav-links stack vertically */
-    .main-navigation {
-        /* Example: Allow wrapping if links don't fit */
-        /* display: flex;
-        flex-wrap: wrap;
-        justify-content: center; */
     }
 }
