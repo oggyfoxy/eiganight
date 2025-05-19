@@ -1853,3 +1853,62 @@ select {
         font-size: 0.85rem;
     }
 }
+/* ... autres styles ... */
+
+/* Colonnes pour le contenu principal et la sidebar */
+.movie-content-columns {
+    display: flex;
+    flex-direction: column; /* Mobile first: stack columns */
+    gap: 25px;
+    margin-top: 25px;
+}
+
+.main-column {
+    flex: 2; /* La colonne principale prend plus de place */
+    /* min-width: 0; /* Aide à prévenir le débordement de contenu flex */
+}
+
+.sidebar-column {
+    flex: 1; /* La sidebar prend moins de place */
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Espace entre les éléments de la sidebar */
+    /* min-width: 0; */
+}
+
+/* Publicité dans la sidebar */
+.advertisement-slot.sticky-sidebar-ad {
+    /* Styles pour la pub de la sidebar */
+    /* Optionnel: pour la rendre "collante" (sticky) */
+    /* position: sticky; */
+    /* top: 80px; /* Ajustez en fonction de la hauteur de votre header s'il est sticky */
+    /* max-height: calc(100vh - 100px); /* Limiter la hauteur pour le scroll */
+    /* overflow-y: auto; */ /* Si le contenu de la pub est plus grand */
+}
+
+/* Publicité en bas de page */
+.advertisement-slot.bottom-ad-slot {
+    margin-top: 30px; /* Espace au-dessus de la pub du bas */
+    padding: 15px;
+    text-align: center; /* Centrer le contenu si c'est une image/GIF */
+    /* background-color: #252525; /* Ou une autre couleur de fond si besoin */
+}
+
+
+/* Styles généraux pour les images/GIFs publicitaires */
+.placeholder-ad-image-gif {
+    max-width: 100%; /* S'assurer que l'image est responsive */
+    height: auto;
+    display: block; /* Évite les espaces indésirables en dessous */
+    margin-left: auto; /* Centrer si le conteneur est plus large */
+    margin-right: auto;
+}
+
+
+@media (min-width: 992px) { /* Appliquer la disposition en colonnes pour les grands écrans */
+    .movie-content-columns {
+        flex-direction: row;
+    }
+}
+
+/* ... autres styles ... */

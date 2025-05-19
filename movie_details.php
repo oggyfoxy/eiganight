@@ -5,42 +5,36 @@
  * Gère la récupération des données depuis TMDB et la base de données locale.
  * Inclut des fonctionnalités de monétisation simulées pour un projet scolaire.
  */
-require_once 'config.php'; // Utiliser require_once pour config.php est crucial
+require_once 'config.php'; // Contient les constantes, la connexion DB, et inclut functions.php
 
 // -----------------------------------------------------------------------------
 // 1. INITIALISATION & VALIDATION DES PARAMÈTRES
 // -----------------------------------------------------------------------------
 $movieId = null;
 $loggedInUserId = $_SESSION['user_id'] ?? null;
-$pageError = null; // Initialiser la variable d'erreur
-$pageTitle = defined('SITE_NAME') ? SITE_NAME : "EigaNights"; // Titre par défaut
+$pageError = null;
+$pageTitle = defined('SITE_NAME') ? SITE_NAME : "EigaNights";
 
-// Variables pour les données du film de l'API TMDB
 $movieDetailsAPI = null;
 $movieCreditsAPI = null;
 $movieVideosAPI = null;
 $movieWatchProvidersAPI = null;
 
-// Variables pour les données locales (base de données du site)
 $isInWatchlist = false;
 $userRating = null;
 $userCommentText = '';
 $publicComments = [];
 $sceneAnnotationThreads = [];
 
-// Vérification de la clé API TMDB
 if (!defined('TMDB_API_KEY') || empty(TMDB_API_KEY) || TMDB_API_KEY === 'YOUR_ACTUAL_TMDB_API_KEY') {
     error_log("TMDB_API_KEY non définie ou placeholder dans config.php.");
     $pageError = "Erreur de configuration critique : La clé API pour le service de films est manquante ou incorrecte. Veuillez contacter l'administrateur du site.";
     $pageTitle = "Erreur de Configuration - " . (defined('SITE_NAME') ? SITE_NAME : "EigaNights");
-    // On ne quitte pas immédiatement pour afficher l'erreur dans la page structurée.
 }
 
-// Validation de l'ID du film (seulement si pas d'erreur de clé API)
 if (!$pageError) {
     if (!isset($_GET['id']) || !is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
         $pageError = "ID de film invalide ou manquant.";
-        // Pour ce type d'erreur, une redirection est souvent préférable si les en-têtes ne sont pas envoyés.
         if (!headers_sent()) {
             $_SESSION['error'] = $pageError;
             header("Location: " . BASE_URL . "index.php");
@@ -53,53 +47,36 @@ if (!$pageError) {
 }
 
 // -----------------------------------------------------------------------------
-// 2. RÉCUPÉRATION DES DONNÉES TMDB (si pas d'erreur initiale et movieId valide)
+// 2. RÉCUPÉRATION DES DONNÉES TMDB
 // -----------------------------------------------------------------------------
 if (!$pageError && $movieId) {
     $tmdbApiKey = urlencode(TMDB_API_KEY);
     $detailsUrl = "https://api.themoviedb.org/3/movie/{$movieId}?api_key={$tmdbApiKey}&language=fr-FR&append_to_response=credits,videos,watch/providers";
 
-    // Fonction pour encapsuler l'appel API TMDB
-    function fetch_tmdb_data_from_url($url) {
-        $context = stream_context_create(['http' => ['ignore_errors' => true]]); // Pour obtenir le corps de la réponse même en cas d'erreur HTTP
-        $responseJson = @file_get_contents($url, false, $context);
-
-        if ($responseJson === false) {
-            return ['error' => "Impossible de contacter le service de films (TMDB). Vérifiez votre connexion internet.", 'data' => null, 'http_code' => null];
-        }
-
-        // Tenter de parser les en-têtes HTTP pour obtenir le code de statut
-        $http_code = null;
-        if (isset($http_response_header) && is_array($http_response_header)) {
-            foreach ($http_response_header as $header) {
-                if (preg_match('/^HTTP\/\d\.\d\s+(\d+)/', $header, $matches)) {
-                    $http_code = (int)$matches[1];
-                    break;
-                }
+    if (!function_exists('fetch_tmdb_data_from_url')) { // Définir la fonction si elle n'existe pas (au cas où functions.php n'est pas inclus)
+        function fetch_tmdb_data_from_url($url) {
+            $context = stream_context_create(['http' => ['ignore_errors' => true]]);
+            $responseJson = @file_get_contents($url, false, $context);
+            if ($responseJson === false) return ['error' => "Impossible de contacter le service de films (TMDB).", 'data' => null, 'http_code' => null];
+            $http_code = null;
+            if (isset($http_response_header) && is_array($http_response_header)) { foreach ($http_response_header as $header) { if (preg_match('/^HTTP\/\d\.\d\s+(\d+)/', $header, $matches)) { $http_code = (int)$matches[1]; break; } } }
+            $data = json_decode($responseJson, true);
+            if (json_last_error() !== JSON_ERROR_NONE || ($http_code && $http_code >= 400) || !isset($data['id'])) {
+                $apiError = "Erreur lors de la récupération des informations du film.";
+                if (isset($data['status_message'])) $apiError = htmlspecialchars($data['status_message']);
+                elseif ($http_code === 401) $apiError = "Clé API TMDB invalide ou non autorisée.";
+                elseif ($http_code === 404 || (isset($data['status_code']) && $data['status_code'] == 34)) $apiError = "Film non trouvé avec l'ID fourni.";
+                return ['error' => $apiError, 'data' => null, 'http_code' => $http_code];
             }
+            return ['error' => null, 'data' => $data, 'http_code' => $http_code];
         }
-        
-        $data = json_decode($responseJson, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE || ($http_code && $http_code >= 400) || !isset($data['id'])) {
-            $apiError = "Erreur lors de la récupération des informations du film.";
-            if (isset($data['status_message'])) { // TMDB renvoie souvent un status_message
-                $apiError = htmlspecialchars($data['status_message']);
-            } elseif ($http_code === 401) {
-                 $apiError = "Clé API TMDB invalide ou non autorisée.";
-            } elseif ($http_code === 404 || (isset($data['status_code']) && $data['status_code'] == 34) ) { // 34 est un ancien code pour "non trouvé"
-                $apiError = "Film non trouvé avec l'ID fourni.";
-            }
-            return ['error' => $apiError, 'data' => null, 'http_code' => $http_code];
-        }
-        return ['error' => null, 'data' => $data, 'http_code' => $http_code];
     }
 
     $tmdbResult = fetch_tmdb_data_from_url($detailsUrl);
 
     if ($tmdbResult['error']) {
         error_log("Erreur TMDB pour MovieID {$movieId}: " . $tmdbResult['error'] . " (Code HTTP: " . ($tmdbResult['http_code'] ?? 'N/A') . ") URL: " . $detailsUrl);
-        $pageError = $tmdbResult['error']; // Afficher l'erreur TMDB à l'utilisateur
+        $pageError = $tmdbResult['error'];
     } else {
         $movieDetailsAPI = $tmdbResult['data'];
         $movieCreditsAPI = $movieDetailsAPI['credits'] ?? null;
@@ -110,64 +87,34 @@ if (!$pageError && $movieId) {
 }
 
 // -----------------------------------------------------------------------------
-// 3. RÉCUPÉRATION DES DONNÉES LOCALES (si détails TMDB chargés et pas d'erreur)
+// 3. RÉCUPÉRATION DES DONNÉES LOCALES
 // -----------------------------------------------------------------------------
 if (!$pageError && $movieDetailsAPI && $movieId) {
     if ($loggedInUserId) {
         try {
             $stmt = $conn->prepare("SELECT 1 FROM watchlist WHERE user_id = ? AND movie_id = ?");
-            if ($stmt) {
-                $stmt->bind_param("ii", $loggedInUserId, $movieId);
-                $stmt->execute();
-                $stmt->store_result();
-                $isInWatchlist = ($stmt->num_rows > 0);
-                $stmt->close();
-            } else {  error_log("Erreur DB Prepare (MD_WL_CHK): " . $conn->error); }
+            if ($stmt) { $stmt->bind_param("ii", $loggedInUserId, $movieId); $stmt->execute(); $stmt->store_result(); $isInWatchlist = ($stmt->num_rows > 0); $stmt->close(); } else { error_log("Erreur DB Prepare (MD_WL_CHK): " . $conn->error); }
         } catch (mysqli_sql_exception $e) { error_log("Exception DB (MD_WL_CHK): " . $e->getMessage());}
 
         try {
             $stmt = $conn->prepare("SELECT rating FROM ratings WHERE user_id = ? AND movie_id = ?");
-             if ($stmt) {
-                $stmt->bind_param("ii", $loggedInUserId, $movieId);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                if ($row = $result->fetch_assoc()) $userRating = (int)$row['rating'];
-                $stmt->close();
-            } else { error_log("Erreur DB Prepare (MD_URAT_SEL): " . $conn->error); }
+            if ($stmt) { $stmt->bind_param("ii", $loggedInUserId, $movieId); $stmt->execute(); $result = $stmt->get_result(); if ($row = $result->fetch_assoc()) $userRating = (int)$row['rating']; $stmt->close(); } else { error_log("Erreur DB Prepare (MD_URAT_SEL): " . $conn->error); }
         } catch (mysqli_sql_exception $e) { error_log("Exception DB (MD_URAT_SEL): " . $e->getMessage());}
         
         try {
             $stmt = $conn->prepare("SELECT comment FROM comments WHERE user_id = ? AND movie_id = ? ORDER BY commented_at DESC LIMIT 1");
-            if ($stmt) {
-                $stmt->bind_param("ii", $loggedInUserId, $movieId);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                if ($row = $result->fetch_assoc()) $userCommentText = $row['comment'];
-                $stmt->close();
-            } else { error_log("Erreur DB Prepare (MD_UCOM_SEL): " . $conn->error); }
+            if ($stmt) { $stmt->bind_param("ii", $loggedInUserId, $movieId); $stmt->execute(); $result = $stmt->get_result(); if ($row = $result->fetch_assoc()) $userCommentText = $row['comment']; $stmt->close(); } else { error_log("Erreur DB Prepare (MD_UCOM_SEL): " . $conn->error); }
         } catch (mysqli_sql_exception $e) { error_log("Exception DB (MD_UCOM_SEL): " . $e->getMessage());}
     }
 
     try {
         $stmt = $conn->prepare("SELECT c.comment, c.commented_at, u.username, u.id as comment_user_id FROM comments c JOIN users u ON c.user_id = u.id WHERE c.movie_id = ? ORDER BY c.commented_at DESC");
-        if ($stmt) {
-            $stmt->bind_param("i", $movieId);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) $publicComments[] = $row;
-            $stmt->close();
-        } else { error_log("Erreur DB Prepare (MD_PCOM_SEL): " . $conn->error); }
+        if ($stmt) { $stmt->bind_param("i", $movieId); $stmt->execute(); $result = $stmt->get_result(); while ($row = $result->fetch_assoc()) $publicComments[] = $row; $stmt->close(); } else { error_log("Erreur DB Prepare (MD_PCOM_SEL): " . $conn->error); }
     } catch (mysqli_sql_exception $e) { error_log("Exception DB (MD_PCOM_SEL): " . $e->getMessage());}
 
     try {
         $stmt = $conn->prepare("SELECT ft.id, ft.title, ft.scene_start_time, ft.scene_description_short, u.username as author_username, u.id as author_id, ft.created_at FROM forum_threads ft JOIN users u ON ft.user_id = u.id WHERE ft.movie_id = ? AND (ft.scene_start_time IS NOT NULL OR ft.scene_description_short IS NOT NULL) ORDER BY ft.created_at DESC");
-        if ($stmt) {
-            $stmt->bind_param("i", $movieId);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) $sceneAnnotationThreads[] = $row;
-            $stmt->close();
-        } else { error_log("Erreur DB Prepare (MD_SCENE_THREADS_SEL): " . $conn->error); }
+        if ($stmt) { $stmt->bind_param("i", $movieId); $stmt->execute(); $result = $stmt->get_result(); while ($row = $result->fetch_assoc()) $sceneAnnotationThreads[] = $row; $stmt->close(); } else { error_log("Erreur DB Prepare (MD_SCENE_THREADS_SEL): " . $conn->error); }
     } catch (mysqli_sql_exception $e) { error_log("Exception DB (MD_SCENE_THREADS_SEL): " . $e->getMessage());}
 }
 
@@ -178,7 +125,7 @@ $site_name_const = defined('SITE_NAME') ? SITE_NAME : "EigaNights";
 
 if ($pageError) {
     if (!isset($pageTitle) || $pageTitle === $site_name_const) $pageTitle = "Erreur - " . $site_name_const;
-    $displayTitle = "Erreur"; // Titre principal de la page en cas d'erreur
+    $displayTitle = "Erreur";
     $posterAltText = "Erreur de chargement";
 } elseif ($movieDetailsAPI && !empty($movieDetailsAPI['title'])) {
     $displayTitle = htmlspecialchars($movieDetailsAPI['title']);
@@ -188,14 +135,13 @@ if ($pageError) {
     $displayTitle = "Détails du Film Indisponibles";
     $pageTitle = $displayTitle . " - " . $site_name_const;
     $posterAltText = "Pas d'affiche disponible";
-    if (!$pageError) $pageError = "Les informations de ce film n'ont pu être chargées."; // Erreur douce
+    if (!$pageError) $pageError = "Les informations de ce film n'ont pu être chargées.";
 }
 
 $posterPath = $movieDetailsAPI['poster_path'] ?? null;
-$posterUrl = ($pageError && !$posterPath) // Si erreur ET pas de poster path spécifique (souvent le cas si film non trouvé)
+$posterUrl = ($pageError && !$posterPath)
     ? BASE_URL . "assets/images/no_poster_available.png"
     : ($posterPath ? "https://image.tmdb.org/t/p/w500" . htmlspecialchars($posterPath) : BASE_URL . "assets/images/no_poster_available.png");
-
 
 $releaseYear = !empty($movieDetailsAPI['release_date']) ? substr($movieDetailsAPI['release_date'], 0, 4) : 'N/A';
 $tagline = !empty($movieDetailsAPI['tagline']) ? htmlspecialchars($movieDetailsAPI['tagline']) : '';
@@ -227,15 +173,10 @@ if (!empty($movieCreditsAPI['crew'])) {
 $directorsFormatted = !empty($directors) ? implode(', ', $directors) : 'N/A';
 $cast = !empty($movieCreditsAPI['cast']) ? array_slice($movieCreditsAPI['cast'], 0, 10) : [];
 
-
-// -----------------------------------------------------------------------------
-// 5. FONCTION POUR GÉNÉRER LE CONTENU DES PUBS SIMULÉES
-// -----------------------------------------------------------------------------
-
 // -----------------------------------------------------------------------------
 // DÉBUT DE L'AFFICHAGE HTML
 // -----------------------------------------------------------------------------
-include_once 'includes/header.php'; // $pageTitle est maintenant défini de manière fiable
+include_once 'includes/header.php';
 ?>
 
 <main class="container movie-detail-page" role="main">
@@ -248,9 +189,9 @@ include_once 'includes/header.php'; // $pageTitle est maintenant défini de mani
         <?php endif; ?>
     <?php endforeach; ?>
 
-    <?php if ($pageError && !$movieDetailsAPI): // Erreur critique, impossible d'afficher les détails du film ?>
+    <?php if ($pageError && !$movieDetailsAPI): ?>
         <div class="alert alert-danger" role="alert"><?php echo htmlspecialchars($pageError); ?></div>
-    <?php elseif ($pageError && $movieDetailsAPI): // Erreur "douce", on a des détails de base mais un problème est survenu (ex: providers TMDB) ?>
+    <?php elseif ($pageError && $movieDetailsAPI): ?>
          <div class="alert alert-warning" role="alert">
             <?php echo htmlspecialchars($pageError); ?>
             <br><small>Les informations de base du film sont affichées ci-dessous.</small>
@@ -277,25 +218,26 @@ include_once 'includes/header.php'; // $pageTitle est maintenant défini de mani
                 <?php // Section Liens de Streaming
                 if (defined('DIRECT_STREAMING_LINKS_ENABLED') && DIRECT_STREAMING_LINKS_ENABLED && !empty($movieWatchProvidersAPI) && defined('STREAMING_PLATFORMS_OFFICIAL_LINKS') && is_array(STREAMING_PLATFORMS_OFFICIAL_LINKS)) {
                     $availableStreams = [];
-                    $targetRegions = defined('ALLOWED_API_REGIONS') && is_array(ALLOWED_API_REGIONS) ? ALLOWED_API_REGIONS : array_keys($movieWatchProvidersAPI);
+                    $targetRegions = (defined('ALLOWED_API_REGIONS') && is_array(ALLOWED_API_REGIONS) && !empty(ALLOWED_API_REGIONS))
+                                     ? ALLOWED_API_REGIONS
+                                     : array_keys($movieWatchProvidersAPI);
 
                     foreach ($targetRegions as $regionCode) {
                         if (isset($movieWatchProvidersAPI[$regionCode]) && is_array($movieWatchProvidersAPI[$regionCode])) {
-                            $providerTypesToShow = ['flatrate', 'rent', 'buy']; // Types de fournisseurs à vérifier
+                            $providerTypesToShow = ['flatrate']; // Uniquement flatrate
                             foreach ($providerTypesToShow as $type) {
                                 if (isset($movieWatchProvidersAPI[$regionCode][$type]) && is_array($movieWatchProvidersAPI[$regionCode][$type])) {
                                     foreach ($movieWatchProvidersAPI[$regionCode][$type] as $provider) {
                                         if (isset($provider['provider_id'], STREAMING_PLATFORMS_OFFICIAL_LINKS[$provider['provider_id']])) {
                                             $platformInfo = STREAMING_PLATFORMS_OFFICIAL_LINKS[$provider['provider_id']];
                                             $searchUrl = str_replace('{MOVIE_TITLE_URL_ENCODED}', urlencode($displayTitle), $platformInfo['search_url_pattern']);
-                                            $streamKey = $provider['provider_id'] . '-' . $regionCode . '-' . $type; // Clé unique
-                                            if (!isset($availableStreams[$streamKey])) { // Éviter les doublons si un provider est dans plusieurs régions de targetRegions
+                                            $streamKey = $provider['provider_id'] . '-' . $regionCode; // Clé simplifiée
+                                            if (!isset($availableStreams[$streamKey])) {
                                                 $availableStreams[$streamKey] = [
                                                     'name' => $platformInfo['name'],
                                                     'logo' => BASE_URL . $platformInfo['logo'],
                                                     'url' => $searchUrl,
-                                                    'region' => $regionCode,
-                                                    'type' => ucfirst($type) // Ex: Flatrate, Rent, Buy
+                                                    'region' => $regionCode
                                                 ];
                                             }
                                         }
@@ -307,20 +249,20 @@ include_once 'includes/header.php'; // $pageTitle est maintenant défini de mani
 
                     if (!empty($availableStreams)): ?>
                     <section class="movie-streaming-options" aria-labelledby="streaming-options-heading">
-                        <h3 id="streaming-options-heading">Où regarder (Liens simulés) :</h3>
+                        <h3 id="streaming-options-heading">Regarder ce film maintenant (Liens simulés) :</h3>
                         <div class="streaming-providers-list">
                             <?php foreach ($availableStreams as $streamInfo): ?>
-                                <a href="<?php echo htmlspecialchars($streamInfo['url']); ?>" target="_blank" rel="noopener noreferrer sponsored" class="streaming-provider-link" title="Chercher <?php echo $displayTitle; ?> sur <?php echo htmlspecialchars($streamInfo['name']); ?> (<?php echo htmlspecialchars($streamInfo['region']); ?> - <?php echo htmlspecialchars($streamInfo['type']); ?>)">
+                                <a href="<?php echo htmlspecialchars($streamInfo['url']); ?>" target="_blank" rel="noopener noreferrer sponsored" class="streaming-provider-link" title="Chercher <?php echo $displayTitle; ?> sur <?php echo htmlspecialchars($streamInfo['name']); ?> (<?php echo htmlspecialchars($streamInfo['region']); ?>)">
                                     <img src="<?php echo htmlspecialchars($streamInfo['logo']); ?>" alt="Logo <?php echo htmlspecialchars($streamInfo['name']); ?>">
-                                    <span><?php echo htmlspecialchars($streamInfo['name']); ?> <small>(<?php echo htmlspecialchars($streamInfo['region']); ?> - <?php echo htmlspecialchars($streamInfo['type']); ?>)</small></span>
+                                    <span><?php echo htmlspecialchars($streamInfo['name']); ?> <small>(<?php echo htmlspecialchars($streamInfo['region']); ?>)</small></span>
                                 </a>
                             <?php endforeach; ?>
                         </div>
                         <small class="affiliate-disclosure">Note: Simulation pour projet scolaire. La disponibilité réelle peut varier.</small>
                     </section>
-                    <?php elseif (defined('DIRECT_STREAMING_LINKS_ENABLED') && DIRECT_STREAMING_LINKS_ENABLED): // Si activé mais aucun lien trouvé ?>
+                    <?php elseif (defined('DIRECT_STREAMING_LINKS_ENABLED') && DIRECT_STREAMING_LINKS_ENABLED): ?>
                     <section class="movie-streaming-options">
-                        <p><small>Aucun lien de streaming direct trouvé pour ce film dans les régions configurées via TMDB.</small></p>
+                        <p><small>Aucune option d'abonnement direct trouvée pour ce film dans les régions configurées via TMDB.</small></p>
                     </section>
                     <?php endif;
                 }
@@ -389,8 +331,17 @@ include_once 'includes/header.php'; // $pageTitle est maintenant défini de mani
                 </section>
                 <?php endif; ?>
                 
+                <?php // L'ancien emplacement de la pub principale ("banner_slots") a été déplacé en bas de page. ?>
+            </div>
 
             <aside class="sidebar-column">
+                <?php // Publicité simulée dans la sidebar (à côté du synopsis/trailer/cast) ?>
+                <?php if (defined('PLACEHOLDER_ADS_ENABLED') && PLACEHOLDER_ADS_ENABLED && function_exists('generate_simulated_ad_slot_content')): ?>
+                <section class="advertisement-slot card-section sticky-sidebar-ad" role="complementary" aria-label="Espace publicitaire sidebar (simulation)">
+                    <?php echo generate_simulated_ad_slot_content(); // Appel simplifié, la fonction choisit au hasard dans le dossier configuré ?>
+                </section>
+                <?php endif; ?>
+
                 <?php if ($loggedInUserId): ?>
                 <section class="user-interaction-section card-section card" aria-labelledby="user-rating-comment-heading">
                     <h2 id="user-rating-comment-heading">Votre Avis</h2>
@@ -422,21 +373,10 @@ include_once 'includes/header.php'; // $pageTitle est maintenant défini de mani
                     </a>
                 </section>
                 <?php endif; ?>
+            </aside>
+        </div> <?php // Fin .movie-content-columns ?>
 
-   
-<?php if (defined('PLACEHOLDER_ADS_ENABLED') && PLACEHOLDER_ADS_ENABLED && function_exists('generate_simulated_ad_slot_content')): ?>
-<aside class="advertisement-slot card-section" role="complementary" aria-label="Espace publicitaire principal (simulation)">
-    <?php echo generate_simulated_ad_slot_content(); // Appel simplifié ?>
-</aside>
-<?php endif; ?>
-
-
-<?php if (defined('PLACEHOLDER_ADS_ENABLED') && PLACEHOLDER_ADS_ENABLED && function_exists('generate_simulated_ad_slot_content')): ?>
-<aside class="advertisement-slot card-section" role="complementary" aria-label="Espace publicitaire sidebar (simulation)">
-    <?php echo generate_simulated_ad_slot_content(); // Appel simplifié ?>
-</aside>
-<?php endif; ?>
-
+        <?php // Sections pleine largeur en dessous des colonnes ?>
         <?php if (!empty($sceneAnnotationThreads)): ?>
         <section class="scene-annotations-list-section card-section card" aria-labelledby="scene-annotations-heading">
             <h2 id="scene-annotations-heading">Discussions de Scènes (<?php echo count($sceneAnnotationThreads); ?>)</h2>
@@ -489,12 +429,18 @@ include_once 'includes/header.php'; // $pageTitle est maintenant défini de mani
             <?php endif; ?>
         </section>
 
+        <?php // NOUVEL EMPLACEMENT : Publicité simulée en bas de page ?>
+        <?php if (defined('PLACEHOLDER_ADS_ENABLED') && PLACEHOLDER_ADS_ENABLED && function_exists('generate_simulated_ad_slot_content')): ?>
+        <aside class="advertisement-slot bottom-ad-slot card-section" role="complementary" aria-label="Espace publicitaire en bas de page (simulation)">
+            <?php echo generate_simulated_ad_slot_content(); // Appel simplifié ?>
+        </aside>
+        <?php endif; ?>
+
     </article> <?php // Fin .movie-details-content ?>
     <?php
-    // Fin de la condition principale if ($movieDetailsAPI)
-    elseif (!$pageError): // Syntaxe alternative pour le elseif
+    elseif (!$pageError): // Si $movieDetailsAPI est null mais pas d'erreur critique explicite.
         echo '<div class="alert alert-warning" role="alert">Les informations pour ce film ne sont pas disponibles pour une raison inconnue.</div>';
-    endif; // Le endif ferme toute la structure if/elseif
+    endif; // Fin de if ($movieDetailsAPI) / elseif (!$pageError)
     ?>
 </main>
 
