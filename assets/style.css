@@ -17,32 +17,32 @@ html {
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-family: var(--font-family-base);
     background-color: var(--color-bg-dark);
     color: var(--color-text-light);
-    line-height: 1.65;
-    font-weight: 400;
+    line-height: var(--line-height-base);
+    font-weight: var(--font-weight-normal); /* Utilisation de la variable */
 }
 
 /* ==========================================================================
-   2. CSS CUSTOM PROPERTIES (VARIABLES)
+   2. CSS CUSTOM PROPERTIES (VARIABLES) - Votre section est déjà très bien
    ========================================================================== */
 :root {
     /* Colors */
-    --color-primary: #00bfa5;          /* Teal accent */
+    --color-primary: #00bfa5;
     --color-primary-dark: #008c7a;
     --color-primary-darker: #007a6c;
-    --color-primary-contrast: #111111; /* Text color on primary bg */
+    --color-primary-contrast: #111111;
     --color-primary-contrast-hover: #ffffff;
 
     --color-bg-dark: #1a1a1a;
-    --color-bg-medium: #1f1f1f;        /* Header, Footer */
-    --color-bg-light: #252525;         /* Cards */
-    --color-bg-lighter: #2c2c2c;       /* Movie items, form inputs */
-    --color-bg-lightest: #303030;      /* Placeholder bg */
+    --color-bg-medium: #1f1f1f;
+    --color-bg-light: #252525;
+    --color-bg-lighter: #2c2c2c;
+    --color-bg-lightest: #303030;
 
     --color-text-light: #e0e0e0;
-    --color-text-medium: #c0c0c0;
+    --color-text-medium: #c5c5c5; /* Un peu plus clair que c0c0c0 pour une meilleure distinction */
     --color-text-dark: #b0b0b0;
     --color-text-darker: #a0a0a0;
     --color-text-muted: #888888;
@@ -58,15 +58,13 @@ body {
     --color-danger-bg-alert: #5c2222;
     --color-danger-text-alert: #f4c7c3;
 
-
     --color-warning: #ffb300;
     --color-warning-dark: #ffa000;
     --color-warning-darker: #ff8f00;
     --color-warning-contrast: #111111;
-    --color-warning-bg-alert: #fff3cd; /* Exception for light bg for readability */
-    --color-warning-text-alert: #111111;
+    --color-warning-bg-alert: #fff3cd;
+    --color-warning-text-alert: #856404; /* Texte plus foncé pour meilleure lisibilité sur fond jaune clair */
     --color-warning-border-alert: #ffeeba;
-
 
     --color-success: #43a047;
     --color-success-dark: #388e3c;
@@ -79,16 +77,19 @@ body {
     --color-info-text-alert: #abdefa;
     --color-info-border-alert: #3e7ab7;
 
-    --color-streaming-link-hover: #007bff; /* Example for streaming links if different from primary */
-
     /* Typography */
     --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    --font-size-base: 1rem; /* Corresponds to html font-size */
+    --font-size-base: 1rem;
     --line-height-base: 1.65;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
 
     /* Spacing */
-    --spacing-xs: 0.25rem;  /* 4px */
-    --spacing-sm: 0.5rem;   /* 8px */
+    --spacing-xxs: 0.25rem;  /* 4px */
+    --spacing-xs: 0.5rem;   /* 8px */
+    --spacing-sm: 0.75rem;  /* 12px */
     --spacing-md: 1rem;     /* 16px */
     --spacing-lg: 1.5rem;   /* 24px */
     --spacing-xl: 2rem;     /* 32px */
@@ -100,31 +101,21 @@ body {
     --border-radius-lg: 8px;
 
     /* Shadows */
-    --shadow-sm: 0 2px 5px rgba(0,0,0,0.1);
-    --shadow-md: 0 3px 10px rgba(0,0,0,0.15);
-    --shadow-lg: 0 4px 15px rgba(0,0,0,0.2);
-    --shadow-header: 0 2px 10px rgba(0,0,0,0.3);
-    --shadow-footer: 0 -2px 10px rgba(0,0,0,0.2);
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.15);
+    --shadow-md: 0 4px 8px rgba(0,0,0,0.20);
+    --shadow-lg: 0 6px 12px rgba(0,0,0,0.25);
+    --shadow-focus: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent); /* Glow pour focus */
+    --shadow-header-footer: 0 2px 8px rgba(0,0,0,0.3); /* Ombre spécifique pour header/footer */
 }
 
 /* ==========================================================================
    3. UTILITY CLASSES
    ========================================================================== */
 .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
-
-.text-center {
-    text-align: center;
-}
+.text-center { text-align: center; }
 
 /* ==========================================================================
    4. LAYOUT (Container, Header, Footer, Page Content)
@@ -134,31 +125,65 @@ body {
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
-    padding: 0 var(--spacing-md);
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
 }
 
 .page-content {
-    padding-top: var(--spacing-lg);    /* Was 20px */
-    padding-bottom: var(--spacing-xxl); /* Was 40px */
-    min-height: calc(100vh - 180px); /* Adjusted for typical header/footer height, update if needed */
+    padding-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-xxl);
+    min-height: calc(100vh - 200px); /* Ajuster selon la hauteur réelle header+footer */
 }
 
+/* --- Header --- */
 .site-header {
     background-color: var(--color-bg-medium);
-    padding: var(--spacing-md) 0;
-    box-shadow: var(--shadow-header);
-    margin-bottom: var(--spacing-xl); /* Was 30px */
+    padding: var(--spacing-sm) 0;
+    box-shadow: var(--shadow-header-footer);
+    margin-bottom: var(--spacing-xl);
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* S'assurer qu'il est au-dessus du contenu */
+}
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Permettre le retour à la ligne sur petits écrans */
+    gap: var(--spacing-md);
+}
+.site-branding .site-logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--color-primary);
+}
+.site-branding .site-logo-link:hover {
+    color: var(--color-primary-dark);
+}
+.site-branding .site-logo-image {
+    height: 35px; /* Ajuster selon votre logo */
+    width: auto;
+    margin-right: var(--spacing-xs);
+    object-fit: contain;
+}
+.site-branding .site-title-header {
+    font-size: 1.7rem;
+    font-weight: var(--font-weight-bold);
 }
 
-.main-navigation {
-    text-align: center;
+.main-navigation ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
 }
-
 .main-navigation .nav-link {
     color: var(--color-text-light);
-    font-weight: 500;
-    margin: 0 var(--spacing-sm); /* Was 10px */
-    padding: var(--spacing-sm) var(--spacing-md); /* Was 8px 12px */
+    font-weight: var(--font-weight-medium);
+    padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--border-radius-sm);
     transition: background-color 0.2s ease, color 0.2s ease;
     display: inline-block;
@@ -169,23 +194,88 @@ body {
 .main-navigation .nav-link.active {
     background-color: var(--color-primary);
     color: var(--color-primary-contrast);
-    text-decoration: none;
 }
 
+.search-form-header {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-lighter);
+    border: 1px solid var(--color-border-medium);
+    border-radius: var(--border-radius-md);
+    padding: 2px 5px 2px 10px; /* padding fin pour l'aspect barre */
+    max-width: 300px; /* Limite la largeur */
+}
+.search-form-header:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-focus);
+}
+.search-form-header input[type="text"] {
+    flex-grow: 1;
+    background-color: transparent;
+    color: var(--color-text-light);
+    border: none;
+    padding: var(--spacing-xs) var(--spacing-xs); /* padding interne de l'input */
+    font-size: 0.9rem;
+    outline: none;
+    width: calc(100% - 32px); /* Ajuster si la taille du bouton change */
+}
+.search-form-header input[type="text"]::placeholder {
+    color: var(--color-text-muted);
+}
+.search-form-header .search-button-header {
+    background-color: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    padding: var(--spacing-xs);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Bouton rond pour l'icône */
+    transition: color 0.2s ease;
+}
+.search-form-header .search-button-header:hover,
+.search-form-header .search-button-header:focus {
+    color: var(--color-primary);
+}
+.search-form-header .search-button-header svg {
+    width: 1em; height: 1em;
+}
+
+/* --- Footer --- */
 .site-footer-main {
     background-color: var(--color-bg-medium);
     color: var(--color-text-muted);
-    padding: var(--spacing-xl) 0; /* Was 30px */
+    padding: var(--spacing-lg) 0;
     text-align: center;
     font-size: 0.9rem;
-    margin-top: var(--spacing-xxl); /* Was 40px */
-    box-shadow: var(--shadow-footer);
+    margin-top: var(--spacing-xxl);
+    box-shadow: var(--shadow-header-footer); /* Réutilisation de l'ombre */
 }
-.site-footer-main .footer-content p {
-    margin-bottom: var(--spacing-xs); /* Was 5px */
+.site-footer-main .footer-content p:first-child { /* Copyright */
+    margin-bottom: var(--spacing-xs);
+    font-weight: var(--font-weight-medium);
+}
+.site-footer-main .footer-nav ul { /* Pour enlever les puces et aligner */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs) var(--spacing-sm); /* vertical horizontal */
+}
+.site-footer-main .footer-nav li {
+    /* display: inline-flex; align-items: center; (Géré par flex sur ul) */
+}
+.site-footer-main .footer-nav li + li::before { /* Séparateur CSS */
+    content: "|";
+    color: var(--color-text-muted);
+    margin-right: var(--spacing-sm);
+    /* margin-left: var(--spacing-sm); (le gap sur ul gère l'espacement gauche) */
 }
 .site-footer-main a {
-    color: var(--color-text-darker); /* Was #aaa */
+    color: var(--color-text-darker);
 }
 .site-footer-main a:hover {
     color: var(--color-primary);
@@ -194,1966 +284,366 @@ body {
 /* ==========================================================================
    5. HTML ELEMENT STYLING (Typography, Links, Images, HR)
    ========================================================================== */
-/* Links */
-a {
-    color: var(--color-primary);
-    text-decoration: none;
-    transition: color 0.2s ease-in-out;
-}
-a:hover, a:focus {
-    color: var(--color-primary-dark);
-    text-decoration: underline;
-}
+a { color: var(--color-primary); text-decoration: none; transition: color 0.2s ease-in-out; }
+a:hover, a:focus { color: var(--color-primary-dark); text-decoration: underline; }
 
-/* Images */
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    border-style: none;
-}
-.movie-poster-placeholder { /* Specific to movie posters */
-    border: 1px solid var(--color-border-medium);
-    object-fit: contain;
-    background-color: var(--color-bg-lightest);
-}
+img { max-width: 100%; height: auto; display: block; border-style: none; }
+.movie-poster-placeholder { border: 1px solid var(--color-border-medium); object-fit: contain; background-color: var(--color-bg-lightest); }
 
-/* Headings */
 h1, h2, h3, h4, h5, h6 {
-    color: var(--color-primary);
-    margin-top: 1.5em;
-    margin-bottom: 0.75em;
+    color: var(--color-text-light);
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
     line-height: 1.3;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
-h4 { font-size: 1.25rem; }
-h5 { font-size: 1.1rem; }
-h6 { font-size: 1rem; }
+h1 { font-size: 2.2rem; color: var(--color-primary); }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.4rem; }
+h4 { font-size: 1.2rem; }
+h1:first-child, h2:first-child, h3:first-child { margin-top: 0; }
 
-h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child {
-    margin-top: 0;
-}
+hr { border: 0; height: 1px; background-color: var(--color-border-medium); margin: var(--spacing-xl) 0; }
 
-/* Horizontal Rule */
-hr {
-    border: 0;
-    height: 1px;
-    background-color: var(--color-border-medium);
-    margin: var(--spacing-xxl) 0; /* Was 40px */
-}
 
 /* ==========================================================================
-   6. COMPONENTS (Buttons, Forms, Alerts, Cards)
+   6. COMPONENTS (Forms, Buttons, Alerts, Cards)
    ========================================================================== */
 /* --- Forms --- */
-.form-group {
-    margin-bottom: var(--spacing-lg); /* Was 20px */
-}
-.form-group label {
-    display: block;
-    margin-bottom: var(--spacing-sm); /* Was 8px */
-    font-weight: 500;
-    color: var(--color-text-medium);
-}
-.form-text {
-    display: block;
-    font-size: 0.875em;
-    color: var(--color-text-muted);
-    margin-top: var(--spacing-xs); /* Was 5px */
-}
+.form-group { margin-bottom: var(--spacing-md); }
+.form-group label { display: block; margin-bottom: var(--spacing-xs); font-weight: var(--font-weight-medium); color: var(--color-text-medium); }
+.form-text { display: block; font-size: 0.875em; color: var(--color-text-muted); margin-top: var(--spacing-xxs); }
 
-input[type="text"],
-input[type="password"],
-input[type="email"],
-textarea,
-select {
-    background-color: var(--color-bg-lighter);
-    color: var(--color-text-light);
-    border: 1px solid var(--color-border-light);
-    border-radius: var(--border-radius-sm);
-    padding: var(--spacing-sm) var(--spacing-md); /* Was 12px 15px, using sm for vertical */
-    width: 100%;
-    font-size: var(--font-size-base);
+input[type="text"], input[type="password"], input[type="email"], textarea, select {
+    background-color: var(--color-bg-lighter); color: var(--color-text-light); border: 1px solid var(--color-border-light);
+    border-radius: var(--border-radius-sm); padding: var(--spacing-sm); width: 100%; font-size: var(--font-size-base);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="email"]:focus,
-textarea:focus,
-select:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent); /* Teal glow */
-    outline: none;
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, textarea:focus, select:focus {
+    border-color: var(--color-primary); box-shadow: var(--shadow-focus); outline: none;
 }
-textarea {
-    min-height: 120px;
-    resize: vertical;
-}
+textarea { min-height: 100px; resize: vertical; }
 select {
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ababab%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
-    background-repeat: no-repeat;
-    background-position: right var(--spacing-md) center;
-    background-size: 12px auto;
-    padding-right: calc(var(--spacing-md) * 2 + 12px); /* Adjust padding for arrow */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23888888%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat; background-position: right var(--spacing-sm) center; background-size: 10px auto;
+    padding-right: calc(var(--spacing-sm) * 2 + 10px);
 }
 
 /* --- Buttons --- */
 .button, button, input[type="submit"], input[type="button"], input[type="reset"] {
-    display: inline-block;
-    font-weight: 500;
-    text-align: center;
-    vertical-align: middle;
-    cursor: pointer;
-    user-select: none;
-    background-color: transparent;
-    border: 1px solid transparent;
-    padding: var(--spacing-sm) var(--spacing-lg); /* Was 10px 20px */
-    font-size: var(--font-size-base);
-    line-height: var(--line-height-base);
-    border-radius: var(--border-radius-sm);
+    display: inline-block; font-weight: var(--font-weight-medium); text-align: center; vertical-align: middle;
+    cursor: pointer; user-select: none; background-color: transparent; border: 1px solid transparent;
+    padding: var(--spacing-xs) var(--spacing-md); font-size: 0.95rem; line-height: var(--line-height-base);
+    border-radius: var(--border-radius-sm); text-decoration: none;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    text-decoration: none; /* Ensure buttons don't get underlined by default 'a' styles */
 }
-.button:hover, button:hover, input[type="submit"]:hover, input[type="button"]:hover, input[type="reset"]:hover {
-    text-decoration: none;
-}
+.button:hover, button:hover, input[type="submit"]:hover, input[type="button"]:hover, input[type="reset"]:hover { text-decoration: none; }
 
-/* Primary Button */
-.button-primary, input[type="submit"].button-primary, input[type="submit"] { /* Added .button-primary to input[type="submit"] for consistency */
-    color: var(--color-primary-contrast);
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
-}
-.button-primary:hover, input[type="submit"].button-primary:hover, input[type="submit"]:hover {
-    color: var(--color-primary-contrast-hover);
-    background-color: var(--color-primary-dark);
-    border-color: var(--color-primary-darker);
-}
+.button-primary, input[type="submit"]:not([class*="button-"]) { color: var(--color-primary-contrast); background-color: var(--color-primary); border-color: var(--color-primary); }
+.button-primary:hover, input[type="submit"]:not([class*="button-"]):hover { color: var(--color-primary-contrast-hover); background-color: var(--color-primary-dark); border-color: var(--color-primary-darker); }
+.button-danger { color: var(--color-danger-contrast); background-color: var(--color-danger); border-color: var(--color-danger); }
+.button-danger:hover { background-color: var(--color-danger-dark); border-color: var(--color-danger-darker); }
+.button-warning { color: var(--color-warning-contrast); background-color: var(--color-warning); border-color: var(--color-warning); }
+.button-warning:hover { background-color: var(--color-warning-dark); border-color: var(--color-warning-darker); }
+.button-success { color: var(--color-success-contrast); background-color: var(--color-success); border-color: var(--color-success); }
+.button-success:hover { background-color: var(--color-success-dark); border-color: var(--color-success-darker); }
+.button-secondary { color: var(--color-primary); border-color: var(--color-primary); }
+.button-secondary:hover { color: var(--color-primary-contrast); background-color: var(--color-primary); }
+.button-small { padding: var(--spacing-xxs) var(--spacing-sm); font-size: 0.8rem; }
 
-/* Danger Button */
-.button-danger {
-    color: var(--color-danger-contrast);
-    background-color: var(--color-danger);
-    border-color: var(--color-danger);
-}
-.button-danger:hover {
-    background-color: var(--color-danger-dark);
-    border-color: var(--color-danger-darker);
-}
-
-/* Warning Button */
-.button-warning {
-    color: var(--color-warning-contrast);
-    background-color: var(--color-warning);
-    border-color: var(--color-warning);
-}
-.button-warning:hover {
-    background-color: var(--color-warning-dark);
-    border-color: var(--color-warning-darker);
-}
-
-/* Success Button */
-.button-success {
-    color: var(--color-success-contrast);
-    background-color: var(--color-success);
-    border-color: var(--color-success);
-}
-.button-success:hover {
-    background-color: var(--color-success-dark);
-    border-color: var(--color-success-darker);
-}
-
-/* Secondary/Outline Button */
-.button-secondary {
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-}
-.button-secondary:hover {
-    color: var(--color-primary-contrast);
-    background-color: var(--color-primary);
-}
-
-/* Small Button Variant */
-.button-small {
-    padding: var(--spacing-xs) var(--spacing-md); /* Was 6px 12px */
-    font-size: 0.875rem;
-}
-
-/* --- Alerts / Messages --- */
-.alert {
-    padding: var(--spacing-md); /* Was 15px 20px */
-    margin-bottom: var(--spacing-lg); /* Was 20px */
-    border: 1px solid transparent;
-    border-radius: var(--border-radius-sm);
-    font-weight: 500;
-}
-.alert-success {
-    color: var(--color-success-text-alert);
-    background-color: var(--color-success-bg-alert);
-    border-color: var(--color-success-dark); /* Or a specific border color for alerts */
-}
-.alert-danger {
-    color: var(--color-danger-text-alert);
-    background-color: var(--color-danger-bg-alert);
-    border-color: var(--color-danger-dark);
-}
-.alert-warning {
-    color: var(--color-warning-text-alert);
-    background-color: var(--color-warning-bg-alert);
-    border-color: var(--color-warning-border-alert);
-}
-.alert-info {
-    color: var(--color-info-text-alert);
-    background-color: var(--color-info-bg-alert);
-    border-color: var(--color-info-border-alert);
-}
+/* --- Alerts --- */
+.alert { padding: var(--spacing-sm) var(--spacing-md); margin-bottom: var(--spacing-md); border: 1px solid transparent; border-radius: var(--border-radius-sm); font-weight: var(--font-weight-normal); }
+.alert-success { color: var(--color-success-text-alert); background-color: var(--color-success-bg-alert); border-color: var(--color-success-dark); }
+.alert-danger { color: var(--color-danger-text-alert); background-color: var(--color-danger-bg-alert); border-color: var(--color-danger-dark); }
+.alert-warning { color: var(--color-warning-text-alert); background-color: var(--color-warning-bg-alert); border-color: var(--color-warning-border-alert); }
+.alert-info { color: var(--color-info-text-alert); background-color: var(--color-info-bg-alert); border-color: var(--color-info-border-alert); }
 
 /* --- Cards --- */
-.card {
-    background-color: var(--color-bg-light);
-    border-radius: var(--border-radius-lg);
-    padding: var(--spacing-lg); /* Was 20px, now consistent */
-    margin-bottom: var(--spacing-xl); /* Was 30px */
-    box-shadow: var(--shadow-md);
-}
+.card { background-color: var(--color-bg-light); border-radius: var(--border-radius-md); padding: var(--spacing-lg); margin-bottom: var(--spacing-lg); box-shadow: var(--shadow-sm); }
+.card-section { padding: var(--spacing-md) 0; margin-bottom: var(--spacing-lg); }
+.card-section:last-child { margin-bottom: 0; padding-bottom: 0; }
+.card-section h2, .card-section h3 { margin-top: 0; padding-bottom: var(--spacing-xs); border-bottom: 1px solid var(--color-border-dark); margin-bottom: var(--spacing-md); }
 
-/* For lists where each item is styled like a card entry */
-.card-list { /* Parent ul/ol */
-    list-style: none;
-    padding: 0;
-}
-.card-list li {
-    background-color: var(--color-bg-lighter);
-    padding: var(--spacing-md);
-    margin-bottom: var(--spacing-sm); /* Was 10px */
-    border-radius: var(--border-radius-md);
-    border-left: 4px solid var(--color-primary);
-}
-.card-list li:last-child {
-    margin-bottom: 0;
-}
+.card-list { list-style: none; padding: 0; }
+.card-list li { background-color: var(--color-bg-lighter); padding: var(--spacing-md); margin-bottom: var(--spacing-sm); border-radius: var(--border-radius-md); border-left: 3px solid var(--color-primary); } /* Bordure plus fine */
+.card-list li:last-child { margin-bottom: 0; }
+
 
 /* ==========================================================================
    7. PAGE-SPECIFIC SECTIONS
    ========================================================================== */
 
 /* --- Auth Pages (Login, Register) --- */
-.auth-form-container {
-    max-width: 480px;
-    margin: var(--spacing-xxl) auto; /* Was 40px */
-    padding: var(--spacing-lg) var(--spacing-xl); /* Was 25px 30px */
-    background-color: var(--color-bg-light); /* Consistent with .card */
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-lg);
-}
-.auth-form-container h1 {
-    text-align: center;
-    margin-bottom: var(--spacing-lg); /* Was 25px */
-    font-size: 2rem;
-}
-.auth-form-container .button-primary, /* Adjusted selector */
-.auth-form-container input[type="submit"] {
-    width: 100%;
-    padding: var(--spacing-sm) var(--spacing-md); /* Consistent button padding */
-    font-size: 1.1rem;
-}
-.auth-links {
-    text-align: center;
-    margin-top: var(--spacing-lg); /* Was 25px */
-    font-size: 0.95em;
-}
-.auth-links a {
-    font-weight: 500;
-}
+.auth-form-container { max-width: 450px; margin: var(--spacing-xl) auto; padding: var(--spacing-lg); border-radius: var(--border-radius-md); box-shadow: var(--shadow-md); } /* Utilise .card implicitement */
+.auth-form-container h1 { text-align: center; margin-bottom: var(--spacing-lg); font-size: 1.8rem; }
+.auth-form-container .button-primary, .auth-form-container input[type="submit"] { width: 100%; padding: var(--spacing-sm); font-size: 1rem; }
+.auth-links { text-align: center; margin-top: var(--spacing-md); font-size: 0.9rem; }
+.auth-links a { font-weight: var(--font-weight-medium); }
 
-/* --- Search Boxes --- */
-.search-box { /* General search box, e.g., homepage movie search, user search */
-    display: flex;
-    flex-wrap: wrap; /* Allow wrapping */
-    gap: var(--spacing-sm); /* Was 10px */
-    margin-bottom: var(--spacing-xl); /* Was 30px */
-    align-items: stretch;
-}
-.search-box input[type="text"] {
-    flex-grow: 1;
-    margin-bottom: 0; /* Gap handles spacing */
-    min-width: 200px; /* Minimum width before wrapping */
-}
-.search-box input[type="submit"], .search-box button {
-    margin-bottom: 0; /* Gap handles spacing */
-    flex-shrink: 0; /* Prevent button from shrinking too much */
-}
+/* --- General Search Box --- */
+.search-box { display: flex; flex-wrap: wrap; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg); align-items: stretch; }
+.search-box input[type="text"] { flex-grow: 1; margin-bottom: 0; min-width: 200px; }
+.search-box input[type="submit"], .search-box button { margin-bottom: 0; flex-shrink: 0; }
 
-/* --- Movie Grids & Items (Homepage, Watchlist) --- */
-.movies-grid, .watchlist-grid { /* Generic grid for movie cards */
+/* --- Movie Grids (Homepage, Watchlist, Trending on Index) --- */
+.movies-grid, .watchlist-grid, .trending-movies-container {
     display: grid;
-    gap: var(--spacing-lg); /* Was 20px */
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Mobile first */
+    gap: var(--spacing-md);
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Base pour affiches */
 }
-.trending-movies-container { /* Could be merged if styling is identical */
-    display: grid;
-    gap: var(--spacing-lg);
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-}
-
-.movie, .movie-in-watchlist, .trending-movie-item { /* Individual movie card */
+/* Individual movie item/card in a grid */
+.movie, .movie-in-watchlist, .trending-movie-item, .movie-item {
     background-color: var(--color-bg-lighter);
     border-radius: var(--border-radius-md);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: var(--shadow-sm); /* Was 0 4px 8px rgba(0,0,0,0.2) */
+    box-shadow: var(--shadow-sm);
     transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
 }
-.movie:hover, .movie-in-watchlist:hover, .trending-movie-item:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-md); /* Was 0 8px 16px rgba(0,0,0,0.3) */
+.movie:hover, .movie-in-watchlist:hover, .trending-movie-item:hover, .movie-item:hover {
+    transform: translateY(-4px) scale(1.02); /* Effet de survol plus subtil */
+    box-shadow: var(--shadow-md);
 }
-.movie img, .movie-in-watchlist img, .trending-movie-item img {
-    aspect-ratio: 2 / 3; /* Maintain aspect ratio */
+/* Movie poster image within the card */
+.movie img, .movie-in-watchlist img, .trending-movie-item img, .movie-poster-grid {
+    aspect-ratio: 2 / 3;
     object-fit: cover;
     width: 100%;
+    display: block; /* Pour enlever l'espace sous l'image */
 }
-.movie-info, .movie-info-watchlist { /* Text content of movie card */
-    padding: var(--spacing-md);
-    flex-grow: 1; /* Allow this part to grow to fill space */
+.movie-item a.movie-poster-link { /* Si l'affiche est un lien séparé */
+    display: block;
+    border-radius: var(--border-radius-sm); /* Coins pour le lien */
+    overflow: hidden;
+    margin-bottom: var(--spacing-xs);
+    box-shadow: var(--shadow-sm);
+}
+.movie-item:hover .movie-poster-grid { border-color: var(--color-primary); } /* Si .movie-item a une bordure au survol */
+
+/* Info text below poster in a grid item */
+.movie-info, .movie-info-watchlist, .movie-item-info {
+    padding: var(--spacing-sm);
+    flex-grow: 1;
     display: flex;
-    flex-direction: column; /* Stack elements vertically */
+    flex-direction: column;
 }
-.movie-title, .movie-title-watchlist {
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin-bottom: var(--spacing-sm); /* Was 8px */
+.movie-title, .movie-title-watchlist, .movie-item-title {
+    font-size: 0.95rem;
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-xxs);
     line-height: 1.3;
     color: var(--color-text-light);
 }
-.movie-title a, .movie-title-watchlist a {
-    color: inherit;
+.movie-item-title { /* Spécifique pour la homepage pour la troncature */
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden; text-overflow: ellipsis; height: calc(0.95rem * 1.3 * 2);
 }
-.movie-title a:hover, .movie-title-watchlist a:hover {
-    color: var(--color-primary);
-}
-.movie-overview {
-    font-size: 0.9rem;
-    color: var(--color-text-dark);
-    margin-bottom: var(--spacing-md); /* Was 12px */
-    flex-grow: 1; /* Allow overview to take available space */
-}
-.movie-info .add-watchlist-form, /* Forms at the bottom of movie card */
-.movie-info-watchlist .remove-watchlist-form {
-    margin-top: auto; /* Push to bottom */
-}
-.movie-info .add-watchlist-form input[type="submit"],
-.movie-info-watchlist .remove-watchlist-form button {
-    width: 100%;
-    padding: var(--spacing-sm); /* Was 8px */
-    font-size: 0.9rem;
-}
-.login-prompt { /* For "Login to add" text */
-    margin-top: auto; /* Push to bottom */
-    font-size: 0.9rem;
-}
+.movie-title a, .movie-title-watchlist a, .movie-item-title a { color: inherit; }
+.movie-title a:hover, .movie-title-watchlist a:hover, .movie-item-title a:hover { color: var(--color-primary); }
+
+.movie-overview { font-size: 0.85rem; color: var(--color-text-dark); margin-bottom: var(--spacing-sm); flex-grow: 1; }
+.movie-item-year { font-size: 0.8rem; color: var(--color-text-muted); }
+.movie-item-rating { font-size: 0.8rem; color: var(--color-warning); margin-top: var(--spacing-xxs); }
+.movie-item-rating::before { content: '★ '; }
 
 /* --- Movie Detail Page --- */
-.movie-detail-page .card { /* The main container for movie details */
-    padding: var(--spacing-lg) var(--spacing-xl); /* Was 25px 30px */
-}
-.movie-detail-page section:not(:last-child) { /* Sections within movie details like synopsis, cast */
-    margin-bottom: var(--spacing-xl); /* Was 30px, now consistent */
-}
-.movie-detail-page section h2 { /* Headings for these sections */
-    border-bottom: 1px solid var(--color-border-medium);
-    padding-bottom: var(--spacing-sm); /* Was 10px */
-    margin-bottom: var(--spacing-md); /* Was 15px */
-    font-size: 1.6rem;
-}
+.movie-detail-page h1#movie-title-heading { font-size: 2rem; margin-bottom: var(--spacing-xs); }
+.movie-main-header { display: flex; flex-direction: column; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg); }
+.movie-main-header .movie-poster { flex-shrink: 0; width: 100%; max-width: 280px; margin: 0 auto; }
+.movie-detail-poster { border-radius: var(--border-radius-md); box-shadow: var(--shadow-lg); }
+.movie-main-header .movie-meta-info { flex-grow: 1; }
+.movie-meta-info .release-year { font-size: 1.3rem; color: var(--color-text-darker); font-weight: var(--font-weight-normal); }
+.movie-meta-info .tagline { font-style: italic; color: var(--color-text-medium); margin-bottom: var(--spacing-sm); font-size: 1.05rem; }
+.movie-meta-info .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--spacing-xxs) var(--spacing-md); margin: var(--spacing-sm) 0; font-size: 0.9rem; }
+.movie-meta-info .meta-grid p { margin-bottom: 0; color: var(--color-text-medium); }
+.movie-meta-info .meta-grid p strong { color: var(--color-text-light); }
+.movie-user-actions, .login-prompt-actions { margin-top: var(--spacing-md); display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.movie-user-actions .button { width: 100%; } /* Boutons watchlist pleine largeur sur mobile */
 
-.movie-main-header { /* Contains poster and main meta info */
-    display: flex;
-    flex-direction: column; /* Mobile first */
-    gap: var(--spacing-lg); /* Was 25px */
-    margin-bottom: var(--spacing-xl); /* Space before content columns */
-}
-.movie-main-header .movie-poster { /* Container for poster image */
-    flex-shrink: 0;
-    width: 100%;
-    max-width: 300px; /* Max width for poster */
-    margin: 0 auto; /* Center on mobile */
-}
-.movie-detail-poster { /* The poster image itself */
-    border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-lg); /* Was 0 5px 15px rgba(0,0,0,0.3) */
-}
-.movie-main-header .movie-meta-info { /* Text info next to poster */
-    flex-grow: 1;
-}
-.movie-meta-info h1 { /* Movie Title */
-    font-size: 2.2rem;
-    margin-bottom: var(--spacing-xs); /* Was 5px */
-}
-.movie-meta-info .release-year {
-    font-size: 1.5rem;
-    color: var(--color-text-darker); /* Was #aaa */
-    font-weight: 400;
-}
-.movie-meta-info .tagline {
-    font-style: italic;
-    color: var(--color-text-medium); /* Was #ccc */
-    margin-bottom: var(--spacing-md); /* Was 15px */
-    font-size: 1.1rem;
-}
-.movie-meta-info .meta-grid { /* For genre, duration etc. */
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-xs) var(--spacing-md); /* Was 5px 15px */
-    margin: var(--spacing-md) 0;
-    font-size: 0.9em;
-}
-.movie-meta-info .meta-grid p {
-    margin-bottom: 0; /* Grid handles spacing */
-    color: var(--color-text-medium); /* Was #c0c0c0 */
-}
-.movie-meta-info .meta-grid p strong {
-    color: var(--color-text-light);
-}
-.movie-user-actions, .login-prompt-actions { /* Buttons for watchlist, etc. */
-    margin-top: var(--spacing-lg); /* Was 15px/20px */
-    display: flex;
-    flex-direction: column; /* Stack on mobile */
-    gap: var(--spacing-sm); /* Was 10px */
-}
-.movie-user-actions .button-primary, .movie-user-actions .button-danger {
-    width: 100%; /* Full width on mobile */
-}
+.movie-content-columns { display: flex; flex-direction: column; gap: var(--spacing-lg); margin-top: var(--spacing-lg); }
+.main-column { flex: 2; display: flex; flex-direction: column; gap: var(--spacing-lg); }
+.sidebar-column { flex: 1; display: flex; flex-direction: column; gap: var(--spacing-lg); }
 
-/* Layout for Main Content and Sidebar on Movie Details */
-.movie-content-columns {
-    display: flex;
-    flex-direction: column; /* Mobile first */
-    gap: var(--spacing-xl); /* Was 25px */
-    /* margin-top: var(--spacing-xl); Already handled by movie-main-header margin-bottom */
-}
-.main-column {
-    flex: 2; /* Takes more space */
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xl); /* Space between sections */
-}
-.sidebar-column {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xl);
-}
-.card-section { /* For sections within the columns, e.g., synopsis, user-interaction */
-    /* Basic card styling is inherited from .card if these are also .card */
-    /* margin-bottom is handled by parent gap */
-}
-.card-section h2 {
-    margin-top: 0; /* Already handled by h*:first-child */
-}
+.trailer-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: var(--border-radius-md); background-color: #000; }
+.trailer-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 
-.trailer-container {
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
-    height: 0;
-    overflow: hidden;
-    border-radius: var(--border-radius-md);
-    background-color: #000; /* Black background for iframe */
-}
-.trailer-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-}
+.cast-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: var(--spacing-md); }
+.actor { background-color: var(--color-bg-lighter); border-radius: var(--border-radius-md); padding: var(--spacing-sm); text-align: center; box-shadow: var(--shadow-sm); }
+.actor img { width: 90px; height: 135px; object-fit: cover; border-radius: var(--border-radius-sm); margin: 0 auto var(--spacing-xs) auto; }
+.actor figcaption { font-size: 0.85rem; line-height: 1.3; color: var(--color-text-dark); }
+.actor figcaption strong { color: var(--color-text-light); display: block; font-size: 0.9rem; }
 
-.cast-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: var(--spacing-lg); /* Was 20px */
-}
-.actor { /* Individual actor card */
-    background-color: var(--color-bg-lighter);
-    border-radius: var(--border-radius-md);
-    padding: var(--spacing-md); /* Was 12px */
-    text-align: center;
-    box-shadow: var(--shadow-sm);
-}
-.actor img {
-    width: 100px; /* Fixed width for actor photo */
-    height: 150px;
-    object-fit: cover;
-    border-radius: var(--border-radius-sm);
-    margin: 0 auto var(--spacing-sm) auto; /* Was 10px */
-}
-.actor figcaption { /* Replaced p for semantic HTML */
-    font-size: 0.9rem;
-    line-height: 1.4;
-    color: var(--color-text-dark);
-}
-.actor figcaption strong {
-    color: var(--color-text-light);
-    display: block;
-}
+.user-interaction-section select#rating { max-width: 200px; }
 
-.user-interaction-section select#rating {
-    max-width: 220px; /* Limit width of rating select */
-}
+.comments-list .comment-item { background-color: var(--color-bg-lighter); padding: var(--spacing-md); border-radius: var(--border-radius-md); margin-bottom: var(--spacing-md); border-left: 3px solid var(--color-primary-dark); }
+.comments-list .comment-meta { font-size: 0.9rem; margin-bottom: var(--spacing-xs); }
+.comments-list .comment-meta strong a { font-weight: var(--font-weight-semibold); }
+.comments-list .comment-date { color: var(--color-text-muted); margin-left: var(--spacing-xs); font-size: 0.85em; }
+.comments-list .comment-text { color: var(--color-text-medium); word-wrap: break-word; line-height: 1.6; }
+.comments-list .comment-text p { margin-bottom: var(--spacing-sm); }
+.comments-list .comment-text p:last-child { margin-bottom: 0; }
 
-.comments-list .comment-item { /* Individual comment */
-    background-color: var(--color-bg-lighter);
-    padding: var(--spacing-md);
-    border-radius: var(--border-radius-md);
-    margin-bottom: var(--spacing-md); /* Was 15px */
-    border-left: 4px solid var(--color-primary-dark); /* Consistent with .card-list li but darker */
-}
-.comments-list .comment-meta {
-    font-size: 0.9rem;
-    margin-bottom: var(--spacing-sm); /* Was 8px */
-}
-.comments-list .comment-meta strong a {
-    font-weight: 600; /* Keep if different from normal 'a strong' */
-}
-.comments-list .comment-date {
-    color: var(--color-text-muted);
-    margin-left: var(--spacing-sm); /* Was 8px */
-}
-.comments-list .comment-text {
-    color: var(--color-text-medium); /* Was #d0d0d0 */
-    word-wrap: break-word;
-}
 
-/* --- User Profiles (Own and View) & User Lists --- */
-/* .profile-page .card, .view-profile-page .card, .users-list-page .card use general .card styles */
+/* --- Profile Pages & User Lists --- */
+.profile-header .meta-info { font-size: 0.9rem; color: var(--color-text-darker); margin-bottom: var(--spacing-md); }
+.profile-header .friend-actions { margin-top: var(--spacing-md); padding-top: var(--spacing-md); border-top: 1px solid var(--color-border-medium); display: flex; flex-wrap: wrap; gap: var(--spacing-sm); }
+.profile-header .friend-actions p { margin: 0; align-self: center; font-size: 0.9rem; }
+.inline-form { display: inline-block; margin: 0 var(--spacing-xxs); }
+.inline-form .button, .inline-form input[type="submit"] { padding: var(--spacing-xxs) var(--spacing-xs); font-size: 0.85em; }
+.friend-request-list li, .friend-list li, .users-list-page .user-list li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--spacing-sm); }
+.friend-request-list li .actions, .friend-list li .inline-form, .users-list-page .user-list li .button { margin-left: auto; flex-shrink: 0; display: flex; gap: var(--spacing-xs); }
+.profile-management select#profile_visibility { max-width: 280px; }
+.profile-annotations-private.card p { font-style: italic; color: var(--color-text-darker); }
 
-.profile-header { /* Specific to profile pages */
-    /* inherits .card styling */
-}
-.profile-header .meta-info {
-    font-size: 0.95em;
-    color: var(--color-text-darker); /* Was #aaa */
-    margin-bottom: var(--spacing-md); /* Was 15px */
-}
-.profile-header .friend-actions {
-    margin-top: var(--spacing-lg); /* Was 20px */
-    padding-top: var(--spacing-lg);
-    border-top: 1px solid var(--color-border-medium);
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-sm); /* Was 10px */
-}
-.profile-header .friend-actions p {
-    margin: 0;
-    align-self: center;
-}
-.inline-form { /* For forms inside list items or flowing with text */
-    display: inline-block;
-    margin: 0 var(--spacing-xs); /* Was 5px */
-}
-.inline-form button, .inline-form input[type="submit"] {
-    /* Use .button-small styles or define specific smaller padding */
-    padding: var(--spacing-xs) var(--spacing-sm); /* Was 6px 12px */
-    font-size: 0.9em;
-}
-
-/* Friend Request, Friend List, User List (Shared structure) */
-.friend-request-list, .friend-list, .users-list-page .user-list {
-    /* Use .card-list styles */
-}
-.friend-request-list li, .friend-list li, .users-list-page .user-list li {
-    /* Use .card-list li styles */
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--spacing-sm); /* Was 10px */
-}
-/* Actions within these list items */
-.friend-request-list li .actions, /* Container for accept/decline buttons */
-.friend-list li .inline-form, /* Unfriend button form */
-.users-list-page .user-list li .button { /* View profile button */
-    margin-left: auto; /* Push to the right */
-    flex-shrink: 0;
-    display: flex; /* For multiple buttons in .actions */
-    gap: var(--spacing-sm); /* Was 10px */
-}
-
-.profile-management select#profile_visibility {
-    max-width: 300px;
-}
-.profile-annotations-private.card p {
-    font-style: italic;
-    color: var(--color-text-darker); /* Was #aaa */
-}
 
 /* --- Static Pages (FAQ, Terms) --- */
-.static-page h1 {
-    margin-bottom: var(--spacing-xl); /* Was 30px */
-    text-align: center;
-}
-.faq-list { /* Container for FAQ items */
-    list-style: none;
-    padding: 0;
-}
-.faq-item { /* Individual Q&A block */
-    background-color: var(--color-bg-light); /* Consistent with .card */
-    padding: var(--spacing-lg);
-    margin-bottom: var(--spacing-lg); /* Was 20px */
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-sm);
-}
-.faq-item dt { /* Question */
-    font-weight: 600;
-    font-size: 1.2rem;
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-sm); /* Was 10px */
-}
-.faq-item dd { /* Answer */
-    margin-left: 0;
-    color: var(--color-text-medium); /* Was #d0d0d0 */
-    line-height: 1.7;
-}
+.static-page h1 { margin-bottom: var(--spacing-lg); text-align: center; font-size: 2rem; }
+.faq-page .faq-list-container { max-width: 800px; margin: 0 auto; }
+.faq-item { background-color: var(--color-bg-light); margin-bottom: var(--spacing-md); border-radius: var(--border-radius-md); border: 1px solid var(--color-border-dark); box-shadow: var(--shadow-sm); }
+.faq-item[open] .faq-question { border-bottom: 1px solid var(--color-border-medium); }
+.faq-item[open] .faq-question::after { transform: translateY(-50%) rotate(90deg); }
+.faq-question { font-size: 1.1rem; font-weight: var(--font-weight-semibold); color: var(--color-text-light); padding: var(--spacing-md); cursor: pointer; position: relative; list-style: none; transition: background-color 0.2s ease; }
+.faq-question:hover { background-color: var(--color-bg-lighter); }
+.faq-question::marker, .faq-question::-webkit-details-marker { display: none; }
+.faq-question::after { content: '❯'; position: absolute; right: var(--spacing-md); top: 50%; transform: translateY(-50%) rotate(0deg); transition: transform 0.2s ease-in-out; font-size: 0.9em; color: var(--color-primary); }
+.faq-answer { padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md) var(--spacing-md); color: var(--color-text-medium); line-height: 1.7; }
+.terms-page .terms-content-container.card { max-width: 900px; margin-left: auto; margin-right: auto; } /* Hérite du .card mais on peut spécifier max-width */
+.terms-content-container h2 { font-size: 1.4rem; color: var(--color-text-light); margin-top: var(--spacing-lg); margin-bottom: var(--spacing-xs); padding-bottom: var(--spacing-xxs); border-bottom: 1px solid var(--color-border-medium); }
+.terms-content-container h2:first-of-type { margin-top: 0; }
+.terms-content-container p { margin-bottom: var(--spacing-sm); color: var(--color-text-dark); }
+.terms-content-container strong { color: var(--color-text-light); font-weight: var(--font-weight-semibold); }
 
-.terms-content { /* Container for Terms text */
-    background-color: var(--color-bg-light);
-    padding: var(--spacing-lg) var(--spacing-xl);
-    border-radius: var(--border-radius-lg);
-    line-height: 1.7;
-}
-.terms-content h2 {
-    font-size: 1.5rem;
-    margin-top: 1.8em;
-    margin-bottom: 0.8em;
-    border-bottom: 1px solid var(--color-border-medium);
-    padding-bottom: var(--spacing-sm); /* Was 8px */
-}
-.terms-content p {
-    margin-bottom: 1.2em;
-}
-.terms-content strong, .terms-content b { /* More specific than general strong/b if needed */
-    color: var(--color-text-light);
-}
-.terms-content em {
-    color: var(--color-text-medium); /* Was #ccc */
-}
 
 /* --- Forum Styles --- */
-.forum-page .create-thread-link { /* Link to create new thread */
-    text-align: right;
-    margin-bottom: var(--spacing-lg); /* Was 20px */
-}
-.create-thread-page .card, /* Form for new thread */
-.view-thread-page .card {   /* Cards for posts and reply form */
-    margin-bottom: var(--spacing-xl); /* Was 25px */
-}
-
-.forum-threads-table { /* Table listing threads */
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-}
-.forum-threads-table th,
-.forum-threads-table td {
-    padding: var(--spacing-sm) var(--spacing-md); /* Was 10px 12px */
-    border-bottom: 1px solid var(--color-border-dark); /* Was #3a3a3a */
-    text-align: left;
-    vertical-align: middle;
-}
-.forum-threads-table th {
-    background-color: var(--color-bg-lighter);
-    color: var(--color-primary);
-    font-weight: 600;
-}
-.forum-threads-table tbody tr:hover {
-    background-color: color-mix(in srgb, var(--color-bg-dark) 50%, var(--color-bg-lighter)); /* Slightly darker than row bg */
-}
-.forum-threads-table td:first-child { /* Thread title column */
-    font-weight: 500;
-}
-.forum-threads-table td.replies-column, /* Example class for replies count */
-.forum-threads-table td.activity-column { /* Example class for last activity */
-    text-align: center;
-    font-size: 0.85rem;
-    color: var(--color-text-darker); /* Was #aaa */
-}
-
-/* Movie Search Dropdown (for create thread) */
-.movie-search-results-dropdown {
-    position: relative; /* Can be absolute if positioned relative to input */
-    background-color: var(--color-bg-lighter);
-    border: 1px solid var(--color-border-light);
-    border-top: none;
-    border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1000;
-    display: none; /* JS toggles this */
-}
-.movie-search-results-dropdown ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-.movie-search-results-dropdown li {
-    padding: var(--spacing-sm) var(--spacing-md); /* Was 8px 12px */
-    cursor: pointer;
-    border-bottom: 1px solid var(--color-border-dark); /* Was #3a3a3a */
-}
-.movie-search-results-dropdown li:last-child {
-    border-bottom: none;
-}
-.movie-search-results-dropdown li:hover {
-    background-color: var(--color-primary);
-    color: var(--color-primary-contrast);
-}
-.selected-movie-text { /* Text showing selected movie */
-    margin-top: var(--spacing-sm); /* Was 8px */
-    font-size: 0.9em;
-    color: var(--color-text-medium); /* Was #ccc */
-}
-.selected-movie-text strong {
-    color: var(--color-primary);
-}
-
-/* View Thread Page Specifics */
-.forum-breadcrumb {
-    margin-bottom: var(--spacing-lg); /* Was 20px */
-    font-size: 0.9em;
-}
-.forum-breadcrumb ol {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-.forum-breadcrumb li {
-    display: inline;
-    color: var(--color-text-darker); /* Was #aaa */
-}
-.forum-breadcrumb li:not(:last-child)::after {
-    content: ' / ';
-    margin: 0 var(--spacing-xs); /* Was 5px */
-    color: var(--color-text-muted); /* Was #777 */
-}
-.forum-breadcrumb a {
-    color: var(--color-primary);
-}
-.view-thread-page h1 { /* Thread title */
-    margin-bottom: var(--spacing-xs); /* Was 5px */
-}
-.thread-meta { /* Info about movie associated with thread */
-    font-size: 0.9em;
-    color: var(--color-text-darker); /* Was #aaa */
-    margin-bottom: var(--spacing-xl); /* Was 25px */
-}
-
-.forum-post { /* Original post and replies container */
-    /* Inherits .card if applied, or define base here */
-    padding: var(--spacing-md) var(--spacing-lg); /* Was 15px 20px */
-    margin-bottom: var(--spacing-lg); /* Was 20px */
-}
-.forum-post .post-header {
-    margin-bottom: var(--spacing-sm); /* Was 10px */
-    padding-bottom: var(--spacing-sm);
-    border-bottom: 1px solid var(--color-border-dark); /* Was #333 */
-    font-size: 0.9em;
-}
-.forum-post .post-header strong { /* Author username */
-    font-size: 1.1em;
-}
-.forum-post .post-date {
-    color: var(--color-text-muted); /* Was #888 */
-    margin-left: var(--spacing-sm); /* Was 10px */
-}
-.forum-post .post-content {
-    line-height: 1.7;
-    word-wrap: break-word;
-}
-.forum-post footer { /* For reply links, etc. */
-    margin-top: var(--spacing-md); /* Was 15px */
-    text-align: right;
-}
-.reply-to-post-link {
-    font-size: 0.85em;
-}
-.reply-form-section h2 { /* "Leave a Reply" heading */
-    margin-bottom: var(--spacing-md); /* Was 15px */
-}
-
-/* --- Scene Annotation Specifics --- */
-.scene-details-fieldset { /* Fieldset for scene details in create thread form */
-    border: 1px solid var(--color-border-medium);
-    padding: var(--spacing-md) var(--spacing-lg);
-    margin-bottom: var(--spacing-lg); /* Was 20px */
-    border-radius: var(--border-radius-md);
-}
-.scene-details-fieldset legend {
-    padding: 0 var(--spacing-sm); /* Was 10px */
-    font-weight: 500;
-    color: var(--color-primary);
-}
-.scene-annotation-tag { /* Small tag in forum list */
-    font-size: 0.8em;
-    color: var(--color-primary);
-    margin-left: var(--spacing-xs); /* Was 5px */
-    font-weight: normal;
-    display: inline-block;
-    background-color: color-mix(in srgb, var(--color-primary) 10%, transparent); /* Light teal background */
-    padding: 2px var(--spacing-xs); /* Was 5px */
-    border-radius: var(--border-radius-sm); /* Was 3px */
-}
-
-/* Scene Info Display (view thread, movie details) */
-.scene-annotation-info.card { /* Used in view_thread_page */
-    background-color: color-mix(in srgb, var(--color-bg-light) 90%, black); /* Slightly different from default card */
-    border-left: 4px solid var(--color-primary-dark);
-    padding: var(--spacing-md);
-    margin-bottom: var(--spacing-lg); /* Was 20px */
-}
-.scene-annotation-info h3 {
-    margin-top: 0;
-    margin-bottom: var(--spacing-sm); /* Was 10px */
-    font-size: 1.2rem;
-    color: var(--color-text-light);
-}
-.scene-annotation-info .scene-desc,
-.scene-annotation-info .scene-time {
-    margin-bottom: var(--spacing-xs); /* Was 5px */
-    color: var(--color-text-medium); /* Was #ccc */
-}
-.scene-annotation-info .scene-time strong,
-.scene-annotation-info .scene-desc strong {
-    color: var(--color-text-light); /* Was #d5d5d5 */
-}
-
-/* Annotations List (movie details, profile) */
-.annotate-scene-action.card { /* Card prompting to annotate */
-    text-align: center;
-}
-.annotate-scene-action h2 {
-    margin-bottom: var(--spacing-sm); /* Was 10px */
-}
-.annotate-scene-action p {
-    margin-bottom: var(--spacing-md); /* Was 15px */
-}
-
-.annotations-list { /* ul container */
-    list-style: none;
-    padding: 0;
-}
-.annotations-list .annotation-item { /* li item */
-    background-color: var(--color-bg-lighter);
-    padding: var(--spacing-md);
-    margin-bottom: var(--spacing-md); /* Was 15px */
-    border-radius: var(--border-radius-md);
-    border-left: 3px solid var(--color-primary);
-}
-.annotations-list .annotation-item:last-child {
-    margin-bottom: 0;
-}
-.annotations-list .annotation-title strong {
-    font-size: 1.1rem;
-    color: var(--color-text-light);
-}
-.annotations-list .annotation-title:hover strong {
-    color: var(--color-primary);
-}
-.annotations-list .scene-desc-preview,
-.annotations-list .scene-time-preview,
-.annotations-list .movie-link { /* Sub-info for annotation */
-    font-size: 0.9em;
-    color: var(--color-text-dark);
-    margin: var(--spacing-xs) 0; /* Was 5px */
-}
-.annotations-list .annotation-meta { /* Author, date */
-    font-size: 0.85em;
-    color: var(--color-text-muted); /* Was #888 */
-    margin-top: var(--spacing-sm); /* Was 8px */
-}
+.forum-page .create-thread-link { text-align: right; margin-bottom: var(--spacing-md); }
+.create-thread-page .card, .view-thread-page .card { margin-bottom: var(--spacing-lg); }
+.forum-threads-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.forum-threads-table th, .forum-threads-table td { padding: var(--spacing-sm); border-bottom: 1px solid var(--color-border-dark); text-align: left; vertical-align: middle; }
+.forum-threads-table th { background-color: var(--color-bg-lighter); color: var(--color-primary); font-weight: var(--font-weight-semibold); }
+.forum-threads-table tbody tr:hover { background-color: var(--color-bg-lightest); }
+.forum-threads-table td:first-child { font-weight: var(--font-weight-medium); }
+.forum-threads-table td.replies-column, .forum-threads-table td.activity-column { text-align: center; font-size: 0.85rem; color: var(--color-text-darker); }
+.movie-search-results-dropdown { position: relative; background-color: var(--color-bg-lighter); border: 1px solid var(--color-border-light); border-top: none; border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm); max-height: 200px; overflow-y: auto; z-index: 1000; display: none; }
+.movie-search-results-dropdown ul { list-style: none; padding: 0; margin: 0; }
+.movie-search-results-dropdown li { padding: var(--spacing-xs) var(--spacing-sm); cursor: pointer; border-bottom: 1px solid var(--color-border-dark); }
+.movie-search-results-dropdown li:last-child { border-bottom: none; }
+.movie-search-results-dropdown li:hover { background-color: var(--color-primary); color: var(--color-primary-contrast); }
+.selected-movie-text { margin-top: var(--spacing-xs); font-size: 0.9em; color: var(--color-text-medium); }
+.selected-movie-text strong { color: var(--color-primary); }
+.forum-breadcrumb { margin-bottom: var(--spacing-md); font-size: 0.9em; }
+.forum-breadcrumb ol { list-style: none; padding: 0; margin: 0; }
+.forum-breadcrumb li { display: inline; color: var(--color-text-darker); }
+.forum-breadcrumb li:not(:last-child)::after { content: ' / '; margin: 0 var(--spacing-xxs); color: var(--color-text-muted); }
+.forum-breadcrumb a { color: var(--color-primary); }
+.view-thread-page h1 { margin-bottom: var(--spacing-xxs); }
+.thread-meta { font-size: 0.9em; color: var(--color-text-darker); margin-bottom: var(--spacing-lg); }
+.forum-post { padding: var(--spacing-md); margin-bottom: var(--spacing-md); background-color: var(--color-bg-light); border-radius: var(--border-radius-md); box-shadow: var(--shadow-sm); }
+.forum-post .post-header { margin-bottom: var(--spacing-xs); padding-bottom: var(--spacing-xs); border-bottom: 1px solid var(--color-border-dark); font-size: 0.9em; }
+.forum-post .post-header strong { font-size: 1.05em; }
+.forum-post .post-header strong a { color: var(--color-primary); }
+.forum-post .post-date { color: var(--color-text-muted); margin-left: var(--spacing-xs); }
+.forum-post .post-content { line-height: 1.6; word-wrap: break-word; color: var(--color-text-light); }
+.forum-post .post-content p { margin-bottom: var(--spacing-sm); }
+.forum-post .post-content p:last-child { margin-bottom: 0; }
+.forum-post footer { margin-top: var(--spacing-sm); text-align: right; }
+.reply-form-section h2 { margin-bottom: var(--spacing-sm); }
+.scene-details-fieldset { border: 1px solid var(--color-border-medium); padding: var(--spacing-md); margin-bottom: var(--spacing-md); border-radius: var(--border-radius-md); }
+.scene-details-fieldset legend { padding: 0 var(--spacing-xs); font-weight: var(--font-weight-medium); color: var(--color-primary); }
+.scene-annotation-tag { font-size: 0.8em; color: var(--color-primary); margin-left: var(--spacing-xs); background-color: color-mix(in srgb, var(--color-primary) 10%, transparent); padding: 2px var(--spacing-xs); border-radius: var(--border-radius-sm); font-weight: var(--font-weight-medium); }
+.scene-annotation-info.card { background-color: color-mix(in srgb, var(--color-bg-light) 95%, black); border-left: 3px solid var(--color-primary-dark); padding: var(--spacing-md); margin-bottom: var(--spacing-md); }
+.scene-annotation-info h3 { margin-top: 0; margin-bottom: var(--spacing-xs); font-size: 1.1rem; color: var(--color-text-light); }
+.scene-annotation-info .scene-desc, .scene-annotation-info .scene-time { margin-bottom: var(--spacing-xxs); font-size: 0.9em; color: var(--color-text-medium); }
+.scene-annotation-info strong { color: var(--color-text-light); }
+.annotations-list { list-style: none; padding: 0; }
+.annotations-list .annotation-item { background-color: var(--color-bg-lighter); padding: var(--spacing-sm); margin-bottom: var(--spacing-sm); border-radius: var(--border-radius-md); border-left: 3px solid var(--color-primary); }
+.annotations-list .annotation-item:last-child { margin-bottom: 0; }
+.annotations-list .annotation-title strong { font-size: 1rem; color: var(--color-text-light); }
+.annotations-list .annotation-title:hover strong { color: var(--color-primary); }
+.annotations-list .scene-desc-preview, .annotations-list .scene-time-preview, .annotations-list .movie-link { font-size: 0.85em; color: var(--color-text-dark); margin: var(--spacing-xxs) 0; }
+.annotations-list .annotation-meta { font-size: 0.8em; color: var(--color-text-muted); margin-top: var(--spacing-xs); }
 
 /* --- Admin Panel --- */
-.admin-panel-page .card {
-    padding: var(--spacing-lg) var(--spacing-xl); /* Was 20px 25px */
-}
-.admin-users-table { /* Shared by user management and FAQ list */
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: var(--spacing-lg); /* Was 20px */
-    font-size: 0.9rem;
-}
-.admin-users-table th,
-.admin-users-table td {
-    text-align: left;
-    padding: var(--spacing-sm) var(--spacing-md); /* Was 10px 12px */
-    border-bottom: 1px solid var(--color-border-dark); /* Was #3a3a3a */
-}
-.admin-users-table th {
-    background-color: var(--color-bg-lighter);
-    color: var(--color-primary);
-    font-weight: 600;
-}
-.admin-users-table tbody tr:nth-child(even) {
-    background-color: color-mix(in srgb, var(--color-bg-dark) 70%, var(--color-bg-lighter)); /* Slightly different for even rows */
-}
-.admin-users-table tbody tr:hover {
-    background-color: color-mix(in srgb, var(--color-bg-dark) 50%, var(--color-bg-lighter));
-}
-.admin-users-table .status-banned {
-    color: color-mix(in srgb, var(--color-danger) 80%, var(--color-text-light)); /* Lighter red */
-    font-weight: bold;
-}
-.admin-users-table .status-active {
-    color: color-mix(in srgb, var(--color-success) 80%, var(--color-text-light)); /* Lighter green */
-}
-.admin-users-table .inline-form { /* Ensure forms in table cells don't add extra margin */
-    margin: 0;
-}
+.admin-users-table { width: 100%; border-collapse: collapse; margin-top: var(--spacing-md); font-size: 0.9rem; }
+.admin-users-table th, .admin-users-table td { text-align: left; padding: var(--spacing-xs) var(--spacing-sm); border-bottom: 1px solid var(--color-border-dark); }
+.admin-users-table th { background-color: var(--color-bg-lighter); color: var(--color-primary); font-weight: var(--font-weight-semibold); }
+.admin-users-table tbody tr:nth-child(even) { background-color: var(--color-bg-lightest); }
+.admin-users-table tbody tr:hover { background-color: var(--color-bg-light); }
+.admin-users-table .status-banned { color: var(--color-danger); font-weight: var(--font-weight-semibold); }
+.admin-users-table .status-active { color: var(--color-success); }
 
 /* ==========================================================================
    8. MONETIZATION STYLES (Ads, Streaming Links)
    ========================================================================== */
-/* --- Placeholder Advertisements --- */
-.advertisement-slot {
-    margin: var(--spacing-xl) 0; /* Was 20px or 25px */
-    padding: var(--spacing-lg); /* Was 15px or 20px */
-    background-color: var(--color-bg-medium); /* Was #222 or #2a2a2a */
-    border: 1px dashed var(--color-border-medium);
-    text-align: center;
-    min-height: 100px;
-    border-radius: var(--border-radius-md); /* Was 6px or none */
-}
-/* .advertisement-slot h4 (Removed as it wasn't used consistently) */
-.placeholder-ad-content {
-    /* border: 2px dashed var(--color-border-light); Optional inner border */
-    padding: var(--spacing-md);
-    /* background-color: var(--color-bg-lighter); Optional inner bg */
-    color: var(--color-text-darker); /* Was #aaa */
-    min-height: 90px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.placeholder-ad-content p {
-    margin-bottom: var(--spacing-xs); /* Was 5px or 8px */
-    line-height: 1.4;
-}
-.placeholder-ad-content strong {
-    color: var(--color-text-medium); /* Was #ccc */
-    font-size: 1.1em;
-}
-.ad-sidebar { /* If specific sidebar ad styling is needed */
-    max-width: 300px;
-    margin-left: auto;
-    margin-right: auto;
-}
-/* .adsbygoogle (Remains as is, for potential real AdSense) */
-.adsbygoogle {
-    display: block;
-}
+/* --- Publicités simulées --- */
+.advertisement-slot { background-color: var(--color-bg-medium); border: 1px dashed var(--color-border-medium); padding: var(--spacing-sm); text-align: center; border-radius: var(--border-radius-sm); margin-bottom: var(--spacing-md); }
+.advertisement-slot.sticky-sidebar-ad { /* position: sticky; top: calc(var(--header-height, 70px) + var(--spacing-md)); (Si header sticky) */ }
+.advertisement-slot.bottom-ad-slot { margin-top: var(--spacing-lg); max-width: 728px; margin-left: auto; margin-right: auto; background-color: transparent; border: none; }
+.bottom-ad-slot .placeholder-ad-image-gif { margin-left: auto; margin-right: auto; }
 
-/* --- Streaming Options Section (Movie Details) --- */
-.movie-streaming-options { /* Container for streaming links */
-    margin-top: var(--spacing-lg); /* Was 15px or 20px */
-    padding-top: var(--spacing-lg);
-    border-top: 1px solid var(--color-border-dark); /* Was #333 or #3a3a3a */
-}
-.movie-streaming-options.card { /* If it has .card class */
-    background-color: color-mix(in srgb, var(--color-bg-light) 90%, black); /* Slightly distinct */
-    border-left: 4px solid var(--color-streaming-link-hover); /* Example accent */
-}
-.movie-streaming-options h3 {
-    margin-top: 0;
-    margin-bottom: var(--spacing-md); /* Was 15px */
-    font-size: 1.2rem; /* Consistent with scene-annotation-info h3 */
-    color: var(--color-text-light);
-}
-.streaming-providers-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-sm); /* Was 10px or 15px */
-    align-items: center;
-    margin-bottom: var(--spacing-sm); /* Was 5px or 10px */
-}
-.streaming-provider-link {
-    display: inline-flex;
-    align-items: center;
-    padding: var(--spacing-xs) var(--spacing-sm); /* Was 6px 10px or 8px 12px */
-    background-color: var(--color-bg-lighter); /* Was #333 or #383838 */
-    color: var(--color-text-medium); /* Was #e0e0e0 or #d0d0d0 */
-    border-radius: var(--border-radius-sm); /* Was 4px or 5px */
-    text-decoration: none;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-    border: 1px solid var(--color-border-light); /* Was #484848 or none */
-}
-.streaming-provider-link:hover {
-    background-color: var(--color-primary); /* Was #007bff or #00bfa5 */
-    color: var(--color-primary-contrast); /* Was #fff or #111 */
-    border-color: var(--color-primary);
-}
-.streaming-provider-link img {
-    width: 20px; /* Was 20px or 24px */
-    height: 20px;
-    object-fit: contain;
-    margin-right: var(--spacing-sm); /* Was 8px */
-    vertical-align: middle; /* Good practice */
-}
-.streaming-provider-link span {
-    font-size: 0.85rem; /* Was 0.85rem or 0.9rem */
-    font-weight: 500;
-    white-space: nowrap;
-}
-.affiliate-disclosure {
-    display: block;
-    font-size: 0.8em;
-    color: var(--color-text-muted); /* Was #888 or #999 */
-    margin-top: var(--spacing-sm); /* Was 10px or 15px */
-    text-align: left; /* Or center, consistent with previous */
-}
+.simulated-ad-content { padding: var(--spacing-md); display: flex; flex-direction: column; gap: var(--spacing-xs); position: relative; background-color: var(--color-bg-lighter); border-radius: var(--border-radius-sm); box-shadow: inset 0 0 5px rgba(0,0,0,0.1); }
+.ad-title { font-size: 1rem; font-weight: var(--font-weight-semibold); margin-bottom: var(--spacing-xxs); color: var(--color-text-light); }
+.ad-text { font-size: 0.85rem; line-height: 1.4; color: var(--color-text-dark); margin-bottom: var(--spacing-xs); }
+.ad-price { font-size: 0.95rem; font-weight: bold; color: var(--color-success); margin-bottom: var(--spacing-xs); }
+.ad-cta { align-self: flex-start; }
+.placeholder-ad-image-gif { max-width: 100%; height: auto; display: block; border-radius: var(--border-radius-sm); } /* Combiné avec ad-image-banner */
+.ad-image-product { max-width: 120px; height: auto; margin: 0 auto var(--spacing-xs) auto; border-radius: var(--border-radius-sm); border: 1px solid var(--color-border-light); }
+.ad-sponsored-tag { position: absolute; top: var(--spacing-xxs); right: var(--spacing-xxs); font-size: 0.7em; color: var(--color-text-muted); background-color: color-mix(in srgb, var(--color-bg-dark) 50%, transparent); padding: 2px 5px; border-radius: var(--border-radius-sm); }
+.simulated-ad-content > .ad-cta { align-self: flex-start; }
+.simulated-ad-content.ad-banner > a { display:block; }
+.placeholder-ad-content-textual { padding: var(--spacing-md); text-align: center; background-color: var(--color-bg-lighter); color: var(--color-text-muted); min-height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: var(--border-radius-sm); }
+.placeholder-ad-content-textual p { margin-bottom: var(--spacing-xxs); }
+.placeholder-ad-content-textual strong { color: var(--color-text-medium); }
 
+/* --- Streaming Links --- */
+.movie-streaming-options { margin-top: var(--spacing-md); padding-top: var(--spacing-md); border-top: 1px solid var(--color-border-dark); }
+.movie-streaming-options h3 { margin-top: 0; margin-bottom: var(--spacing-sm); font-size: 1.1rem; color: var(--color-text-light); }
+.streaming-providers-list { display: flex; flex-wrap: wrap; gap: var(--spacing-xs); align-items: center; margin-bottom: var(--spacing-xs); }
+.streaming-provider-link { display: inline-flex; align-items: center; padding: 5px var(--spacing-xs); background-color: var(--color-bg-lighter); color: var(--color-text-medium); border-radius: var(--border-radius-sm); text-decoration: none; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; border: 1px solid var(--color-border-light); font-size: 0.8rem; }
+.streaming-provider-link:hover { background-color: var(--color-primary); color: var(--color-primary-contrast); border-color: var(--color-primary); }
+.streaming-provider-link img { width: 18px; height: 18px; object-fit: contain; margin-right: var(--spacing-xxs); }
+.streaming-provider-link span small { color: var(--color-text-muted); font-size: 0.9em; }
+.affiliate-disclosure { display: block; font-size: 0.75em; color: var(--color-text-muted); margin-top: var(--spacing-xs); text-align: left; }
 
 /* ==========================================================================
-   9. MEDIA QUERIES (Responsive Adjustments)
+   9. MEDIA QUERIES
    ========================================================================== */
-/* Tablets and larger mobiles */
-@media (min-width: 576px) {
-    .movies-grid, .watchlist-grid {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    }
-    .trending-movies-container {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-    .cast-list {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    }
-    .movie-user-actions { /* Buttons side-by-side */
-        flex-direction: row;
-    }
-    .movie-user-actions .button-primary, .movie-user-actions .button-danger {
-        width: auto; /* Auto width for buttons */
-    }
-    .comments-list .comment-date {
-        display: inline; /* Show date inline */
-    }
+/* --- Header Responsiveness --- */
+@media (max-width: 1024px) {
+    .header-container { flex-direction: column; align-items: center; }
+    .site-branding { width: auto; margin-bottom: var(--spacing-sm); text-align: center; }
+    .main-navigation { width: 100%; margin-bottom: var(--spacing-sm); }
+    .main-navigation ul { justify-content: center; }
+    .header-search-bar { width: 100%; max-width: 400px; }
+    .search-form-header { max-width: none; }
 }
-
-/* Tablets */
-@media (min-width: 768px) {
-    html { font-size: 17px; }
-    .container { padding: 0 var(--spacing-lg); } /* Was 20px */
-    h1 { font-size: 2.8rem; }
-    h2 { font-size: 2.2rem; }
-
-    .main-navigation .nav-link { margin: 0 var(--spacing-md); } /* Was 15px */
-    .search-box { flex-wrap: nowrap; } /* Prevent search input/button wrapping */
-
-    .movie-main-header {
-        flex-direction: row; /* Poster and meta info side-by-side */
-        align-items: flex-start;
-    }
-    .movie-main-header .movie-poster {
-        width: 250px;
-        margin: 0; /* Reset mobile margin */
-        margin-right: var(--spacing-xl); /* Space between poster and text */
-    }
-    .friend-request-list li, .friend-list li, .users-list-page .user-list li {
-        flex-wrap: nowrap; /* Prevent wrapping of content and actions */
-    }
-
-    /* Responsive Forum Table */
-    .forum-threads-table th.author-column, /* Add classes to th/td for targeting */
-    .forum-threads-table td.author-column,
-    .forum-threads-table th.activity-column,
-    .forum-threads-table td.activity-column {
-        /* display: none; /* Hide less critical columns */
-        /* Consider making them visible but with less priority or smaller font if space is an issue */
-    }
-     .forum-threads-table th.film-column,
-    .forum-threads-table td.film-column {
-        /* display: none; */
-    }
-
-    /* Admin Table Responsiveness */
-    .user-management-section { /* Parent of admin table */
-        display: block;
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-    .admin-users-table {
-        min-width: 800px; /* Ensure table has enough width for all columns */
-    }
-    .admin-users-table th,
-    .admin-users-table td {
-        white-space: nowrap; /* Prevent text wrapping in cells */
-    }
-
-    /* Main Navigation on smaller tablets */
-    .main-navigation .nav-link {
-        margin: 0 var(--spacing-xs); /* Was 5px */
-        padding: var(--spacing-sm); /* Was 8px 8px */
-        font-size: 0.9rem;
-    }
-}
-
-/* Desktops */
-@media (min-width: 992px) {
-    .movies-grid, .watchlist-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-     .trending-movies-container {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    }
-    .cast-list {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    }
-    .movie-main-header .movie-poster {
-        width: 280px;
-    }
-    .movie-content-columns { /* Movie details content and sidebar */
-        flex-direction: row;
-    }
-}
-
-/* Large Desktops */
-@media (min-width: 1200px) {
-    html { font-size: 18px; }
-    .movies-grid, .watchlist-grid {
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    }
-     .trending-movies-container {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    }
-    .movie-main-header .movie-poster {
-        width: 300px;
-    }
-}
-
-/* assets/style.css */
-
-/* ... (vos styles existants pour .advertisement-slot et .placeholder-ad-content) ... */
-
-/* Styles pour le contenu des fausses publicités générées */
-.fake-ad-content {
-    padding: var(--spacing-md);
-    text-align: left; /* Ou center si vous préférez pour le contenu de la pub */
-    border-left: 5px solid var(--color-primary); /* Couleur par défaut */
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Aligner à gauche */
-    gap: var(--spacing-sm);
-}
-
-.fake-ad-title {
-    color: var(--color-primary); /* Couleur par défaut */
-    margin-bottom: var(--spacing-xs);
-    font-size: 1.1em;
-    font-weight: 600;
-}
-
-.fake-ad-text {
-    font-size: 0.9em;
-    line-height: 1.5;
-    color: var(--color-text-dark); /* Un peu plus clair que le texte normal muted */
-    margin-bottom: var(--spacing-sm);
-}
-
-.fake-ad-cta { /* Style pour le bouton Call To Action */
-    border-color: var(--color-primary); /* Couleur par défaut */
-    color: var(--color-primary);
-    align-self: flex-start; /* Bouton à gauche */
-}
-.fake-ad-cta:hover {
-    background-color: var(--color-primary);
-    color: var(--color-primary-contrast);
-}
-
-/* Exemple de style thématique si vous utilisez des classes comme .ad-theme-blockbuster-de-l-ete */
-.ad-theme-blockbuster-de-l-ete .fake-ad-title,
-.ad-theme-blockbuster-de-l-ete .fake-ad-cta {
-    color: #FFD700; /* Or */
-    border-color: #FFD700;
-}
-.ad-theme-blockbuster-de-l-ete { border-left-color: #FFD700; }
-
-.ad-theme-soiree-cinema-parfaite .fake-ad-title,
-.ad-theme-soiree-cinema-parfaite .fake-ad-cta {
-    color: #DA70D6; /* Orchidée */
-    border-color: #DA70D6;
-}
-.ad-theme-soiree-cinema-parfaite { border-left-color: #DA70D6; }
-
-/* Ajoutez des styles similaires pour les autres thèmes... */
-.ad-theme-les-classiques-remasterises .fake-ad-title,
-.ad-theme-les-classiques-remasterises .fake-ad-cta {
-    color: #77B5FE; /* Bleu ciel */
-    border-color: #77B5FE;
-}
-.ad-theme-les-classiques-remasterises { border-left-color: #77B5FE; }
-
-.ad-theme-festival-du-film-independant .fake-ad-title,
-.ad-theme-festival-du-film-independant .fake-ad-cta {
-    color: #32CD32; /* Vert citron */
-    border-color: #32CD32;
-}
-.ad-theme-festival-du-film-independant { border-left-color: #32CD32; }
-
-.ad-theme-le-podcast-cinema .fake-ad-title,
-.ad-theme-le-podcast-cinema .fake-ad-cta {
-    color: #FF7F50; /* Corail */
-    border-color: #FF7F50;
-}
-.ad-theme-le-podcast-cinema { border-left-color: #FF7F50; }
-
-
-/* Assurez-vous que .advertisement-slot est bien stylé */
-.advertisement-slot {
-    background-color: var(--color-bg-medium); /* Ou une autre couleur de fond pour la pub */
-    border: 1px solid var(--color-border-medium); /* Une bordure pour délimiter */
-    padding: var(--spacing-sm); /* Un peu de padding interne pour ne pas coller le contenu */
-    /* text-align: center; (si le contenu interne doit être centré, sinon left) */
-}
-
-/* assets/style.css */
-
-/* Styles pour le conteneur global du slot publicitaire */
-.advertisement-slot {
-    /* Vos styles existants sont probablement bons :
-       margin, padding, background-color, border, border-radius */
-}
-
-/* Contenu interne généré par la fonction PHP */
-.simulated-ad-content {
-    padding: var(--spacing-md);
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-    position: relative; /* Pour le positionnement du tag "Publicité" */
-    background-color: var(--color-bg-lighter); /* Un fond pour le contenu de la pub elle-même */
-    border-radius: var(--border-radius-sm); /* Coins arrondis */
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.1); /* Légère ombre intérieure */
-}
-
-.ad-title {
-    font-size: 1.1em;
-    font-weight: 600;
-    margin-bottom: var(--spacing-xs);
-    color: var(--color-text-light); /* Couleur de base */
-}
-
-.ad-text {
-    font-size: 0.9em;
-    line-height: 1.4;
-    color: var(--color-text-dark);
-    margin-bottom: var(--spacing-sm);
-}
-
-.ad-price {
-    font-size: 1em;
-    font-weight: bold;
-    color: var(--color-success); /* Vert pour le prix, par exemple */
-    margin-bottom: var(--spacing-sm);
-}
-
-.ad-cta { /* Style du bouton Call To Action */
-    /* Hérite des styles .button .button-small */
-    /* Des styles spécifiques peuvent être ajoutés ici ou via les classes thématiques */
-    align-self: flex-start; /* Pour les pubs textuelles */
-}
-
-.ad-image-banner { /* Pour les images de type bannière */
-    width: 100%;
-    height: auto;
-    border-radius: var(--border-radius-sm);
-    display: block;
-}
-
-.ad-image-product { /* Pour les images de produits */
-    max-width: 150px; /* Ou une taille appropriée */
-    height: auto;
-    margin: 0 auto var(--spacing-sm) auto; /* Centrer l'image produit */
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--color-border-light);
-}
-
-.ad-sponsored-tag {
-    position: absolute;
-    top: var(--spacing-xs);
-    right: var(--spacing-xs);
-    font-size: 0.7em;
-    color: var(--color-text-muted);
-    background-color: color-mix(in srgb, var(--color-bg-dark) 50%, transparent);
-    padding: 2px 5px;
-    border-radius: var(--border-radius-sm);
-}
-
-/* Styles thématiques (exemples, à développer) */
-.ad-theme-gold .ad-title, .ad-theme-gold .ad-cta { color: #FFD700; border-color: #FFD700; }
-.ad-theme-gold.simulated-ad-content { border-left: 5px solid #FFD700; } /* si vous voulez la bordure latérale */
-
-.ad-theme-blue .ad-title, .ad-theme-blue .ad-cta { color: #77B5FE; border-color: #77B5FE; }
-.ad-theme-blue.simulated-ad-content { border-left: 5px solid #77B5FE; }
-
-.ad-theme-scifi .ad-title { color: #DA70D6; /* Orchidée pour sci-fi */ }
-.ad-theme-scifi .ad-cta { color: #DA70D6; border-color: #DA70D6; }
-.ad-theme-scifi.simulated-ad-content { border-left: 5px solid #DA70D6; }
-
-.ad-theme-classic .ad-title { color: #D2B48C; /* Tan pour classique */ }
-.ad-theme-classic .ad-cta { color: #D2B48C; border-color: #D2B48C; }
-.ad-theme-classic.simulated-ad-content { border-left: 5px solid #D2B48C; }
-
-.ad-theme-brand .ad-title { color: var(--color-primary); /* Utilise la couleur primaire du site */ }
-.ad-theme-brand .ad-cta { color: var(--color-primary); border-color: var(--color-primary); }
-.ad-theme-brand.simulated-ad-content { border-left: 5px solid var(--color-primary); }
-
-.ad-theme-tech .ad-title { color: #00C1D4; /* Un bleu tech/cyan */ }
-.ad-theme-tech .ad-cta { color: #00C1D4; border-color: #00C1D4; }
-.ad-theme-tech.simulated-ad-content { border-left: 5px solid #00C1D4; }
-
-/* Ajustement pour que les boutons CTA ne prennent pas toute la largeur dans certains flex contexts */
-.simulated-ad-content > .ad-cta {
-    align-self: flex-start;
-}
-.simulated-ad-content.ad-banner > a { /* L'image bannière est le lien, pas de bouton séparé */
-    display:block;
-}
-/* --------------------
-   SITE HEADER & NAVIGATION (Mises à jour)
-   -------------------- */
-.site-header {
-    background-color: #1f1f1f;
-    padding: 10px 0; /* Ajuster le padding */
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    margin-bottom: 30px;
-    position: sticky; /* Optionnel: rendre le header collant en haut */
-    top: 0;
-    z-index: 1000; /* Assurer qu'il est au-dessus des autres contenus si collant */
-}
-
-.header-container {
-    display: flex;
-    justify-content: space-between; /* Éléments espacés */
-    align-items: center;
-    flex-wrap: wrap; /* Permettre le retour à la ligne sur petits écrans */
-    gap: 15px; /* Espace entre les éléments du header */
-}
-
-.site-branding .site-logo-link {
-    text-decoration: none;
-}
-.site-branding .site-title-header {
-    font-size: 1.8rem; /* Ajuster la taille */
-    font-weight: 700;
-    color: #00bfa5; /* Couleur du thème */
-    text-decoration: none;
-}
-.site-branding .site-title-header:hover {
-    color: #008c7a;
-}
-
-
-.main-navigation ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex; /* Aligner les liens horizontalement */
-    flex-wrap: wrap; /* Permettre le retour à la ligne */
-    gap: 5px; /* Espace entre les liens */
-}
-
-.main-navigation li {
-    /* Pas de style spécifique nécessaire pour li ici si gap est sur ul */
-}
-
-.main-navigation .nav-link {
-    color: #e0e0e0;
-    font-weight: 500;
-    margin: 0; /* Retirer les marges si gap est utilisé sur ul/li */
-    padding: 8px 12px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease, color 0.2s ease;
-    display: inline-block;
-    text-decoration: none; /* Assurer qu'il n'y a pas de soulignement par défaut */
-}
-.main-navigation .nav-link:hover,
-.main-navigation .nav-link:focus,
-.main-navigation .nav-link.active {
-    background-color: #00bfa5;
-    color: #111;
-    text-decoration: none;
-}
-
-/* Barre de recherche dans le header */
-.header-search-bar {
-    /* Flex grow/shrink/basis peuvent être utilisés si vous voulez un contrôle plus fin
-       par rapport à la navigation sur les grands écrans */
-    /* min-width: 200px; /* Assurer une largeur minimale */
-}
-
-.search-form-header {
-    display: flex;
-    align-items: center;
-    background-color: #2c2c2c; /* Fond similaire aux inputs */
-    border-radius: 20px; /* Coins arrondis pour la barre */
-    padding: 2px 5px 2px 10px; /* Petit padding interne */
-    border: 1px solid #444;
-    max-width: 300px; /* Limiter la largeur maximale */
-}
-.search-form-header:focus-within { /* Style quand l'input a le focus */
-    border-color: #00bfa5;
-    box-shadow: 0 0 0 2px rgba(0, 191, 165, 0.2);
-}
-
-.search-form-header input[type="text"] {
-    flex-grow: 1; /* L'input prend l'espace disponible */
-    background-color: transparent; /* Fond transparent, hérite de .search-form-header */
-    color: #e0e0e0;
-    border: none; /* Pas de bordure pour l'input lui-même */
-    padding: 8px 5px; /* Padding pour l'input */
-    font-size: 0.9rem;
-    outline: none; /* Pas d'outline par défaut */
-    width: 100%; /* S'assurer qu'il remplit l'espace */
-}
-.search-form-header input[type="text"]::placeholder {
-    color: #888;
-}
-
-.search-form-header .search-button-header {
-    background-color: transparent;
-    border: none;
-    color: #aaa; /* Couleur de l'icône */
-    padding: 8px;
-    cursor: pointer;
-    display: flex; /* Pour bien centrer l'icône SVG */
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%; /* Bouton rond */
-}
-.search-form-header .search-button-header:hover,
-.search-form-header .search-button-header:focus {
-    color: #00bfa5; /* Couleur au survol/focus */
-    background-color: rgba(0, 191, 165, 0.1); /* Léger fond au survol */
-}
-.search-form-header .search-button-header svg {
-    width: 1em;  /* Taille de l'icône relative à la police */
-    height: 1em;
-}
-
-/* Media Queries pour la responsivité du header */
-@media (max-width: 992px) { /* Ajuster ce point de rupture si nécessaire */
-    .header-container {
-        flex-direction: column; /* Empiler les éléments verticalement */
-        align-items: flex-start; /* Aligner à gauche */
-    }
-    .main-navigation {
-        width: 100%; /* La navigation prend toute la largeur */
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
-    .main-navigation ul {
-        justify-content: flex-start; /* Aligner les liens de nav à gauche */
-    }
-    .header-search-bar {
-        width: 100%; /* La barre de recherche prend toute la largeur */
-        margin-top: 10px;
-    }
-    .search-form-header {
-        max-width: none; /* Permettre à la barre de recherche de prendre toute la largeur */
-    }
-}
-
 @media (max-width: 768px) {
-    .site-branding .site-title-header {
-        font-size: 1.5rem;
-    }
-    .main-navigation .nav-link {
-        padding: 8px 10px;
-        font-size: 0.9rem;
-    }
-     .main-navigation ul {
-        gap: 0px 5px; /* réduire l'espacement horizontal sur mobile */
-        justify-content: center; /* Centrer les liens sur très petits écrans */
-    }
+    html { font-size: 15px; }
+    h1 { font-size: 2rem; } h2 { font-size: 1.6rem; } h3 { font-size: 1.3rem; }
+    .site-branding .site-title-header { font-size: 1.6rem; }
+    .site-branding .site-logo-image { height: 30px; }
+    .main-navigation .nav-link { padding: var(--spacing-xs); font-size: 0.85rem; }
+    .main-navigation ul { gap: 0 var(--spacing-xxs); }
+    .admin-panel-page .card > .admin-users-table,
+    .admin-panel-page .card > div > .admin-users-table { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .admin-users-table { min-width: 700px; }
+    .admin-users-table th, .admin-users-table td { white-space: nowrap; }
 }
 
-/* --------------------
-   SITE HEADER & NAVIGATION (Mises à jour pour logo et style de recherche)
-   -------------------- */
-.site-header {
-    background-color: #1f1f1f; /* Ou #1a1a1a si vous voulez qu'il corresponde exactement au fond du body */
-    padding: 10px 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    margin-bottom: 30px;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-/* --- Site Branding avec Logo --- */
-.site-branding .site-logo-link {
-    display: flex; /* Pour aligner le logo et le titre sur la même ligne */
-    align-items: center; /* Centrer verticalement */
-    text-decoration: none;
-    color: #00bfa5; /* Couleur du thème pour le titre à côté du logo */
-}
-.site-branding .site-logo-link:hover {
-    color: #008c7a; /* Assombrir au survol */
-}
-
-.site-branding .site-logo-image {
-    height: 40px; /* Ajustez la hauteur de votre logo */
-    width: auto;   /* La largeur s'ajustera proportionnellement */
-    margin-right: 10px; /* Espace entre le logo et le titre */
-    object-fit: contain; /* S'assure que le logo n'est pas déformé */
-}
-
-.site-branding .site-title-header {
-    font-size: 1.8rem;
-    font-weight: 700;
-    /* La couleur est héritée de .site-logo-link ou peut être définie ici */
-}
-
-
-.main-navigation ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-}
-
-.main-navigation .nav-link {
-    color: #e0e0e0;
-    font-weight: 500;
-    padding: 8px 12px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease, color 0.2s ease;
-    display: inline-block;
-    text-decoration: none;
-}
-.main-navigation .nav-link:hover,
-.main-navigation .nav-link:focus,
-.main-navigation .nav-link.active {
-    background-color: #00bfa5; /* Turquoise pour le lien actif/survol */
-    color: #111; /* Texte foncé pour le contraste */
-}
-
-/* --- Barre de recherche dans le header (style de la page d'accueil) --- */
-.header-search-bar {
-    /* margin-left: auto; /* Pour pousser la barre de recherche vers la droite sur les grands écrans si besoin */
-}
-
-.search-form-header {
-    display: flex;
-    align-items: center;
-    /* Style inspiré de votre image de page d'accueil */
-    background-color: #2c2c2c; /* Fond un peu plus clair que #1a1a1a */
-    border: 1px solid #444; /* Bordure subtile */
-    border-radius: 6px; /* Coins légèrement arrondis, comme sur l'image */
-    padding: 0; /* Le padding sera sur l'input et le bouton */
-    max-width: 350px; /* Ou la largeur désirée */
-    overflow: hidden; /* Pour que les coins arrondis s'appliquent bien */
-}
-.search-form-header:focus-within {
-    border-color: #00bfa5;
-    box-shadow: 0 0 0 2px rgba(0, 191, 165, 0.2);
-}
-
-.search-form-header input[type="text"] {
-    flex-grow: 1;
-    background-color: transparent;
-    color: #e0e0e0;
-    border: none;
-    padding: 10px 15px; /* Padding plus généreux */
-    font-size: 0.95rem; /* Un peu plus grand */
-    outline: none;
-    width: calc(100% - 40px); /* Laisser de la place pour le bouton */
-}
-.search-form-header input[type="text"]::placeholder {
-    color: #888;
-}
-
-.search-form-header .search-button-header {
-    background-color: transparent; /* Pas de fond pour le bouton de l'icône */
-    border: none;
-    color: #aaa;
-    padding: 10px; /* Padding pour que l'icône soit cliquable facilement */
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-left: 1px solid #444; /* Séparateur optionnel entre input et bouton */
-    transition: color 0.2s ease;
-}
-.search-form-header .search-button-header:hover,
-.search-form-header .search-button-header:focus {
-    color: #00bfa5;
-    background-color: transparent; /* Pas de changement de fond au survol ici */
-}
-.search-form-header .search-button-header svg {
-    width: 1em;
-    height: 1em;
-}
-
-/* Media Queries pour la responsivité du header */
-@media (max-width: 1024px) { /* Ajuster le point de rupture pour quand la nav et la recherche doivent s'empiler */
-    .header-container {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .site-branding {
-        width: 100%; /* Le logo/titre prend toute la largeur */
-        margin-bottom: 10px;
-        text-align: center; /* Centrer le logo/titre sur mobile */
-    }
-    .site-branding .site-logo-link {
-        justify-content: center; /* Centrer le logo et le titre si flex */
-    }
-
-    .main-navigation {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-    .main-navigation ul {
-        justify-content: center; /* Centrer les liens de navigation */
-        flex-wrap: wrap;
-    }
-    .header-search-bar {
-        width: 100%; /* La barre de recherche prend toute la largeur */
-    }
-    .search-form-header {
-        max-width: none; /* S'étend sur toute la largeur disponible */
-    }
-}
-
-@media (max-width: 768px) {
-    .site-branding .site-title-header {
-        font-size: 1.6rem; /* Un peu plus petit */
-    }
-    .site-branding .site-logo-image {
-        height: 35px; /* Logo un peu plus petit */
-    }
-    .main-navigation .nav-link {
-        padding: 8px 8px;
-        font-size: 0.85rem;
-    }
-}
-/* ... autres styles ... */
-/* ... (vos autres styles) ... */
-
-/* Styles pour les publicités vidéo/GIF simulées */
-.advertisement-slot { /* Style de base pour tous les slots */
-    /* padding: 0; */ /* Vous aviez enlevé le padding, c'est ok si l'image/gif doit toucher les bords */
-    border: 1px solid #444;
-    background-color: #222; /* Ou #111 si vous préférez plus sombre */
-    overflow: hidden;
-    margin-bottom: 20px; /* Espacement par défaut en dessous des slots */
-}
-
-/* Publicité dans la sidebar */
-.advertisement-slot.sticky-sidebar-ad {
-    /* position: sticky; */ /* Optionnel */
-    /* top: 80px; */ /* Ajustez en fonction de la hauteur de votre header s'il est sticky */
-}
-
-/* NOUVEAUX STYLES ou AJUSTEMENTS pour la publicité du bas */
-.advertisement-slot.bottom-ad-slot {
-    margin-top: 30px;    /* Espace au-dessus de la pub du bas */
-    padding: 15px;       /* Réintroduire un peu de padding si l'image est plus petite */
-    text-align: center;  /* Centrer le contenu (l'image/GIF) si elle est moins large */
-    max-width: 728px;    /* Largeur maximale typique pour une bannière (ex: leaderboard) */
-                         /* Vous pouvez choisir une autre valeur : 468px, 300px, etc. */
-    margin-left: auto;   /* Centrer le bloc de la pub lui-même s'il est moins large que le conteneur */
-    margin-right: auto;
-    background-color: transparent; /* Ou une couleur de fond si vous ne voulez pas celle de .advertisement-slot */
-    border: none; /* Peut-être pas de bordure pour celle du bas si elle est bien intégrée */
-}
-
-/* Styles généraux pour les images/GIFs publicitaires à l'intérieur des slots */
-.placeholder-ad-image-gif {
-    max-width: 100%; /* S'assurer que l'image/GIF est responsive à l'intérieur de son conteneur (.advertisement-slot) */
-    height: auto;
-    display: block; /* Évite les espaces indésirables en dessous */
-    /* margin-left: auto; */  /* Ces lignes sont maintenant sur .bottom-ad-slot pour centrer le bloc */
-    /* margin-right: auto; */ /* Si l'image doit être centrée dans le slot, gardez-les ici */
-}
-
-/* Si vous voulez que l'image à l'intérieur du slot du bas soit aussi centrée (au cas où le slot a un padding) */
-.bottom-ad-slot .placeholder-ad-image-gif {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-
-/* Styles pour l'ancien placeholder textuel (gardez-le pour le fallback) */
-.placeholder-ad-content-textual {
-    border: 2px dashed #555;
-    padding: 20px;
-    text-align: center;
-    background-color: #2d2d2d;
-    color: #aaa;
-    min-height: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.placeholder-ad-content-textual p {
-    margin-bottom: 5px;
-}
-
-
-/* ... (vos autres styles et media queries) ... */
-/* Dans assets/style.css */
-
-/* ... (Styles existants pour le header, body, container etc.) ... */
-
-/* ------------------------------------ */
-/* STYLES SPÉCIFIQUES PAGE D'ACCUEIL    */
-/* ------------------------------------ */
-
-.homepage-content {
-    padding-top: 20px; /* Un peu d'espace après le header sticky */
-}
-
-.homepage-content .movie-list-section {
-    margin-bottom: 50px; /* Plus d'espace vertical entre les sections */
-    /* background-color: #1f1f1f; /* Un fond très légèrement différent du body pour délimiter, ou transparent */
-    /* background-color: transparent; */ /* Si vous préférez que ce soit le fond du body */
-    padding: 20px 0; /* Padding vertical, pas de padding horizontal si le .container s'en charge */
-    border-radius: 0; /* Pas besoin de coins arrondis pour la section entière si c'est juste un groupement */
-    box-shadow: none; /* Pas d'ombre pour la section entière */
-}
-
-.homepage-content .movie-list-section h2 {
-    font-size: 1.6rem; /* Légèrement plus petit pour un look plus épuré */
-    font-weight: 600; /* Un peu moins gras que les H1 */
-    color: #e0e0e0; /* Couleur de texte principale pour les titres */
-    margin-bottom: 25px; /* Espace sous le titre de section */
-    padding-bottom: 10px;
-    border-bottom: 1px solid #333; /* Ligne de séparation plus subtile */
-    /* text-transform: uppercase; */ /* Optionnel: pour un style plus marqué */
-    /* letter-spacing: 0.5px; */ /* Optionnel: léger espacement des lettres */
-}
-.homepage-content .movie-list-section h2::before { /* Optionnel: petit élément décoratif avant le titre */
-    /* content: '■'; */
-    /* color: #00bfa5; */ /* Couleur turquoise */
-    /* margin-right: 10px; */
-    /* font-size: 0.8em; */
-}
-
-
-.movies-grid.homepage-grid {
-    display: grid;
-    gap: 20px 18px; /* vertical-gap horizontal-gap */
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Affiches un peu plus petites pour commencer */
-}
-
-.movie-item {
-    background-color: transparent; /* Pas de fond pour l'item lui-même, on se concentre sur l'affiche */
-    border-radius: 5px; /* Coins arrondis subtils pour l'effet de survol */
-    overflow: visible; /* Permettre aux ombres de s'afficher correctement */
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    position: relative; /* Pour d'éventuels éléments en survol */
-    box-shadow: none; /* Pas d'ombre par défaut */
-}
-
-.movie-item:hover {
-    transform: scale(1.05); /* Léger agrandissement au survol */
-    z-index: 10; /* Pour que l'élément survolé passe au-dessus des autres */
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); /* Ombre plus prononcée au survol */
-}
-.movie-item:hover .movie-poster-grid {
-    border-color: #00bfa5; /* Change la couleur de la bordure de l'affiche au survol de l'item */
-}
-
-
-.movie-item a.movie-poster-link { /* Cible le lien de l'affiche */
-    display: block;
-    border-radius: 5px; /* Coins arrondis pour le conteneur de l'affiche */
-    overflow: hidden; /* S'assurer que l'image respecte les coins arrondis */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Ombre initiale subtile pour l'affiche */
-    margin-bottom: 10px; /* Espace entre l'affiche et les infos en dessous */
-}
-
-.movie-poster-grid {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 2 / 3;
-    object-fit: cover;
-    display: block; /* Important pour éviter les espaces sous l'image */
-    border-radius: 5px; /* Coins arrondis directement sur l'image */
-    border: 2px solid transparent; /* Bordure initiale transparente, changera au survol */
-    transition: border-color 0.2s ease-in-out; /* Transition pour la bordure */
-}
-
-.movie-item-info {
-    padding: 5px 0 0 0; /* Léger padding en haut, pas sur les côtés pour un look plus serré */
-    text-align: left; /* Aligner le texte à gauche sous l'affiche */
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.movie-item-title {
-    font-size: 0.9rem; /* Taille de police pour le titre du film */
-    font-weight: 500; /* Moins gras que les titres de section */
-    color: #c5c5c5; /* Gris plus clair pour le titre */
-    line-height: 1.3;
-    margin-bottom: 3px;
-    /* Gestion du texte sur plusieurs lignes avec troncature */
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* Nombre de lignes max */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    height: calc(0.9rem * 1.3 * 2); /* Hauteur calculée pour 2 lignes, ajustez si la police/line-height change */
-}
-.movie-item-title a {
-    color: inherit;
-    text-decoration: none;
-}
-.movie-item-title a:hover {
-    color: #00bfa5; /* Couleur turquoise au survol du titre */
-    text-decoration: underline;
-}
-
-.movie-item-year {
-    font-size: 0.8rem;
-    color: #888; /* Gris plus foncé pour l'année, plus discret */
-}
-
-.movie-item-rating {
-    font-size: 0.8rem;
-    color: #ffb300; /* Jaune pour la note */
-    margin-top: 4px;
-}
-.movie-item-rating::before {
-    content: '★ '; /* Étoile avant la note */
-}
-
-/* Optionnel: Lien "Voir plus" sous chaque section */
-.section-voir-plus-link {
-    text-align: right;
-    margin-top: 15px;
-}
-.section-voir-plus-link a {
-    font-size: 0.9rem;
-    color: #00bfa5;
-    font-weight: 500;
-    text-decoration: none;
-}
-.section-voir-plus-link a:hover {
-    text-decoration: underline;
-    color: #008c7a;
-}
-
-
-/* Ajustements responsifs pour la grille de la page d'accueil */
-@media (min-width: 400px) {
-    .movies-grid.homepage-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-}
-@media (min-width: 576px) {
-    .movies-grid.homepage-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    }
-}
-@media (min-width: 768px) {
-    .movies-grid.homepage-grid {
-        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); /* 4 par ligne sur tablette typique */
-    }
-    .homepage-content .movie-list-section h2 {
-        font-size: 1.8rem;
-    }
-}
+/* --- Movie Detail Page Columns --- */
 @media (min-width: 992px) {
-    .movies-grid.homepage-grid {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* ~5 par ligne */
-    }
-}
-@media (min-width: 1200px) {
-    .movies-grid.homepage-grid {
-        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); /* ~6 par ligne */
-    }
-}
-@media (min-width: 1400px) {
-    .movies-grid.homepage-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* ~6-7 par ligne sur très grands écrans */
-    }
+    .movie-content-columns { flex-direction: row; }
+    .movie-main-header { flex-direction: row; align-items: flex-start; }
+    .movie-main-header .movie-poster { width: clamp(250px, 25%, 300px); margin: 0 var(--spacing-lg) 0 0; } /* Poster à gauche, largeur réactive */
+    .movie-user-actions { flex-direction: row; gap: var(--spacing-md); }
+    .movie-user-actions .button { width: auto; }
 }
 
-.faq-page h1 {
-    margin-bottom: var(--spacing-xl);
-    text-align: center;
-    color: var(--color-primary);
-}
-
-.faq-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 auto; /* Centrer la liste */
-    max-width: 800px; /* Limiter la largeur pour la lisibilité */
-}
-
-.faq-item {
-    background-color: var(--color-bg-light);
-    margin-bottom: var(--spacing-md);
-    border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--color-border-dark);
-}
-
-.faq-item dt { /* Conteneur du bouton de question */
-    margin: 0;
-}
-
-.faq-question {
-    /* Style du bouton comme un titre de section */
-    display: flex; /* Pour aligner le texte et l'icône */
-    justify-content: space-between; /* Pousser l'icône à droite */
-    align-items: center;
-    width: 100%;
-    padding: var(--spacing-md) var(--spacing-lg);
-    font-family: inherit; /* Hériter la police du body */
-    font-size: 1.1rem; /* Taille de la question */
-    font-weight: var(--font-weight-medium);
-    color: var(--color-text-light);
-    background-color: transparent; /* Ou var(--color-bg-lighter) pour un léger contraste */
-    border: none;
-    border-bottom: 1px solid transparent; /* Bordure initiale pour la transition */
-    text-align: left;
-    cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0; /* Coins arrondis en haut */
-}
-
-.faq-question:hover,
-.faq-question:focus {
-    background-color: var(--color-bg-lighter);
-    color: var(--color-primary);
-    outline: none;
-}
-
-.faq-question[aria-expanded="true"] {
-    background-color: var(--color-bg-lighter);
-    border-bottom-color: var(--color-border-medium); 
-}
+/* --- Movie Grids --- */
+@media (min-width: 400px) { .movies-grid.homepage-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } }
+@media (min-width: 576px) { .movies-grid, .watchlist-grid, .movies-grid.homepage-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } }
+@media (min-width: 768px) { .movies-grid, .watchlist-grid, .movies-grid.homepage-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); } .homepage-content .movie-list-section h2 { font-size: 1.7rem; } }
+@media (min-width: 992px) { .movies-grid, .watchlist-grid, .movies-grid.homepage-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); } }
+@media (min-width: 1200px) { html { font-size: 17px; } .movies-grid, .watchlist-grid, .movies-grid.homepage-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); } }
+@media (min-width: 1400px) { .movies-grid, .watchlist-grid, .movies-grid.homepage-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); } }

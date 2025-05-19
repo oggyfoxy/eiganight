@@ -106,10 +106,20 @@ include_once 'includes/header.php';
                                     <?php echo htmlspecialchars($thread['movie_title'], ENT_QUOTES, 'UTF-8'); ?>
                                 </a>
                             </td>
+                            <?php if (isset($thread['author_user_id'], $thread['author_username'])): ?>
+    <a href="view_profile.php?id=<?php echo (int)$thread['author_user_id']; ?>">
+        <?php echo htmlspecialchars($thread['author_username'], ENT_QUOTES, 'UTF-8'); ?>
+    </a>
+<?php else: ?>
+    <span>Auteur inconnu</span>
+<?php endif; ?>
+
+
                             <td>
-                                <a href="view_profile.php?id=<?php echo (int)$thread['author_user_id']; ?>"> 
-                                    <?php echo htmlspecialchars($thread['author_username'], ENT_QUOTES, 'UTF-8'); ?>
-                                </a>
+                                <a href="view_profile.php?id=<?php echo (int)$thread['thread_author_id']; ?>">
+    <?php echo htmlspecialchars($thread['author_username'], ENT_QUOTES, 'UTF-8'); ?>
+</a>
+
                             </td>
                             <td class="replies-column"><?php echo (int)$thread['reply_count']; ?></td>
                             <td class="activity-column">
