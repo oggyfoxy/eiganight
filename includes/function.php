@@ -61,4 +61,36 @@ if (!function_exists('generate_simulated_ad_slot_content')) {
         return $output;
     }
 }
+
+if (!function_exists('generate_csrf_token')) {
+    /**
+     * Generates a CSRF token and stores it in the session.
+     * @return string The generated CSRF token.
+     */
+    function generate_csrf_token() {
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return $_SESSION['csrf_token'];
+    }
+}
+
+if (!function_exists('validate_csrf_token')) {
+    /**
+     * Validates a submitted CSRF token against the one in the session.
+     * @param string $submitted_token The token from the form.
+     * @return bool True if valid, false otherwise.
+     */
+    function validate_csrf_token($submitted_token) {
+        if (!empty($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $submitted_token)) {
+            // Token is valid, consume it to prevent reuse (optional but good for some scenarios)
+            // unset($_SESSION['csrf_token']); 
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
 ?>

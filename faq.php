@@ -7,6 +7,7 @@ include_once 'config.php'; // Includes session_start(), $conn
 
 $pageTitle = "FAQ - Eiganights";
 $faqs = [];
+$db_error_occurred = false; // Flag to track if a database error happened during fetch
 
 $sql = "SELECT question, answer FROM faq_items ORDER BY sort_order ASC, id ASC";
 $stmt = $conn->prepare($sql);
@@ -19,11 +20,12 @@ if ($stmt) {
         }
     } else {
         error_log("Execute failed (FAQ_SEL): " . $stmt->error);
-        // Non-critical, page can still load with a message
+        $db_error_occurred = true; // Set flag on execute error
     }
-    $stmt->close();
+    $stmt->close(); // Close statement after use
 } else {
     error_log("Prepare failed (FAQ_SEL): " . $conn->error);
+    $db_error_occurred = true; // Set flag on prepare error
 }
 
 include_once 'includes/header.php';
@@ -41,14 +43,15 @@ include_once 'includes/header.php';
                 </div>
             <?php endforeach; ?>
         </dl>
-    <?php else: ?>
+    <?php else: // No FAQs found or an error occurred ?>
         <p>Aucune question fréquemment posée n'est disponible pour le moment. Revenez bientôt !</p>
-        <?php if ($conn->error || (isset($stmt) && $stmt->error)): ?>
-             <p class="alert alert-warning">Nous rencontrons des difficultés pour charger les FAQs actuellement.</p>
+        <?php if ($db_error_occurred): // Check the flag instead of trying to access $stmt properties ?>
+             <p class="alert alert-warning">Nous rencontrons des difficultés pour charger les FAQs actuellement. (F01)</p>
         <?php endif; ?>
     <?php endif; ?>
 </main>
 
 <?php
+// $conn->close(); // Optional
 include_once 'includes/footer.php';
 ?>
