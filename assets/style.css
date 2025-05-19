@@ -1854,61 +1854,306 @@ select {
     }
 }
 /* ... autres styles ... */
+/* ... (vos autres styles) ... */
 
-/* Colonnes pour le contenu principal et la sidebar */
-.movie-content-columns {
-    display: flex;
-    flex-direction: column; /* Mobile first: stack columns */
-    gap: 25px;
-    margin-top: 25px;
-}
-
-.main-column {
-    flex: 2; /* La colonne principale prend plus de place */
-    /* min-width: 0; /* Aide à prévenir le débordement de contenu flex */
-}
-
-.sidebar-column {
-    flex: 1; /* La sidebar prend moins de place */
-    display: flex;
-    flex-direction: column;
-    gap: 25px; /* Espace entre les éléments de la sidebar */
-    /* min-width: 0; */
+/* Styles pour les publicités vidéo/GIF simulées */
+.advertisement-slot { /* Style de base pour tous les slots */
+    /* padding: 0; */ /* Vous aviez enlevé le padding, c'est ok si l'image/gif doit toucher les bords */
+    border: 1px solid #444;
+    background-color: #222; /* Ou #111 si vous préférez plus sombre */
+    overflow: hidden;
+    margin-bottom: 20px; /* Espacement par défaut en dessous des slots */
 }
 
 /* Publicité dans la sidebar */
 .advertisement-slot.sticky-sidebar-ad {
-    /* Styles pour la pub de la sidebar */
-    /* Optionnel: pour la rendre "collante" (sticky) */
-    /* position: sticky; */
-    /* top: 80px; /* Ajustez en fonction de la hauteur de votre header s'il est sticky */
-    /* max-height: calc(100vh - 100px); /* Limiter la hauteur pour le scroll */
-    /* overflow-y: auto; */ /* Si le contenu de la pub est plus grand */
+    /* position: sticky; */ /* Optionnel */
+    /* top: 80px; */ /* Ajustez en fonction de la hauteur de votre header s'il est sticky */
 }
 
-/* Publicité en bas de page */
+/* NOUVEAUX STYLES ou AJUSTEMENTS pour la publicité du bas */
 .advertisement-slot.bottom-ad-slot {
-    margin-top: 30px; /* Espace au-dessus de la pub du bas */
-    padding: 15px;
-    text-align: center; /* Centrer le contenu si c'est une image/GIF */
-    /* background-color: #252525; /* Ou une autre couleur de fond si besoin */
+    margin-top: 30px;    /* Espace au-dessus de la pub du bas */
+    padding: 15px;       /* Réintroduire un peu de padding si l'image est plus petite */
+    text-align: center;  /* Centrer le contenu (l'image/GIF) si elle est moins large */
+    max-width: 728px;    /* Largeur maximale typique pour une bannière (ex: leaderboard) */
+                         /* Vous pouvez choisir une autre valeur : 468px, 300px, etc. */
+    margin-left: auto;   /* Centrer le bloc de la pub lui-même s'il est moins large que le conteneur */
+    margin-right: auto;
+    background-color: transparent; /* Ou une couleur de fond si vous ne voulez pas celle de .advertisement-slot */
+    border: none; /* Peut-être pas de bordure pour celle du bas si elle est bien intégrée */
 }
 
-
-/* Styles généraux pour les images/GIFs publicitaires */
+/* Styles généraux pour les images/GIFs publicitaires à l'intérieur des slots */
 .placeholder-ad-image-gif {
-    max-width: 100%; /* S'assurer que l'image est responsive */
+    max-width: 100%; /* S'assurer que l'image/GIF est responsive à l'intérieur de son conteneur (.advertisement-slot) */
     height: auto;
     display: block; /* Évite les espaces indésirables en dessous */
-    margin-left: auto; /* Centrer si le conteneur est plus large */
+    /* margin-left: auto; */  /* Ces lignes sont maintenant sur .bottom-ad-slot pour centrer le bloc */
+    /* margin-right: auto; */ /* Si l'image doit être centrée dans le slot, gardez-les ici */
+}
+
+/* Si vous voulez que l'image à l'intérieur du slot du bas soit aussi centrée (au cas où le slot a un padding) */
+.bottom-ad-slot .placeholder-ad-image-gif {
+    margin-left: auto;
     margin-right: auto;
 }
 
 
-@media (min-width: 992px) { /* Appliquer la disposition en colonnes pour les grands écrans */
-    .movie-content-columns {
-        flex-direction: row;
+/* Styles pour l'ancien placeholder textuel (gardez-le pour le fallback) */
+.placeholder-ad-content-textual {
+    border: 2px dashed #555;
+    padding: 20px;
+    text-align: center;
+    background-color: #2d2d2d;
+    color: #aaa;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.placeholder-ad-content-textual p {
+    margin-bottom: 5px;
+}
+
+
+/* ... (vos autres styles et media queries) ... */
+/* Dans assets/style.css */
+
+/* ... (Styles existants pour le header, body, container etc.) ... */
+
+/* ------------------------------------ */
+/* STYLES SPÉCIFIQUES PAGE D'ACCUEIL    */
+/* ------------------------------------ */
+
+.homepage-content {
+    padding-top: 20px; /* Un peu d'espace après le header sticky */
+}
+
+.homepage-content .movie-list-section {
+    margin-bottom: 50px; /* Plus d'espace vertical entre les sections */
+    /* background-color: #1f1f1f; /* Un fond très légèrement différent du body pour délimiter, ou transparent */
+    /* background-color: transparent; */ /* Si vous préférez que ce soit le fond du body */
+    padding: 20px 0; /* Padding vertical, pas de padding horizontal si le .container s'en charge */
+    border-radius: 0; /* Pas besoin de coins arrondis pour la section entière si c'est juste un groupement */
+    box-shadow: none; /* Pas d'ombre pour la section entière */
+}
+
+.homepage-content .movie-list-section h2 {
+    font-size: 1.6rem; /* Légèrement plus petit pour un look plus épuré */
+    font-weight: 600; /* Un peu moins gras que les H1 */
+    color: #e0e0e0; /* Couleur de texte principale pour les titres */
+    margin-bottom: 25px; /* Espace sous le titre de section */
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333; /* Ligne de séparation plus subtile */
+    /* text-transform: uppercase; */ /* Optionnel: pour un style plus marqué */
+    /* letter-spacing: 0.5px; */ /* Optionnel: léger espacement des lettres */
+}
+.homepage-content .movie-list-section h2::before { /* Optionnel: petit élément décoratif avant le titre */
+    /* content: '■'; */
+    /* color: #00bfa5; */ /* Couleur turquoise */
+    /* margin-right: 10px; */
+    /* font-size: 0.8em; */
+}
+
+
+.movies-grid.homepage-grid {
+    display: grid;
+    gap: 20px 18px; /* vertical-gap horizontal-gap */
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Affiches un peu plus petites pour commencer */
+}
+
+.movie-item {
+    background-color: transparent; /* Pas de fond pour l'item lui-même, on se concentre sur l'affiche */
+    border-radius: 5px; /* Coins arrondis subtils pour l'effet de survol */
+    overflow: visible; /* Permettre aux ombres de s'afficher correctement */
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative; /* Pour d'éventuels éléments en survol */
+    box-shadow: none; /* Pas d'ombre par défaut */
+}
+
+.movie-item:hover {
+    transform: scale(1.05); /* Léger agrandissement au survol */
+    z-index: 10; /* Pour que l'élément survolé passe au-dessus des autres */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); /* Ombre plus prononcée au survol */
+}
+.movie-item:hover .movie-poster-grid {
+    border-color: #00bfa5; /* Change la couleur de la bordure de l'affiche au survol de l'item */
+}
+
+
+.movie-item a.movie-poster-link { /* Cible le lien de l'affiche */
+    display: block;
+    border-radius: 5px; /* Coins arrondis pour le conteneur de l'affiche */
+    overflow: hidden; /* S'assurer que l'image respecte les coins arrondis */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Ombre initiale subtile pour l'affiche */
+    margin-bottom: 10px; /* Espace entre l'affiche et les infos en dessous */
+}
+
+.movie-poster-grid {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    display: block; /* Important pour éviter les espaces sous l'image */
+    border-radius: 5px; /* Coins arrondis directement sur l'image */
+    border: 2px solid transparent; /* Bordure initiale transparente, changera au survol */
+    transition: border-color 0.2s ease-in-out; /* Transition pour la bordure */
+}
+
+.movie-item-info {
+    padding: 5px 0 0 0; /* Léger padding en haut, pas sur les côtés pour un look plus serré */
+    text-align: left; /* Aligner le texte à gauche sous l'affiche */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-item-title {
+    font-size: 0.9rem; /* Taille de police pour le titre du film */
+    font-weight: 500; /* Moins gras que les titres de section */
+    color: #c5c5c5; /* Gris plus clair pour le titre */
+    line-height: 1.3;
+    margin-bottom: 3px;
+    /* Gestion du texte sur plusieurs lignes avec troncature */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Nombre de lignes max */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: calc(0.9rem * 1.3 * 2); /* Hauteur calculée pour 2 lignes, ajustez si la police/line-height change */
+}
+.movie-item-title a {
+    color: inherit;
+    text-decoration: none;
+}
+.movie-item-title a:hover {
+    color: #00bfa5; /* Couleur turquoise au survol du titre */
+    text-decoration: underline;
+}
+
+.movie-item-year {
+    font-size: 0.8rem;
+    color: #888; /* Gris plus foncé pour l'année, plus discret */
+}
+
+.movie-item-rating {
+    font-size: 0.8rem;
+    color: #ffb300; /* Jaune pour la note */
+    margin-top: 4px;
+}
+.movie-item-rating::before {
+    content: '★ '; /* Étoile avant la note */
+}
+
+/* Optionnel: Lien "Voir plus" sous chaque section */
+.section-voir-plus-link {
+    text-align: right;
+    margin-top: 15px;
+}
+.section-voir-plus-link a {
+    font-size: 0.9rem;
+    color: #00bfa5;
+    font-weight: 500;
+    text-decoration: none;
+}
+.section-voir-plus-link a:hover {
+    text-decoration: underline;
+    color: #008c7a;
+}
+
+
+/* Ajustements responsifs pour la grille de la page d'accueil */
+@media (min-width: 400px) {
+    .movies-grid.homepage-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+@media (min-width: 576px) {
+    .movies-grid.homepage-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+}
+@media (min-width: 768px) {
+    .movies-grid.homepage-grid {
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); /* 4 par ligne sur tablette typique */
+    }
+    .homepage-content .movie-list-section h2 {
+        font-size: 1.8rem;
+    }
+}
+@media (min-width: 992px) {
+    .movies-grid.homepage-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* ~5 par ligne */
+    }
+}
+@media (min-width: 1200px) {
+    .movies-grid.homepage-grid {
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); /* ~6 par ligne */
+    }
+}
+@media (min-width: 1400px) {
+    .movies-grid.homepage-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* ~6-7 par ligne sur très grands écrans */
     }
 }
 
-/* ... autres styles ... */
+.faq-page h1 {
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+    color: var(--color-primary);
+}
+
+.faq-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto; /* Centrer la liste */
+    max-width: 800px; /* Limiter la largeur pour la lisibilité */
+}
+
+.faq-item {
+    background-color: var(--color-bg-light);
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border-dark);
+}
+
+.faq-item dt { /* Conteneur du bouton de question */
+    margin: 0;
+}
+
+.faq-question {
+    /* Style du bouton comme un titre de section */
+    display: flex; /* Pour aligner le texte et l'icône */
+    justify-content: space-between; /* Pousser l'icône à droite */
+    align-items: center;
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-family: inherit; /* Hériter la police du body */
+    font-size: 1.1rem; /* Taille de la question */
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-light);
+    background-color: transparent; /* Ou var(--color-bg-lighter) pour un léger contraste */
+    border: none;
+    border-bottom: 1px solid transparent; /* Bordure initiale pour la transition */
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0; /* Coins arrondis en haut */
+}
+
+.faq-question:hover,
+.faq-question:focus {
+    background-color: var(--color-bg-lighter);
+    color: var(--color-primary);
+    outline: none;
+}
+
+.faq-question[aria-expanded="true"] {
+    background-color: var(--color-bg-lighter);
+    border-bottom-color: var(--color-border-medium); 
+}

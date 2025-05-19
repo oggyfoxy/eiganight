@@ -106,8 +106,8 @@ include_once 'includes/header.php';
                                     <?php echo htmlspecialchars($thread['movie_title'], ENT_QUOTES, 'UTF-8'); ?>
                                 </a>
                             </td>
-                            <td class="author-column">
-                                <a href="<?php echo BASE_URL; ?>view_profile.php?id=<?php echo (int)$thread['thread_author_id']; ?>">
+                            <td>
+                                <a href="view_profile.php?id=<?php echo (int)$thread['author_user_id']; ?>"> 
                                     <?php echo htmlspecialchars($thread['author_username'], ENT_QUOTES, 'UTF-8'); ?>
                                 </a>
                             </td>
