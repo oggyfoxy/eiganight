@@ -2,13 +2,27 @@
 /*
  * includes/header.php
  * Common header for all pages.
+ * Assumes config.php (which starts the session) has been included before this file.
  */
-// ... (début du fichier PHP comme avant) ...
+
+// --- DÉFINITION DE $logoutText ICI ---
+$logoutText = "Déconnexion"; // Ou toute autre traduction que vous souhaitez
+// ------------------------------------
+
+// Page Title - should be set in the including page before this header is included.
+// Default title if not set.
+$currentPageTitle = isset($pageTitle) ? htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') : (defined('SITE_NAME') ? htmlspecialchars(SITE_NAME, ENT_QUOTES, 'UTF-8') : 'Eiganights');
+$siteName = defined('SITE_NAME') ? htmlspecialchars(SITE_NAME, ENT_QUOTES, 'UTF-8') : 'Eiganights';
+
+if (isset($pageTitle) && ($pageTitle === $siteName || strpos($pageTitle, $siteName) !== false)) {
+    $fullTitle = $currentPageTitle;
+} else {
+    $fullTitle = $currentPageTitle . ' - ' . $siteName;
+}
 
 $headerSearchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search']), ENT_QUOTES, 'UTF-8') : '';
-$logoPath = BASE_URL . 'assets/images/eiganights_logov2.png'; // Définir le chemin du logo ici
+$logoPath = BASE_URL . 'assets/images/eiganights_logov2.png'; // Ou le nom de votre fichier logo
 $siteNameForDisplay = defined('SITE_NAME') ? htmlspecialchars(SITE_NAME, ENT_QUOTES, 'UTF-8') : 'Eiganights';
-
 
 ?>
 <!DOCTYPE html>
@@ -19,7 +33,6 @@ $siteNameForDisplay = defined('SITE_NAME') ? htmlspecialchars(SITE_NAME, ENT_QUO
     <meta name="description" content="Eiganights - Découvrez, notez et discutez de films. Créez votre watchlist et partagez avec vos amis.">
     <title><?php echo $fullTitle; ?></title>
     <link rel="stylesheet" href="<?php echo htmlspecialchars(BASE_URL . 'assets/style.css', ENT_QUOTES, 'UTF-8'); ?>" />
-    <?php // Si vous avez un favicon, décommentez et ajustez le chemin : ?>
     <!-- <link rel="icon" href="<?php echo htmlspecialchars(BASE_URL . 'assets/images/favicon.png', ENT_QUOTES, 'UTF-8'); ?>" type="image/png"> -->
 </head>
 <body>
@@ -28,16 +41,14 @@ $siteNameForDisplay = defined('SITE_NAME') ? htmlspecialchars(SITE_NAME, ENT_QUO
     <div class="header-container container">
         <div class="site-branding">
              <a href="<?php echo BASE_URL; ?>index.php" class="site-logo-link" aria-label="Page d'accueil <?php echo $siteNameForDisplay; ?>">
-                <?php // Emplacement du logo ?>
-                <img src="<?php echo htmlspecialchars($logoPath, ENT_QUOTES, 'UTF-8'); ?>" alt="Logo <?php echo $siteNameForDisplay; ?>" class="site-logo-image">
+                <img src="<?php echo htmlspecialchars($logoPath, ENT_QUOTES, 'UTF-8'); ?>" alt="Logo icône <?php echo $siteNameForDisplay; ?>" class="site-logo-image">
                 <span class="site-title-header"><?php echo $siteNameForDisplay; ?></span>
              </a>
         </div>
 
         <nav class="main-navigation" aria-label="Navigation principale">
             <ul>
-                <?php // ... vos liens de navigation ... ?>
-                 <li><a href="<?php echo BASE_URL; ?>index.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>">Accueil</a></li>
+                <li><a href="<?php echo BASE_URL; ?>index.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>">Accueil</a></li>
                 <li><a href="<?php echo BASE_URL; ?>forum.php" class="nav-link <?php echo in_array(basename($_SERVER['PHP_SELF']), ['forum.php', 'forum_view_thread.php', 'forum_create_thread.php']) ? 'active' : ''; ?>">Forum</a></li>
                 <li><a href="<?php echo BASE_URL; ?>users_list.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'users_list.php' ? 'active' : ''; ?>">Utilisateurs</a></li>
                 <?php if (isset($_SESSION['user_id'])): ?>
@@ -45,6 +56,7 @@ $siteNameForDisplay = defined('SITE_NAME') ? htmlspecialchars(SITE_NAME, ENT_QUO
                         <li><a href="<?php echo BASE_URL; ?>admin_panel.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'admin_panel.php' ? 'active' : ''; ?>">Admin</a></li>
                     <?php endif; ?>
                     <li><a href="<?php echo BASE_URL; ?>profile.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">Mon Profil</a></li>
+                    <?php // Ligne 48 (ou proche) - Utilisation de $logoutText ?>
                     <li><a href="<?php echo BASE_URL; ?>logout.php" class="nav-link"><?php echo htmlspecialchars($logoutText, ENT_QUOTES, 'UTF-8'); ?></a></li>
                 <?php else: ?>
                     <li><a href="<?php echo BASE_URL; ?>login.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'login.php' ? 'active' : ''; ?>">Connexion</a></li>
@@ -54,7 +66,6 @@ $siteNameForDisplay = defined('SITE_NAME') ? htmlspecialchars(SITE_NAME, ENT_QUO
         </nav>
 
         <div class="header-search-bar">
-            <?php // ... votre formulaire de recherche ... ?>
             <form method="GET" action="<?php echo BASE_URL; ?>index.php" class="search-form-header" role="search">
                 <label for="header-search-input" class="visually-hidden">Rechercher un film</label>
                 <input type="text" id="header-search-input" name="search" placeholder="Rechercher un film..." value="<?php echo $headerSearchQuery; ?>" aria-label="Champ de recherche de film" />
