@@ -124,6 +124,49 @@ include_once 'includes/header.php';
     </section>
 
     <hr>
+    // Dans admin_panel.php, par exemple après la section FAQ ou Contenu
+
+// ... (code existant pour les autres sections) ...
+<hr>
+
+<section class="specific-content-management card">
+    <h2>Gestion de Pages Spécifiques</h2>
+    <ul>
+        <li>
+            <a href="admin_manage_terms.php" class="button button-secondary">Modifier les Conditions d'Utilisation (fichier)</a>
+        </li>
+        <?php // Vous pourriez ajouter ici des liens vers d'autres pages gérées par fichier si besoin ?>
+        <?php /*
+        <li>
+            <a href="admin_manage_privacy.php" class="button button-secondary">Modifier la Politique de Confidentialité (fichier)</a>
+        </li>
+        */ ?>
+    </ul>
+</section>
+
+<hr>
+
+<section class="content-management-section card">
+    <h2>Gestion du Contenu du Site (via Base de Données)</h2>
+    <p>Pour les autres pages de contenu stockées en base de données (Privacy Policy, etc.) :</p>
+    <p><a href="admin_edit_content.php" class="button-primary">Gérer le Contenu (BDD)</a></p>
+     <?php
+        $stmtContentList = $conn->query("SELECT slug, title FROM site_content ORDER BY title ASC LIMIT 5");
+        if ($stmtContentList && $stmtContentList->num_rows > 0) {
+            echo "<ul>";
+            while ($content_row = $stmtContentList->fetch_assoc()){
+                // Exclure 'terms-and-conditions' si vous le gérez par fichier maintenant
+                if ($content_row['slug'] !== 'terms-and-conditions') {
+                     echo "<li>" . htmlspecialchars($content_row['title']) . " (" . htmlspecialchars($content_row['slug']). ")" .
+                     " (<a href='admin_edit_content.php?edit_slug=" . htmlspecialchars($content_row['slug']) . "'>Modifier</a>)</li>";
+                }
+            }
+            echo "</ul>";
+        } else {
+            echo "<p>Aucun autre contenu de site (BDD) n'a encore été ajouté.</p>";
+        }
+    ?>
+</section>
 
     <section class="content-management-section card">
         <h2>Gestion du Contenu du Site (Ex: Conditions)</h2>

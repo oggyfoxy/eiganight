@@ -2100,3 +2100,60 @@ select {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* ~6-7 par ligne sur très grands écrans */
     }
 }
+
+.faq-page h1 {
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+    color: var(--color-primary);
+}
+
+.faq-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto; /* Centrer la liste */
+    max-width: 800px; /* Limiter la largeur pour la lisibilité */
+}
+
+.faq-item {
+    background-color: var(--color-bg-light);
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border-dark);
+}
+
+.faq-item dt { /* Conteneur du bouton de question */
+    margin: 0;
+}
+
+.faq-question {
+    /* Style du bouton comme un titre de section */
+    display: flex; /* Pour aligner le texte et l'icône */
+    justify-content: space-between; /* Pousser l'icône à droite */
+    align-items: center;
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-family: inherit; /* Hériter la police du body */
+    font-size: 1.1rem; /* Taille de la question */
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-light);
+    background-color: transparent; /* Ou var(--color-bg-lighter) pour un léger contraste */
+    border: none;
+    border-bottom: 1px solid transparent; /* Bordure initiale pour la transition */
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0; /* Coins arrondis en haut */
+}
+
+.faq-question:hover,
+.faq-question:focus {
+    background-color: var(--color-bg-lighter);
+    color: var(--color-primary);
+    outline: none;
+}
+
+.faq-question[aria-expanded="true"] {
+    background-color: var(--color-bg-lighter);
+    border-bottom-color: var(--color-border-medium); 
+}

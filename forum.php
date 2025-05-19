@@ -81,7 +81,7 @@ include_once 'includes/header.php';
                                 </a>
                             </td>
                             <td>
-                                <a href="view_profile.php?id=<?php echo (int)$thread['author_user_id']; ?>"> {/* Use author_user_id */}
+                                <a href="view_profile.php?id=<?php echo (int)$thread['author_user_id']; ?>"> 
                                     <?php echo htmlspecialchars($thread['author_username'], ENT_QUOTES, 'UTF-8'); ?>
                                 </a>
                             </td>
