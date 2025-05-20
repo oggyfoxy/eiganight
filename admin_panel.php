@@ -124,10 +124,6 @@ include_once 'includes/header.php';
     </section>
 
     <hr>
-    // Dans admin_panel.php, par exemple après la section FAQ ou Contenu
-
-// ... (code existant pour les autres sections) ...
-<hr>
 
 <section class="specific-content-management card">
     <h2>Gestion de Pages Spécifiques</h2>
