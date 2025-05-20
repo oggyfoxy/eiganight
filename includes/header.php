@@ -5,53 +5,24 @@
  * Assumes config.php (which starts the session) has been included before this file.
  */
 
-// Determine the base path of the application for constructing asset URLs.
-// This makes it easier to move the application to a subfolder or different domain.
-// Note: $_SERVER['DOCUMENT_ROOT'] might not be set or appropriate in all environments.
-// For simplicity in XAMPP, a relative path or a hardcoded base path might be easier if issues arise.
-// $base_path = rtrim(str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname(__DIR__)), '/'); // Dynamic base path
-// If your project is at http://localhost/eiganights/, $base_path would be '/eiganights'
-// Or, define BASE_URL in config.php and use it here:
-// $base_url = defined('BASE_URL') ? BASE_URL : '/eiganights/'; // Fallback
-
-// For simplicity with XAMPP, we'll assume assets are relative to the current file's directory's parent.
-// This works if header.php is in 'eiganights/includes/' and style.css is in 'eiganights/assets/'.
-$assets_path_prefix = '../assets/'; // Path from 'includes' folder to 'assets'
-// If header.php is included from root files (e.g. index.php), the path is simpler:
-// This dynamic check is a bit more robust if header.php location relative to root changes
-// Check if the current script is in the root or a subdirectory like 'includes'
-if (basename(dirname($_SERVER['SCRIPT_FILENAME'])) === basename(dirname(__DIR__))) { // Current script is in root
-    $assets_path_prefix = 'assets/';
-} else { // Current script is likely in a subdirectory (like 'includes')
-    $assets_path_prefix = '../assets/';
-     // Or, for more robustness if you have deeper structures:
-    // $assets_path_prefix = str_repeat('../', substr_count(dirname($_SERVER['SCRIPT_FILENAME']), DIRECTORY_SEPARATOR) - substr_count(dirname(__DIR__), DIRECTORY_SEPARATOR)) . 'assets/';
-}
-// A simpler hardcoded approach if always included from root or one level down:
-// If included from root (index.php): $css_path = "assets/style.css";
-// If included from includes/ (this file): $css_path = "../assets/style.css";
-// Given most files are in root, let's assume 'assets/style.css' is the common case for files including this.
-// For files within 'includes/' including other files, relative paths are tricky.
-// Best is to define a BASE_URL in config.php and use absolute paths for assets.
-// For now, using a simple relative path assuming header is included from root level files mostly.
-$css_path = "assets/style.css"; // This will work if header.php is included from index.php, profile.php etc.
+// --- DÉFINITION DE $logoutText ICI ---
+$logoutText = "Déconnexion"; // Ou toute autre traduction que vous souhaitez
+// ------------------------------------
 
 // Page Title - should be set in the including page before this header is included.
 // Default title if not set.
-$currentPageTitle = isset($pageTitle) ? htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') : 'Eiganights';
+$currentPageTitle = isset($pageTitle) ? htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') : (defined('SITE_NAME') ? htmlspecialchars(SITE_NAME, ENT_QUOTES, 'UTF-8') : 'Eiganights');
 $siteName = defined('SITE_NAME') ? htmlspecialchars(SITE_NAME, ENT_QUOTES, 'UTF-8') : 'Eiganights';
-if (isset($pageTitle) && strpos($pageTitle, $siteName) === false) { // Avoid "Site - Site"
-    $fullTitle = $currentPageTitle . ' - ' . $siteName;
-} else {
+
+if (isset($pageTitle) && ($pageTitle === $siteName || strpos($pageTitle, $siteName) !== false)) {
     $fullTitle = $currentPageTitle;
+} else {
+    $fullTitle = $currentPageTitle . ' - ' . $siteName;
 }
 
-// Character encoding fix for "Déconnexion" - ensure PHP files are saved as UTF-8
-$logoutText = "Déconnexion";
-// Test if mbstring is available for proper case conversion with UTF-8
-if (function_exists('mb_convert_case')) {
-    // Example: $logoutText = mb_convert_case($logoutText, MB_CASE_TITLE, "UTF-8");
-}
+$headerSearchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search']), ENT_QUOTES, 'UTF-8') : '';
+$logoPath = BASE_URL . 'assets/images/eiganights_logov2.png'; // Ou le nom de votre fichier logo
+$siteNameForDisplay = defined('SITE_NAME') ? htmlspecialchars(SITE_NAME, ENT_QUOTES, 'UTF-8') : 'Eiganights';
 
 ?>
 <!DOCTYPE html>
@@ -61,44 +32,52 @@ if (function_exists('mb_convert_case')) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Eiganights - Découvrez, notez et discutez de films. Créez votre watchlist et partagez avec vos amis.">
     <title><?php echo $fullTitle; ?></title>
-    <?php /*
-        A more robust way for asset paths, especially if your site structure is complex or might change:
-        Define BASE_ASSET_URL in config.php: define('BASE_ASSET_URL', '/eiganights/assets/');
-        Then use it: <link rel="stylesheet" href="<?php echo BASE_ASSET_URL; ?>style.css" />
-        For now, assuming simple relative path from root files.
-    */ ?>
-    <link rel="stylesheet" href="<?php echo htmlspecialchars($css_path, ENT_QUOTES, 'UTF-8'); ?>" />
-    <?php // Add more meta tags, favicon links, etc. here if needed ?>
-    <!-- <link rel="icon" href="<?php echo htmlspecialchars($assets_path_prefix, ENT_QUOTES, 'UTF-8'); ?>images/favicon.ico" type="image/x-icon"> -->
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(BASE_URL . 'assets/style.css', ENT_QUOTES, 'UTF-8'); ?>" />
+    <!-- <link rel="icon" href="<?php echo htmlspecialchars(BASE_URL . 'assets/images/favicon.png', ENT_QUOTES, 'UTF-8'); ?>" type="image/png"> -->
 </head>
 <body>
 
 <header class="site-header">
-    <nav class="main-navigation">
-        <a href="index.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>">Accueil</a>
-        <a href="forum.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'forum.php' || basename($_SERVER['PHP_SELF']) == 'forum_view_thread.php' || basename($_SERVER['PHP_SELF']) == 'forum_create_thread.php' ? 'active' : ''; ?>">Forum</a> 
-        <a href="users_list.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'users_list.php' ? 'active' : ''; ?>">Utilisateurs</a>
-        <?php if (isset($_SESSION['user_id'])): ?>
-            <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                <a href="admin_panel.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'admin_panel.php' ? 'active' : ''; ?>">Admin Panel</a>
-            <?php endif; ?>
-            <a href="profile.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">Mon Profil</a>
-            <a href="logout.php" class="nav-link"><?php echo htmlspecialchars($logoutText, ENT_QUOTES, 'UTF-8'); ?></a>
-        <?php else: ?>
-            <a href="login.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'login.php' ? 'active' : ''; ?>">Connexion</a>
-            <a href="register.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'register.php' ? 'active' : ''; ?>">Inscription</a>
-        <?php endif; ?>
-    </nav>
+    <div class="header-container container">
+        <div class="site-branding">
+             <a href="<?php echo BASE_URL; ?>index.php" class="site-logo-link" aria-label="Page d'accueil <?php echo $siteNameForDisplay; ?>">
+                <img src="<?php echo htmlspecialchars($logoPath, ENT_QUOTES, 'UTF-8'); ?>" alt="Logo icône <?php echo $siteNameForDisplay; ?>" class="site-logo-image">
+                <span class="site-title-header"><?php echo $siteNameForDisplay; ?></span>
+             </a>
+        </div>
+
+        <nav class="main-navigation" aria-label="Navigation principale">
+            <ul>
+                <li><a href="<?php echo BASE_URL; ?>index.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>">Accueil</a></li>
+                <li><a href="<?php echo BASE_URL; ?>forum.php" class="nav-link <?php echo in_array(basename($_SERVER['PHP_SELF']), ['forum.php', 'forum_view_thread.php', 'forum_create_thread.php']) ? 'active' : ''; ?>">Forum</a></li>
+                <li><a href="<?php echo BASE_URL; ?>users_list.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'users_list.php' ? 'active' : ''; ?>">Utilisateurs</a></li>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                        <li><a href="<?php echo BASE_URL; ?>admin_panel.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'admin_panel.php' ? 'active' : ''; ?>">Admin</a></li>
+                    <?php endif; ?>
+                    <li><a href="<?php echo BASE_URL; ?>profile.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">Mon Profil</a></li>
+                    <?php // Ligne 48 (ou proche) - Utilisation de $logoutText ?>
+                    <li><a href="<?php echo BASE_URL; ?>logout.php" class="nav-link"><?php echo htmlspecialchars($logoutText, ENT_QUOTES, 'UTF-8'); ?></a></li>
+                <?php else: ?>
+                    <li><a href="<?php echo BASE_URL; ?>login.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'login.php' ? 'active' : ''; ?>">Connexion</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>register.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'register.php' ? 'active' : ''; ?>">Inscription</a></li>
+                <?php endif; ?>
+            </ul>
+        </nav>
+
+        <div class="header-search-bar">
+            <form method="GET" action="<?php echo BASE_URL; ?>index.php" class="search-form-header" role="search">
+                <label for="header-search-input" class="visually-hidden">Rechercher un film</label>
+                <input type="text" id="header-search-input" name="search" placeholder="Rechercher un film..." value="<?php echo $headerSearchQuery; ?>" aria-label="Champ de recherche de film" />
+                <button type="submit" class="search-button-header" aria-label="Lancer la recherche">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
 </header>
 
-<div class="container page-content"> <?php // Renamed original .container to .page-content for clarity, keeping .container for overall width constraint.
-                                     // Or, just use one .container directly under body and remove this one if header is not full-width.
-                                     // Assuming the nav bar might be full width, and .container page-content is centered within.
-?>
-    <?php // A good place for site-wide persistent messages, if not handled per-page ?>
-    <?php /*
-    if (!empty($_SESSION['global_message'])) {
-        echo '<div class="alert alert-info global-message">' . htmlspecialchars($_SESSION['global_message']) . '</div>';
-        unset($_SESSION['global_message']);
-    }
-    */?>
+<div class="container page-content">
+    <?php // Page content starts here ?>

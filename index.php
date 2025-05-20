@@ -1,180 +1,159 @@
 <?php
 /*
  * index.php
- * Homepage: Displays trending movies and movie search functionality.
+ * Homepage: Displays various sections of movies inspired by Letterboxd.
  */
-include_once 'config.php'; // Includes session_start(), $conn, TMDB_API_KEY
+require_once 'config.php'; // Utiliser require_once pour config.php
 
-// Initialize variables
-$searchResults = [];
-$searchQueryDisplay = ''; // For displaying in the form, HTML escaped
-$searchQueryParam = '';   // For using in API calls, raw
-$trendingMovies = [];
-$pageTitle = "Accueil - Eiganights"; // Default page title
+// --- Fonctions d'aide pour récupérer les données de TMDB ---
+// Idéalement, ces fonctions seraient dans includes/functions.php
 
-// --- Fetch Trending Movies ---
-$trendingUrl = "https://api.themoviedb.org/3/trending/movie/week?api_key=" . urlencode(TMDB_API_KEY) . "&language=fr-FR";
-$trendingResponseJson = @file_get_contents($trendingUrl); // Suppress errors for network issues
+if (!function_exists('fetch_tmdb_movies')) {
+    function fetch_tmdb_movies($endpoint, $params = [], $max_results = 10) {
+        if (empty(TMDB_API_KEY) || TMDB_API_KEY === 'YOUR_ACTUAL_TMDB_API_KEY') {
+            error_log("TMDB_API_KEY non configurée pour fetch_tmdb_movies.");
+            return []; // Retourner un tableau vide si la clé API n'est pas configurée
+        }
+        $base_api_url = "https://api.themoviedb.org/3/";
+        $default_params = [
+            'api_key' => TMDB_API_KEY,
+            'language' => 'fr-FR',
+            'page' => 1 // Par défaut, nous ne prenons que la première page
+        ];
+        $query_params = http_build_query(array_merge($default_params, $params));
+        $url = $base_api_url . $endpoint . "?" . $query_params;
 
-if ($trendingResponseJson !== false) {
-    $trendingData = json_decode($trendingResponseJson, true);
-    if (json_last_error() === JSON_ERROR_NONE && !empty($trendingData['results'])) {
-        $trendingMovies = array_slice($trendingData['results'], 0, 10); // Get top 10 trending
-    } else {
-        error_log("Failed to decode trending movies JSON or results empty. URL: $trendingUrl Error: " . json_last_error_msg());
+        $response_json = @file_get_contents($url);
+        if ($response_json === false) {
+            error_log("Erreur lors de la récupération des données TMDB pour l'endpoint: " . $endpoint);
+            return [];
+        }
+        $data = json_decode($response_json, true);
+        if (json_last_error() !== JSON_ERROR_NONE || !isset($data['results'])) {
+            error_log("Erreur de décodage JSON ou résultats manquants pour l'endpoint: " . $endpoint);
+            return [];
+        }
+        return array_slice($data['results'], 0, $max_results);
     }
-} else {
-    error_log("Failed to fetch trending movies from TMDB. URL: $trendingUrl");
-    // $_SESSION['warning'] = "Impossible de charger les films à la tendance pour le moment."; // Optional user message
 }
 
-// --- Handle Movie Search ---
+if (!function_exists('display_movie_grid_section')) {
+    function display_movie_grid_section($title, $movies, $section_id = '') {
+        if (empty($movies)) {
+            // Optionnel: afficher un message si aucun film n'est trouvé pour cette section
+            // echo "<p>Aucun film à afficher pour la section : " . htmlspecialchars($title) . "</p>";
+            return; // Ne rien afficher si pas de films
+        }
+        $section_id_attr = $section_id ? 'id="' . htmlspecialchars($section_id) . '"' : '';
+        echo '<section class="movie-list-section card" ' . $section_id_attr . ' aria-labelledby="' . htmlspecialchars(strtolower(str_replace(' ', '-', $title))) . '-heading">';
+        echo '  <h2 id="' . htmlspecialchars(strtolower(str_replace(' ', '-', $title))) . '-heading">' . htmlspecialchars($title) . '</h2>';
+        echo '  <div class="movies-grid homepage-grid">'; // Classe spécifique pour le stylage de la homepage
+
+        foreach ($movies as $movie) {
+            if (empty($movie['id']) || empty($movie['title'])) continue; // Sauter les films sans ID ou titre
+
+            $movie_id = (int)$movie['id'];
+            $movie_title = htmlspecialchars($movie['title']);
+            $poster_path = $movie['poster_path'] ?? null;
+            $release_year = !empty($movie['release_date']) ? substr($movie['release_date'], 0, 4) : '';
+            $link_title = $movie_title . ($release_year ? " ({$release_year})" : '');
+
+            $poster_url = $poster_path
+                ? "https://image.tmdb.org/t/p/w300" . htmlspecialchars($poster_path)
+                : BASE_URL . "assets/images/no_poster_available.png";
+            $poster_alt = $poster_path ? "Affiche de " . $movie_title : "Pas d'affiche disponible";
+
+            echo '<article class="movie-item">';
+            echo '  <a href="' . BASE_URL . 'movie_details.php?id=' . $movie_id . '" title="' . htmlspecialchars($link_title) . '" aria-label="Détails pour ' . htmlspecialchars($link_title) . '" class="movie-poster-link">';
+            echo '    <img src="' . $poster_url . '" alt="' . htmlspecialchars($poster_alt) . '" loading="lazy" class="movie-poster-grid"/>';
+            echo '  </a>';
+            echo '  <div class="movie-item-info">';
+            echo '    <h3 class="movie-item-title"><a href="' . BASE_URL . 'movie_details.php?id=' . $movie_id . '">' . $movie_title . '</a></h3>';
+            if ($release_year) {
+                echo '    <p class="movie-item-year">' . $release_year . '</p>';
+            }
+            // Optionnel: Afficher la note moyenne TMDB
+            // if (isset($movie['vote_average']) && $movie['vote_average'] > 0) {
+            //     echo '    <p class="movie-item-rating">★ ' . number_format($movie['vote_average'], 1) . '</p>';
+            // }
+            echo '  </div>';
+            echo '</article>';
+        }
+        echo '  </div>'; // Fin .movies-grid
+        // Optionnel: Ajouter un lien "Voir plus" pour chaque section
+        // echo '  <div class="section- देख_plus_link"><a href="#">Voir plus de ' . htmlspecialchars($title) . ' »</a></div>';
+        echo '</section>';
+    }
+}
+
+// --- Récupération des différentes listes de films ---
+$pageTitle = "Accueil - " . (defined('SITE_NAME') ? SITE_NAME : "EigaNights");
+$number_of_movies_per_section = 12; // Nombre de films à afficher par section
+
+// 1. Films à la Tendance (Trending)
+$trendingMovies = fetch_tmdb_movies('trending/movie/week', [], $number_of_movies_per_section);
+
+// 2. Films Populaires
+$popularMovies = fetch_tmdb_movies('movie/popular', [], $number_of_movies_per_section);
+
+// 3. Films les Mieux Notés
+$topRatedMovies = fetch_tmdb_movies('movie/top_rated', [], $number_of_movies_per_section);
+
+// 4. Prochaines Sorties
+$upcomingMovies = fetch_tmdb_movies('movie/upcoming', ['region' => 'FR'], $number_of_movies_per_section); // Spécifier la région pour les sorties
+
+// Recherche de films (reste de votre logique de recherche si besoin, sinon on se concentre sur les sections)
+$searchResults = [];
+$searchQueryDisplay = '';
 if (isset($_GET['search'])) {
     $searchQueryParam = trim($_GET['search']);
-    $searchQueryDisplay = htmlspecialchars($searchQueryParam, ENT_QUOTES, 'UTF-8');
-    $pageTitle = "Recherche: " . $searchQueryDisplay . " - Eiganights";
-
     if (!empty($searchQueryParam)) {
-        $searchUrl = "https://api.themoviedb.org/3/search/movie?api_key=" . urlencode(TMDB_API_KEY) . 
-                     "&language=fr-FR&query=" . urlencode($searchQueryParam);
-        
-        $searchResponseJson = @file_get_contents($searchUrl);
-        if ($searchResponseJson !== false) {
-            $searchData = json_decode($searchResponseJson, true);
-            if (json_last_error() === JSON_ERROR_NONE && isset($searchData['results'])) {
-                $searchResults = $searchData['results'];
-            } else {
-                error_log("Failed to decode search results JSON or 'results' key missing. Query: $searchQueryParam, URL: $searchUrl, Error: " . json_last_error_msg());
-            }
-        } else {
-            error_log("Failed to fetch search results from TMDB. Query: $searchQueryParam, URL: $searchUrl");
-            $_SESSION['error'] = "Erreur lors de la communication avec le service de films pour la recherche.";
-        }
+        $searchQueryDisplay = htmlspecialchars($searchQueryParam, ENT_QUOTES, 'UTF-8');
+        $pageTitle = "Recherche: " . $searchQueryDisplay . " - " . (defined('SITE_NAME') ? SITE_NAME : "EigaNights");
+        $searchResults = fetch_tmdb_movies('search/movie', ['query' => $searchQueryParam], 20); // Afficher plus de résultats pour la recherche
     }
-    // If $searchQueryParam is empty after trim, no search is performed, shows trending by default.
 }
 
-include_once 'includes/header.php'; // Sets $pageTitle in <title>
+include_once 'includes/header.php';
 ?>
 
-<main class="container">
-    <h1><?php echo defined('SITE_NAME') ? htmlspecialchars(SITE_NAME) : 'Eiganights'; ?></h1>
+<main class="container homepage-content">
 
-    <?php // Display session messages (ensure CSS for these classes exists) ?>
-    <?php if (!empty($_SESSION['message'])): ?>
-        <div class="alert alert-success">
-            <?php echo htmlspecialchars($_SESSION['message']); unset($_SESSION['message']); ?>
-        </div>
-    <?php endif; ?>
-    <?php if (!empty($_SESSION['error'])): ?>
-        <div class="alert alert-danger">
-            <?php echo htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?>
-        </div>
-    <?php endif; ?>
-    <?php if (!empty($_SESSION['warning'])): ?>
-        <div class="alert alert-warning">
-            <?php echo htmlspecialchars($_SESSION['warning']); unset($_SESSION['warning']); ?>
-        </div>
-    <?php endif; ?>
+    <?php // Affichage des messages de session ?>
+    <?php foreach (['message', 'error', 'warning'] as $msgKey): ?>
+        <?php if (!empty($_SESSION[$msgKey])): ?>
+            <div class="alert <?php echo $msgKey === 'error' ? 'alert-danger' : ($msgKey === 'warning' ? 'alert-warning' : 'alert-success'); ?>" role="alert">
+                <?php echo htmlspecialchars($_SESSION[$msgKey]); unset($_SESSION[$msgKey]); ?>
+            </div>
+        <?php endif; ?>
+    <?php endforeach; ?>
 
-    <section class="search-section" aria-labelledby="search-heading">
-        <h2 id="search-heading" class="visually-hidden">Recherche de Films</h2> <?php // Hidden heading for accessibility ?>
-        <form method="GET" action="index.php" class="search-box">
-            <label for="search-input" class="visually-hidden">Rechercher un film</label> <?php // Hidden label for accessibility ?>
+    <?php // La barre de recherche est maintenant dans le header, pas besoin de la dupliquer ici à moins d'un design spécifique ?>
+    <?php /*
+    <section class="search-section-homepage card" aria-labelledby="search-heading">
+        <h2 id="search-heading" class="visually-hidden">Recherche de Films</h2>
+        <form method="GET" action="<?php echo BASE_URL; ?>index.php" class="search-box">
+            <label for="search-input" class="visually-hidden">Rechercher un film</label>
             <input type="text" id="search-input" name="search" placeholder="Ex: Inception, Star Wars..." value="<?php echo $searchQueryDisplay; ?>" />
-            <input type="submit" value="Rechercher" />
+            <button type="submit" class="button-primary">Rechercher</button>
         </form>
     </section>
+    */ ?>
 
-    <?php if (!empty($searchResults)): ?>
-        <section class="results-section" aria-labelledby="results-heading">
-            <h2 id="results-heading">Résultats pour "<?php echo $searchQueryDisplay; ?>" :</h2>
-            <div class="movies-grid">
-                <?php foreach ($searchResults as $movie): ?>
-                    <?php
-                        $movie_id = $movie['id'] ?? null;
-                        if (!$movie_id) continue; // Skip if essential data like ID is missing
+    <?php if (!empty($searchResults)): // Si une recherche a été effectuée, afficher les résultats ?>
+        <?php display_movie_grid_section('Résultats pour "' . $searchQueryDisplay . '"', $searchResults, 'search-results'); ?>
+    <?php else: // Sinon, afficher les sections par défaut ?>
 
-                        $movie_title = $movie['title'] ?? 'Titre Inconnu';
-                        $movie_poster_path = $movie['poster_path'] ?? null;
-                        $movie_release_year = !empty($movie['release_date']) ? substr($movie['release_date'], 0, 4) : 'N/A';
-                        $movie_overview_full = $movie['overview'] ?? 'Pas de description disponible.';
-                        // Ensure mb_strimwidth is available (usually is with mbstring extension)
-                        $movie_overview_short = function_exists('mb_strimwidth') 
-                                                ? mb_strimwidth($movie_overview_full, 0, 100, "...")
-                                                : substr($movie_overview_full, 0, 97) . (strlen($movie_overview_full) > 100 ? "..." : "");
-                    ?>
-                    <article class="movie">
-                        <a href="movie_details.php?id=<?php echo (int)$movie_id; ?>" aria-label="Détails pour <?php echo htmlspecialchars($movie_title); ?>">
-                            <?php if ($movie_poster_path): ?>
-                                <img src="https://image.tmdb.org/t/p/w300<?php echo htmlspecialchars($movie_poster_path); ?>" 
-                                     alt="Affiche de <?php echo htmlspecialchars($movie_title); ?>" loading="lazy" />
-                            <?php else: ?>
-                                <img src="assets/images/no_poster_available.png" 
-                                     alt="Pas d'affiche disponible pour <?php echo htmlspecialchars($movie_title); ?>" 
-                                     class="movie-poster-placeholder" loading="lazy" />
-                            <?php endif; ?>
-                        </a>
-                        <div class="movie-info">
-                            <h3 class="movie-title">
-                                <a href="movie_details.php?id=<?php echo (int)$movie_id; ?>"><?php echo htmlspecialchars($movie_title); ?> (<?php echo htmlspecialchars($movie_release_year); ?>)</a>
-                            </h3>
-                            <p class="movie-overview"><?php echo nl2br(htmlspecialchars($movie_overview_short)); ?></p>
+        <?php display_movie_grid_section('Films à la Tendance cette semaine', $trendingMovies, 'trending-movies'); ?>
 
-                            <?php if (isset($_SESSION['user_id'])): ?>
-                                <form method="POST" action="add.php" class="add-watchlist-form">
-                                    <input type="hidden" name="movie_id" value="<?php echo (int)$movie_id; ?>">
-                                    <input type="hidden" name="movie_title" value="<?php echo htmlspecialchars($movie_title); ?>">
-                                    <input type="hidden" name="poster_path" value="<?php echo htmlspecialchars($movie_poster_path ?? ''); ?>">
-                                    <input type="hidden" name="redirect_url" value="<?php echo htmlspecialchars(htmlspecialchars($_SERVER['REQUEST_URI'])); // Redirect back to current page with its params ?>">
-                                    <input type="submit" value="Ajouter à ma watchlist" />
-                                </form>
-                            <?php else: ?>
-                                <p class="login-prompt">
-                                    <a href="login.php?redirect=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>">Connectez-vous</a> pour ajouter.
-                                </p>
-                            <?php endif; ?>
-                        </div>
-                    </article>
-                <?php endforeach; ?>
-            </div>
-        </section>
-    <?php elseif (isset($_GET['search']) && $searchQueryParam !== '' && empty($searchResults)): // Executed a search but no results ?>
-        <p>Aucun film trouvé pour "<?php echo $searchQueryDisplay; ?>". Veuillez essayer une autre recherche ou <a href="index.php">voir les tendances</a>.</p>
-    <?php else: // No search performed or search query was empty, display trending movies ?>
-        <?php if (!empty($trendingMovies)): ?>
-            <section class="trending-section" aria-labelledby="trending-heading">
-                <h2 id="trending-heading">Films à la Tendance cette semaine</h2>
-                <div class="trending-movies-container">
-                    <?php foreach ($trendingMovies as $movie): ?>
-                        <?php
-                            $movie_id = $movie['id'] ?? null;
-                            if (!$movie_id) continue;
+        <?php display_movie_grid_section('Films Populaires du Moment', $popularMovies, 'popular-movies'); ?>
 
-                            $movie_title = $movie['title'] ?? 'Titre Inconnu';
-                            $movie_poster_path = $movie['poster_path'] ?? null;
-                            $movie_release_year = !empty($movie['release_date']) ? substr($movie['release_date'], 0, 4) : '';
-                            $link_title = htmlspecialchars($movie_title . ($movie_release_year ? " ($movie_release_year)" : ''));
-                        ?>
-                        <article class="trending-movie-item">
-                            <a href="movie_details.php?id=<?php echo (int)$movie_id; ?>" title="<?php echo $link_title; ?>" aria-label="Détails pour <?php echo $link_title; ?>">
-                                <?php if ($movie_poster_path): ?>
-                                    <img src="https://image.tmdb.org/t/p/w300<?php echo htmlspecialchars($movie_poster_path); ?>" 
-                                         alt="Affiche de <?php echo htmlspecialchars($movie_title); ?>" loading="lazy" />
-                                <?php else: ?>
-                                     <img src="assets/images/no_poster_available.png" 
-                                          alt="Pas d'affiche disponible pour <?php echo htmlspecialchars($movie_title); ?>" 
-                                          class="movie-poster-placeholder" loading="lazy" />
-                                <?php endif; ?>
-                            </a>
-                        </article>
-                    <?php endforeach; ?>
-                </div>
-            </section>
-        <?php elseif (!isset($_GET['search'])): // Only show this if it's the initial page load and trending failed ?>
-            <p>Impossible de charger les films à la tendance pour le moment. Veuillez <a href="index.php">réessayer</a>.</p>
-        <?php endif; ?>
+        <?php display_movie_grid_section('Films les Mieux Notés', $topRatedMovies, 'top-rated-movies'); ?>
+        
+        <?php display_movie_grid_section('Prochaines Sorties en France', $upcomingMovies, 'upcoming-movies'); ?>
+
     <?php endif; ?>
+
 </main>
 
 <?php
