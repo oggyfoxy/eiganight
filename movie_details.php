@@ -224,7 +224,7 @@ include_once 'includes/header.php';
 
                     foreach ($targetRegions as $regionCode) {
                         if (isset($movieWatchProvidersAPI[$regionCode]) && is_array($movieWatchProvidersAPI[$regionCode])) {
-                            $providerTypesToShow = ['flatrate']; // Uniquement flatrate
+                            $providerTypesToShow = ['flatrate',  'rent', 'buy', 'ads']; // Uniquement flatrate
                             foreach ($providerTypesToShow as $type) {
                                 if (isset($movieWatchProvidersAPI[$regionCode][$type]) && is_array($movieWatchProvidersAPI[$regionCode][$type])) {
                                     foreach ($movieWatchProvidersAPI[$regionCode][$type] as $provider) {
