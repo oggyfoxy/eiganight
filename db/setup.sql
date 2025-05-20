@@ -12,17 +12,6 @@ DROP TABLE IF EXISTS site_content;
 DROP TABLE IF EXISTS forum_posts;
 DROP TABLE IF EXISTS forum_threads;
 
--- DROP TABLE IF EXISTS forum_categories; -- Optional for later, if you want categories
-
--- (Optional: Categories - can be added later if needed)
-/*
-CREATE TABLE forum_categories (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    description TEXT,
-    sort_order INT DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-*/
 
 CREATE TABLE forum_threads (
     id INT AUTO_INCREMENT PRIMARY KEY,
