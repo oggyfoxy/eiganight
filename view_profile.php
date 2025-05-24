@@ -218,6 +218,10 @@ include_once 'includes/header.php';
                         <input type="hidden" name="profile_user_id" value="<?php echo $profileUserId; ?>">
                         <button type="submit" class="button-danger">Retirer cet ami</button>
                     </form>
+
+                    <a href="message_start_conversation.php?with_user_id=<?php echo $profileUserId; ?>" class="button button-secondary button-small">
+                        Envoyer un Message
+                    </a>
                 <?php endif; ?>
             </div>
         <?php endif; ?>

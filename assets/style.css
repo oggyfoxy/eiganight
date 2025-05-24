@@ -606,6 +606,319 @@ select {
 .streaming-provider-link span small { color: var(--color-text-muted); font-size: 0.9em; }
 .affiliate-disclosure { display: block; font-size: 0.75em; color: var(--color-text-muted); margin-top: var(--spacing-xs); text-align: left; }
 
+/* assets/style.css */
+
+/* ... (your existing styles for reset, base, header, forms, alerts, cards, movie grids, admin, etc.) ... */
+
+/* --------------------
+   MESSAGING STYLES
+   -------------------- */
+
+.messages-page h1,
+.view-conversation-page h1,
+.create-conversation-page h1 { /* Added for consistency if you make message_start_conversation.php have a similar class */
+    margin-bottom: 20px;
+    /* text-align: center; // Optional: if you want page titles centered */
+}
+
+.messages-page .new-message-link {
+    text-align: right;
+    margin-bottom: 25px;
+}
+
+/* Inbox Table (messages.php) */
+.inbox-table-container.card {
+    background-color: #252525; /* Explicitly set card background */
+    padding: 0; /* Table will manage its own internal padding via cells */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    overflow-x: auto; /* Enable horizontal scrolling for the table container on small screens */
+    -webkit-overflow-scrolling: touch; /* Smoother scrolling on iOS */
+}
+
+.inbox-table {
+    width: 100%;
+    min-width: 600px; /* Ensure table has some base width before scrolling container kicks in */
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    color: #d0d0d0;
+}
+
+.inbox-table th,
+.inbox-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #3a3a3a; /* Slightly darker separator */
+    vertical-align: middle; /* Good for content alignment */
+}
+
+.inbox-table thead th {
+    background-color: #2c2c2c; /* Darker header background */
+    color: #00bfa5; /* Teal for header text */
+    font-weight: 600;
+    white-space: nowrap; /* Prevent header text from wrapping */
+    position: sticky; /* Optional: Make headers sticky when scrolling vertically if table is long */
+    top: 0;
+    z-index: 1; /* Ensure it's above table content */
+}
+
+.inbox-table tbody tr {
+    transition: background-color 0.15s ease-in-out;
+}
+
+.inbox-table tbody tr:hover {
+    background-color: #303030;
+}
+
+.inbox-table .message-subject a {
+    color: #e0e0e0;
+    font-weight: 500;
+    text-decoration: none;
+    display: block; /* Make the link take full cell width for easier clicking */
+}
+.inbox-table .message-subject a:hover {
+    color: #00bfa5;
+    /* text-decoration: underline; // Optional underline on hover */
+}
+
+.inbox-table .message-partner a {
+    color: #00bfa5;
+    text-decoration: none;
+}
+.inbox-table .message-partner a:hover {
+    text-decoration: underline;
+}
+
+.inbox-table .message-date {
+    font-size: 0.85em;
+    color: #909090;
+    white-space: nowrap;
+}
+
+/* Unread message styling for table row */
+.inbox-table tr.unread .message-subject a {
+    font-weight: bold;
+    color: #ffffff; /* Brighter white for unread subjects */
+}
+.inbox-table tr.unread td { /* Optional: Slightly different background for unread rows */
+    /* background-color: #2a2a2a; */
+}
+.inbox-table tr.unread td:first-child::before {
+    content: '●'; /* Unicode filled circle */
+    color: #00bfa5; /* Teal dot */
+    margin-right: 10px;
+    font-size: 0.7em; /* Smaller dot */
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+/* Friend List for Messaging (message_start_conversation.php) */
+.friend-list-for-messaging.card {
+    padding: 20px;
+}
+.friend-list-for-messaging .friend-list { /* Assuming you reuse .friend-list from profile */
+    list-style: none;
+    padding: 0;
+}
+.friend-list-for-messaging .friend-list li {
+    background-color: transparent; /* Override card-list li styles if any */
+    border-left: none; /* Override card-list li styles if any */
+    padding: 12px 0; /* More spacing */
+    border-bottom: 1px solid #3a3a3a;
+}
+.friend-list-for-messaging .friend-list li:last-child {
+    border-bottom: none;
+}
+.friend-list-for-messaging .friend-list a {
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: #00bfa5;
+    text-decoration: none;
+    display: block; /* Make full width clickable */
+    transition: color 0.15s ease;
+}
+.friend-list-for-messaging .friend-list a:hover {
+    color: #008c7a; /* Darker teal */
+}
+
+
+/* View Conversation Page (message_view_conversation.php) - Chat Bubbles */
+.view-conversation-page .breadcrumb-link {
+    margin-bottom: 15px;
+    font-size: 0.9em;
+}
+.view-conversation-page .breadcrumb-link a {
+    color: #00bfa5;
+}
+
+.messages-container.card { /* The scrolling container for chat bubbles */
+    padding: 15px; /* More padding around the bubbles area */
+    max-height: 65vh; /* Adjust as needed, viewport height based */
+    overflow-y: auto; /* Enable vertical scrolling for messages */
+    display: flex;
+    flex-direction: column; /* Stack messages vertically */
+    gap: 10px; /* Space between message items */
+    margin-bottom: 20px;
+    background-color: #1e1e1e; /* Slightly different background for chat area */
+}
+
+.message-item { /* Each individual message block (bubble + meta) */
+    display: flex;
+    flex-direction: column; /* Stack bubble and meta */
+    max-width: 75%; /* Bubbles don't take full width of container */
+    width: fit-content; /* Bubble width adjusts to content */
+}
+.message-bubble {
+    padding: 10px 15px;
+    border-radius: 18px;
+    word-wrap: break-word; /* Break long words to prevent overflow */
+    line-height: 1.5;
+    color: #e0e0e0; /* Default text color in bubble */
+}
+.message-content {
+    margin: 0; /* Reset paragraph margin if any */
+}
+.message-meta {
+    font-size: 0.75em;
+    color: #888;
+    margin-top: 5px; /* Space between bubble and timestamp/sender */
+    padding: 0 5px; /* Slight horizontal padding for meta */
+}
+.message-meta .sender-name {
+    font-weight: 500;
+    color: #aaa;
+}
+
+/* Sent messages (by logged-in user) */
+.message-item.sent {
+    align-self: flex-end; /* Align entire item to the right */
+    /* align-items: flex-end; // This would align content within item to right, already handled by align-self for item block */
+}
+.message-item.sent .message-bubble {
+    background-color: #007bff; /* Primary blue for sent messages */
+    color: #ffffff;
+    border-bottom-right-radius: 5px; /* "Tail" effect */
+}
+.message-item.sent .message-meta {
+    text-align: right;
+}
+
+/* Received messages */
+.message-item.received {
+    align-self: flex-start; /* Align entire item to the left */
+}
+.message-item.received .message-bubble {
+    background-color: #3a3a3a; /* Darker grey for received messages */
+    border-bottom-left-radius: 5px; /* "Tail" effect */
+}
+.message-item.received .message-meta {
+    text-align: left;
+}
+
+/* Send Message Form (message_view_conversation.php) */
+.send-message-form.card {
+    padding: 15px 20px; /* Balanced padding */
+    background-color: #252525; /* Match other cards */
+}
+.send-message-form textarea {
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 10px 12px;
+    width: 100%;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    min-height: 40px; /* Start smaller */
+    max-height: 120px; /* Max before scrolling within textarea */
+    resize: vertical; /* Allow vertical resize by user */
+    margin-bottom: 10px;
+}
+.send-message-form textarea:focus {
+    border-color: #00bfa5;
+    box-shadow: 0 0 0 2px rgba(0, 191, 165, 0.2);
+    outline: none;
+}
+.send-message-form button[type="submit"] {
+    width: 100%;
+    padding: 10px 15px;
+}
+
+
+/* Responsive Adjustments for Messaging System */
+@media (min-width: 768px) {
+    /* For the message sending form in chat view */
+    .send-message-form {
+        display: flex;
+        align-items: center; /* Align textarea and button nicely */
+        gap: 15px;
+    }
+    .send-message-form .form-group { /* The div wrapping the textarea */
+        flex-grow: 1;
+        margin-bottom: 0;
+    }
+    .send-message-form textarea {
+        margin-bottom: 0; /* Remove margin as gap handles it */
+    }
+    .send-message-form button[type="submit"] {
+        width: auto; /* Button takes its content size */
+        flex-shrink: 0;
+        padding: 10px 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Inbox Table responsiveness */
+    .inbox-table {
+        font-size: 0.85rem;
+    }
+    .inbox-table th,
+    .inbox-table td {
+        padding: 10px 8px;
+    }
+    /* Consider hiding columns if too cramped on very small screens */
+    .inbox-table .message-date-col {
+        /* display: none; */
+    }
+}
+
+@media (max-width: 576px) {
+    /* Conversation List items on small screens */
+    .conversations-list .conversation-link {
+        padding: 12px 15px;
+        gap: 10px;
+    }
+    .conversation-avatar-placeholder {
+        width: 40px;
+        height: 40px;
+        font-size: 1em;
+    }
+    .conversation-partner strong {
+        font-size: 0.95rem;
+    }
+    .last-message-preview {
+        font-size: 0.8rem;
+    }
+    .conversation-timestamp {
+        font-size: 0.7rem;
+    }
+
+    /* Chat bubbles on small screens */
+    .message-item {
+        max-width: 85%;
+    }
+    .message-bubble {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+    .message-meta {
+        font-size: 0.7rem;
+    }
+}
+
+/* ... (rest of your styles including other MEDIA QUERIES if they are separate) ... */
+
 /* ==========================================================================
    9. MEDIA QUERIES
    ========================================================================== */

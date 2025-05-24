@@ -52,9 +52,15 @@ $siteNameForDisplay = defined('SITE_NAME') ? htmlspecialchars(SITE_NAME, ENT_QUO
                 <li><a href="<?php echo BASE_URL; ?>forum.php" class="nav-link <?php echo in_array(basename($_SERVER['PHP_SELF']), ['forum.php', 'forum_view_thread.php', 'forum_create_thread.php']) ? 'active' : ''; ?>">Forum</a></li>
                 <li><a href="<?php echo BASE_URL; ?>users_list.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'users_list.php' ? 'active' : ''; ?>">Utilisateurs</a></li>
                 <?php if (isset($_SESSION['user_id'])): ?>
+                    <?php
+                        $messages_active_pages = ['messages.php', 'message_start_conversation.php', 'message_view_conversation.php'];
+                        $is_messages_active = in_array(basename($_SERVER['PHP_SELF']), $messages_active_pages);
+                    ?>
+                    <a href="messages.php" class="nav-link <?php echo $is_messages_active ? 'active' : ''; ?>">Messages</a> <!-- NEW LINK -->
                     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                         <li><a href="<?php echo BASE_URL; ?>admin_panel.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'admin_panel.php' ? 'active' : ''; ?>">Admin</a></li>
                     <?php endif; ?>
+                    
                     <li><a href="<?php echo BASE_URL; ?>profile.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">Mon Profil</a></li>
                     <?php // Ligne 48 (ou proche) - Utilisation de $logoutText ?>
                     <li><a href="<?php echo BASE_URL; ?>logout.php" class="nav-link"><?php echo htmlspecialchars($logoutText, ENT_QUOTES, 'UTF-8'); ?></a></li>

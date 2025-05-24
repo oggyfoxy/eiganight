@@ -12,6 +12,10 @@ DROP TABLE IF EXISTS site_content;
 DROP TABLE IF EXISTS forum_posts;
 DROP TABLE IF EXISTS forum_threads;
 DROP TABLE IF EXISTS password_resets;
+DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS conversation_participants;
+DROP TABLE IF EXISTS conversations;
+
 
 -- DROP TABLE IF EXISTS forum_categories; -- Optional for later, if you want categories
 
@@ -111,7 +115,8 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     bio TEXT DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    profile_visibility ENUM('public', 'friends_only', 'private') DEFAULT 'public',
+    profile_visibility ENUM('public', 'friends_only', 'private') 
+DEFAULT 'public',
     role ENUM('user', 'admin') DEFAULT 'user' NOT NULL,
     is_banned TINYINT(1) DEFAULT 0 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;INE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -165,5 +170,36 @@ CREATE TABLE friendships (
     FOREIGN KEY (action_user_id) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE KEY uk_unique_friendship (user_one_id, user_two_id), -- Ensures one record per pair
     CONSTRAINT chk_user_order CHECK (user_one_id < user_two_id) -- Ensures user_one_id is always less than user_two_id
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE conversations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    -- For a 2-person chat, you might store user1_id and user2_id here,
+    -- but a participant table is more flexible for group chats later.
+    -- For MVP 1-on-1, we can simplify or use participants. Let's use participants.
+    last_message_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- To sort conversations
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE conversation_participants (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    conversation_id INT NOT NULL,
+    user_id INT NOT NULL,
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    -- last_read_at TIMESTAMP NULL DEFAULT NULL, -- For unread message indicators later
+    UNIQUE KEY uk_conversation_user (conversation_id, user_id),
+    FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    conversation_id INT NOT NULL,
+    sender_id INT NOT NULL,
+    content TEXT NOT NULL,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    -- read_at TIMESTAMP NULL DEFAULT NULL, -- For read receipts later
+    FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE,
+    FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE -- Or SET NULL if you want messages to remain if sender is deleted
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
