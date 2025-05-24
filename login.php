@@ -136,7 +136,8 @@ include_once 'includes/header.php';
         </div>
     </form>
     <p class="auth-links">
-        Pas encore de compte ? <a href="register.php<?php echo $redirectAfterLogin !== 'profile.php' ? '?redirect=' . urlencode($redirectAfterLogin) : ''; ?>">Inscrivez-vous ici</a>.
+        Pas encore de compte ? <a href="register.php<?php /* ... */ ?>">Inscrivez-vous ici</a>.<br>
+        <a href="forgot_password.php">Mot de passe oublié ?</a> <!-- << NEW LINK -->
     </p>
 </main>
 

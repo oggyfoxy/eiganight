@@ -11,19 +11,23 @@ DROP TABLE IF EXISTS faq_items;
 DROP TABLE IF EXISTS site_content;
 DROP TABLE IF EXISTS forum_posts;
 DROP TABLE IF EXISTS forum_threads;
+DROP TABLE IF EXISTS password_resets;
 
+-- DROP TABLE IF EXISTS forum_categories; -- Optional for later, if you want categories
 
-CREATE TABLE users (
+-- (Optional: Categories - can be added later if needed)
+/*
+CREATE TABLE forum_categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    bio TEXT DEFAULT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    profile_visibility ENUM('public', 'friends_only', 'private') DEFAULT 'public',
-    role ENUM('user', 'admin') DEFAULT 'user' NOT NULL,
-    is_banned TINYINT(1) DEFAULT 0 NOT NULL
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    sort_order INT DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+*/
 
+
+
+-- ... (rest of your CREATE TABLE statements like users, watchlist, etc.)
 
 CREATE TABLE forum_threads (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -85,6 +89,32 @@ CREATE TABLE site_content (
 
 
 
+-- Create users table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHUSEAR(255) NOT NULL,
+    bio TEXT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    profile_visibility ENUM('public', 'friends_only', 'private') 
+DEFAULT 'public',
+    role ENUM('user', 'admin') DEFAULT 'user' NOT NULL, -- New column for role
+    is_banned TINYINT(1) DEFAULT 0 NOT NULL -- New column for ban status (0=not
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE, -- Correctly defined here
+    password VARCHAR(255) NOT NULL,
+    bio TEXT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    profile_visibility ENUM('public', 'friends_only', 'private') DEFAULT 'public',
+    role ENUM('user', 'admin') DEFAULT 'user' NOT NULL,
+    is_banned TINYINT(1) DEFAULT 0 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;INE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Create watchlist table
 CREATE TABLE watchlist (
