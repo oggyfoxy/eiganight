@@ -1,5 +1,4 @@
-CREATE DATABASE IF NOT EXISTS eiganights CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE eiganights;
+USE MAGCcQECuU_eiganight;
 
 -- Drop tables in reverse order of dependency to avoid foreign key constraint errors
 DROP TABLE IF EXISTS friendships;
@@ -15,19 +14,6 @@ DROP TABLE IF EXISTS password_resets;
 DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS conversation_participants;
 DROP TABLE IF EXISTS conversations;
-
-
--- DROP TABLE IF EXISTS forum_categories; -- Optional for later, if you want categories
-
--- (Optional: Categories - can be added later if needed)
-/*
-CREATE TABLE forum_categories (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    description TEXT,
-    sort_order INT DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-*/
 
 
 
@@ -91,27 +77,12 @@ CREATE TABLE site_content (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-
--- Create users table
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHUSEAR(255) NOT NULL,
-    bio TEXT DEFAULT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    profile_visibility ENUM('public', 'friends_only', 'private') 
-DEFAULT 'public',
-    role ENUM('user', 'admin') DEFAULT 'user' NOT NULL, -- New column for role
-    is_banned TINYINT(1) DEFAULT 0 NOT NULL -- New column for ban status (0=not
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
+-- user table --
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
-    email VARCHAR(255) NOT NULL UNIQUE, -- Correctly defined here
+    email VARCHAR(255) NOT NULL UNIQUE, 
     password VARCHAR(255) NOT NULL,
     bio TEXT DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -119,7 +90,7 @@ CREATE TABLE users (
 DEFAULT 'public',
     role ENUM('user', 'admin') DEFAULT 'user' NOT NULL,
     is_banned TINYINT(1) DEFAULT 0 NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;INE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Create watchlist table
 CREATE TABLE watchlist (
