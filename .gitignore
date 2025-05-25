@@ -12,7 +12,6 @@ Thumbs.db
 Desktop.ini
 
 # Composer dependencies (if you were using Composer)
-/vendor/
 
 # PHPStorm specific
 .phpstorm.meta.php

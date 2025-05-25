@@ -72,18 +72,18 @@ if ($app_url_env) {
 }
 
 // Optional: Define SITE_NAME
-define('SITE_NAME', getenv('SITE_NAME') ?: 'eiganight');
+define('SITE_NAME', getenv('SITE_NAME') ?: 'eiganights');
 
 
 // --- SMTP Configuration for PHPMailer ---
 // FALLBACKS HERE SHOULD BE PLACEHOLDERS OR DUMMY VALUES if this file is public.
 // For actual local email sending, use a gitignored local config override or local env vars.
-define('SMTP_HOST', getenv('SMTP_HOST') ?: 'your_local_smtp_host_or_placeholder'); // e.g., 'localhost' if using mailhog/mailtrap locally
-define('SMTP_USERNAME', getenv('SMTP_USERNAME') ?: 'local_user@example.com');
-define('SMTP_PASSWORD', getenv('SMTP_PASSWORD') ?: 'local_password_placeholder');
-define('SMTP_PORT', (int)(getenv('SMTP_PORT') ?: 1025)); // e.g., MailHog port
-define('SMTP_SECURE', getenv('SMTP_SECURE') ?: ''); // e.g., '' or 'tls' if local mail server needs it
-define('SMTP_FROM_EMAIL', getenv('SMTP_FROM_EMAIL') ?: 'dev_noreply@eiganights.local');
-define('SMTP_FROM_NAME', getenv('SMTP_FROM_NAME') ?: 'eiganights Dev Support');
+define('SMTP_HOST', getenv('SMTP_HOST') ?: 'smtp.gmail.com');
+define('SMTP_USERNAME', getenv('SMTP_USERNAME') ?: 'quoilolaa@gmail.com');
+define('SMTP_PASSWORD', getenv('SMTP_PASSWORD') ?: 'ezpcovunnnaumvlp');
+define('SMTP_PORT', (int)(getenv('SMTP_PORT') ?: 587));
+define('SMTP_SECURE', getenv('SMTP_SECURE') ?: 'tls');
+define('SMTP_FROM_EMAIL', getenv('SMTP_FROM_EMAIL') ?: 'quoilolaa@gmail.com');
+define('SMTP_FROM_NAME', getenv('SMTP_FROM_NAME') ?: 'eiganights Support');
 
 ?>
