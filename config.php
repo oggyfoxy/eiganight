@@ -122,9 +122,25 @@ define('STREAMING_PLATFORMS_OFFICIAL_LINKS', [
         'search_url_pattern' => 'https://tv.apple.com/search?term={MOVIE_TITLE_URL_ENCODED}'
     ],
 ]);
+
+
 // You can make this configurable via environment variable too if needed.
 // If empty, it will try to use all regions returned by TMDB.
 
+
+// 7) ReCAPTCHA & SMTP Settings (Prioritize Environment Variables)
+// ─────────────────────────────────────────────────────────────────────────────
+// --- Google reCAPTCHA v2 (Checkbox - typically used for registration) ---
+// Get your keys from https://www.google.com/recaptcha/admin
+// Set these as environment variables in Herogu: RECAPTCHA_V2_SITE_KEY and RECAPTCHA_V2_SECRET_KEY
+define('RECAPTCHA_SITE_KEY_V2', getenv('RECAPTCHA_V2_SITE_KEY') ?: '6LdsyEgrAAAAAEdzcQGufogCHtE2Cx0uWN6XumUV'); // Replace placeholder
+define('RECAPTCHA_SECRET_KEY_V2', getenv('RECAPTCHA_V2_SECRET_KEY') ?: 'Y6LdsyEgrAAAAAAFSQ2iSvPyPJJ7Wcz-aYfmgRHT'); // Replace placeholder
+
+// --- Google reCAPTCHA v3 (Invisible - typically used for login, actions) ---
+// Get your keys from https://www.google.com/recaptcha/admin
+// Set these as environment variables in Herogu: RECAPTCHA_V3_SITE_KEY and RECAPTCHA_V3_SECRET_KEY
+define('RECAPTCHA_SITE_KEY_V3', getenv('RECAPTCHA_V3_SITE_KEY') ?: '6Lfzx0grAAAAAFUvAV8GMVMXCY5kOL9CwZ_uD95z'); // Replace placeholder
+define('RECAPTCHA_SECRET_KEY_V3', getenv('RECAPTCHA_V3_SECRET_KEY') ?: '6Lfzx0grAAAAAMQDdEQHpbE1YWlWCv3lXYrhAoLL'); // Replace placeholder
 
 // --- SMTP Configuration for PHPMailer ---
 // FALLBACKS HERE SHOULD BE PLACEHOLDERS OR DUMMY VALUES if this file is public.
