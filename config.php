@@ -37,7 +37,7 @@ define('DB_HOST', getenv('MYSQL_HOST') ?: '127.0.0.1');        // This is usuall
 define('DB_PORT', (int)(getenv('MYSQL_PORT') ?: 3306));      // <<< CHANGE THIS if your MAMP MySQL is on port 8889 (MAMP default), or 3306 if you configured it to that.
 define('DB_NAME', getenv('MYSQL_DATABASE') ?: 'eiganights');   // <<< Use 'eiganights' if that's your local DB name
 define('DB_USER', getenv('MYSQL_USER') ?: 'root');            // <<< CHANGE THIS to 'root' for MAMP default
-define('DB_PASS', getenv('MYSQL_PASSWORD') ?: ''); 
+define('DB_PASS', getenv('MYSQL_PASSWORD') ?: ""); 
 
 $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
 $conn = $mysqli;
@@ -73,6 +73,57 @@ if ($app_url_env) {
 
 // Optional: Define SITE_NAME
 define('SITE_NAME', getenv('SITE_NAME') ?: 'eiganights');
+
+// --- Feature Flags ---
+// Enable placeholder ads for demonstration (set to false to disable)
+define('PLACEHOLDER_ADS_ENABLED', getenv('PLACEHOLDER_ADS_ENABLED') === 'true' ?: true); // Default to true for local dev
+
+// Enable direct streaming links section (set to false to disable)
+define('DIRECT_STREAMING_LINKS_ENABLED', getenv('DIRECT_STREAMING_LINKS_ENABLED') === 'true' ?: true); // Default to true
+// 6) Monetization Settings (School Project Simulation - Simplified Random GIFs)
+// ─────────────────────────────────────────────────────────────────────────────
+
+
+// Chemin vers le dossier contenant VOS GIFs publicitaires (relatif à la racine du projet)
+// ACTION : Assurez-vous que ce chemin est correct et que le dossier contient vos GIFs.
+define('RANDOM_GIF_ADS_DIRECTORY', 'assets/videos/'); // Ou 'assets/videos/ads/' si vous avez un sous-dossier 'ads'
+
+// Texte alternatif par défaut pour les GIFs publicitaires
+define('DEFAULT_AD_GIF_ALT_TEXT', 'Publicité animée EigaNights');
+;
+
+if (!defined('ALLOWED_API_REGIONS')) {
+  define('ALLOWED_API_REGIONS', ['FR', 'US']);
+}
+define('STREAMING_PLATFORMS_OFFICIAL_LINKS', [
+    8 => [
+        'name' => 'Netflix',
+        'logo' => 'assets/images/netflix_logo.png',
+        'search_url_pattern' => 'https://www.netflix.com/search?q={MOVIE_TITLE_URL_ENCODED}' // Usually works very well
+    ],
+    10 => [
+        'name' => 'Amazon Prime Video',
+        'logo' => 'assets/images/primevideo_logo.png', // Corrected path: assuming assets/images/primevideo_logo.png
+        // Option 1: More universal Prime Video link (often redirects to local version)
+        'search_url_pattern' => 'https://www.primevideo.com/search/?phrase={MOVIE_TITLE_URL_ENCODED}'
+        // Option 2: Stick to French site if that's your primary target
+        // 'search_url_pattern' => 'https://www.amazon.fr/s?k={MOVIE_TITLE_URL_ENCODED}&i=instant-video'
+    ],
+    337 => [
+        'name' => 'Disney+',
+        'logo' => 'assets/images/disney_logo.png',
+        'search_url_pattern' => 'https://www.disneyplus.com/search?q={MOVIE_TITLE_URL_ENCODED}' // Standard search
+    ],
+    2 => [
+        'name' => 'Apple TV',
+        'logo' => 'assets/images/appletv_logo.png',
+        // This pattern allows Apple to use the user's current store region or default.
+        // For truly region-specific links, your PHP code would need to inject the region. See notes below.
+        'search_url_pattern' => 'https://tv.apple.com/search?term={MOVIE_TITLE_URL_ENCODED}'
+    ],
+]);
+// You can make this configurable via environment variable too if needed.
+// If empty, it will try to use all regions returned by TMDB.
 
 
 // --- SMTP Configuration for PHPMailer ---
