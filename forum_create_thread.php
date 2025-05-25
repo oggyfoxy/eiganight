@@ -4,13 +4,12 @@
  * Handles creation of new forum threads / scene annotations.
  */
 include_once 'config.php'; // Includes session_start(), $conn, TMDB_API_KEY, BASE_URL
-// Assumes functions.php (with CSRF functions) is included via config.php or directly
+include_once 'includes/functions.php'; // <<< INCLUDE FUNCTIONS.PHP HERE
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['error'] = "Vous devez être connecté pour créer une discussion.";
-    // Try to redirect back to this page after login
-    $redirectQuery = http_build_query($_GET); // Preserve any GET params like movie_id
+    $redirectQuery = http_build_query($_GET);
     header('Location: ' . BASE_URL . 'login.php?redirect=' . urlencode(basename(__FILE__) . ($redirectQuery ? '?' . $redirectQuery : '')));
     exit;
 }
@@ -18,10 +17,9 @@ if (!isset($_SESSION['user_id'])) {
 $pageTitle = "Créer une Nouvelle Discussion - Eiganights";
 $loggedInUserId = (int)$_SESSION['user_id'];
 
-// Initialize form data and error message
 $form_data = [
     'movie_id' => '', 
-    'movie_title_display' => '', // Title to display after selection, comes from JS or GET
+    'movie_title_display' => '',
     'thread_title' => '', 
     'initial_post' => '', 
     'scene_start_time' => '', 
@@ -30,27 +28,21 @@ $form_data = [
 ];
 $error_message = '';
 
-// Pre-fill form if movie_id and movie_title are passed via GET (e.g., from movie_details page)
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['movie_id']) && is_numeric($_GET['movie_id'])) {
         $form_data['movie_id'] = (int)$_GET['movie_id'];
         if (isset($_GET['movie_title'])) {
              $form_data['movie_title_display'] = trim(urldecode($_GET['movie_title']));
         }
-        // If only movie_id is passed, the JS search will allow user to confirm/search,
-        // or they can proceed if they know the movie.
     }
 }
 
-// Handle Form Submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // CSRF Token Validation
-    if (!isset($_POST['csrf_token']) || !function_exists('validate_csrf_token') || !validate_csrf_token($_POST['csrf_token'])) {
+    if (!isset($_POST['csrf_token']) || !validate_csrf_token($_POST['csrf_token'])) { // validate_csrf_token() should now exist
         $error_message = "Erreur de sécurité (jeton invalide). Veuillez rafraîchir la page et réessayer.";
     } else {
-        // Sanitize and retrieve form data
         $movieId = filter_input(INPUT_POST, 'movie_id', FILTER_VALIDATE_INT);
-        // movie_title_hidden is populated by JS or pre-filled by GET
         $movieTitleFromForm = trim($_POST['movie_title_hidden'] ?? ''); 
         $threadTitle = trim($_POST['thread_title'] ?? '');
         $initialPost = trim($_POST['initial_post'] ?? '');
@@ -58,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sceneEndTime = trim($_POST['scene_end_time'] ?? '');
         $sceneDescriptionShort = trim($_POST['scene_description_short'] ?? '');
 
-        // Update $form_data for sticky form fields in case of error
         $form_data['movie_id'] = $movieId;
         $form_data['movie_title_display'] = $movieTitleFromForm;
         $form_data['thread_title'] = $threadTitle;
@@ -67,24 +58,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $form_data['scene_end_time'] = $sceneEndTime;
         $form_data['scene_description_short'] = $sceneDescriptionShort;
 
-        // --- Validation ---
         if (!$movieId || $movieId <= 0 || empty($movieTitleFromForm)) {
             $error_message = "Veuillez rechercher et sélectionner un film valide pour associer à la discussion.";
         } elseif (empty($threadTitle)) {
             $error_message = "Le titre de votre discussion est requis.";
-        } elseif (mb_strlen($threadTitle) > 255) { // Check max length
+        } elseif (mb_strlen($threadTitle) > 255) {
             $error_message = "Le titre de la discussion ne doit pas dépasser 255 caractères.";
         } elseif (empty($initialPost)) {
             $error_message = "Le contenu de la discussion (votre premier message ou annotation) est requis.";
         } 
-        // Optional: Add validation for scene time formats if strict format is required
-        // Example: Check if scene_start_time and scene_end_time match HH:MM:SS or Xs pattern
-        // elseif (!empty($sceneStartTime) && !preg_match('/^(\d{1,2}:[0-5]\d:[0-5]\d|\d+s?)$/i', $sceneStartTime)) {
-        //     $error_message = "Format invalide pour 'Début de la scène'. Utilisez HH:MM:SS ou secondes (ex: 123s).";
-        // }
 
         if (empty($error_message)) {
-            // All validations passed, proceed to insert into database
             $sql = "INSERT INTO forum_threads 
                         (user_id, movie_id, movie_title, title, 
                          scene_start_time, scene_end_time, scene_description_short, 
@@ -96,7 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 error_log("Prepare failed (CREATE_THREAD_INS): " . $conn->error);
                 $error_message = "Erreur système lors de la préparation de la création de la discussion. (FCT01)";
             } else {
-                // Ensure scene times are NULL if empty, not empty strings for the database
                 $sceneStartTimeDb = !empty($sceneStartTime) ? $sceneStartTime : null;
                 $sceneEndTimeDb = !empty($sceneEndTime) ? $sceneEndTime : null;
                 $sceneDescriptionShortDb = !empty($sceneDescriptionShort) ? $sceneDescriptionShort : null;
@@ -111,12 +94,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $new_thread_id = $conn->insert_id;
                     $_SESSION['forum_message'] = "Discussion '" . htmlspecialchars($threadTitle, ENT_QUOTES, 'UTF-8') . "' créée avec succès !";
                     
-                    // Consume/regenerate CSRF token
-                    if (function_exists('generate_csrf_token')) {
-                        unset($_SESSION['csrf_token']); // Unset current token
-                    }
+                    // Consume/regenerate CSRF token by unsetting it.
+                    // generate_csrf_token() will create a new one on the next page load or form display.
+                    unset($_SESSION['csrf_token']);
                     
-                    header("Location: " . BASE_URL . "forum.php"); // Redirect to forum list page
+                    header("Location: " . BASE_URL . "forum_view_thread.php?id=" . $new_thread_id); // Redirect to the new thread
                     exit;
                 } else {
                     error_log("Execute failed (CREATE_THREAD_INS): " . $stmt->error);
@@ -126,17 +108,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    // If there was an error (CSRF or validation), regenerate CSRF token for the next form display
-    if (!empty($error_message) && function_exists('generate_csrf_token')) {
-        unset($_SESSION['csrf_token']);
+    // If there was an error (CSRF or validation), the token in the session might still be the old one.
+    // For a robust system, if a CSRF token fails, you might want to invalidate it and force a new one
+    // to be generated when the form is re-displayed to prevent replay of the same failed token.
+    // The current generate_csrf_token() will re-issue the same token if it's still in session,
+    // or generate a new one if it was unset (e.g., after successful submission or if you unset it on error).
+    // For simplicity, if there's an error, we'll let the form re-render with a new token.
+    if (!empty($error_message)) {
+        unset($_SESSION['csrf_token']); // Force new token generation on form redisplay after error
     }
 }
 
-// Ensure CSRF token generation function is available for the form
-if (!function_exists('generate_csrf_token')) {
-    function generate_csrf_token() { return 'csrf_fallback_token_fct'; } // Simple fallback for safety
-    error_log("CSRF function generate_csrf_token() not found in forum_create_thread.php context.");
-}
+// No need for the fallback generate_csrf_token() here anymore if functions.php is included correctly.
 
 include_once 'includes/header.php';
 ?>
@@ -146,12 +129,12 @@ include_once 'includes/header.php';
     <?php if (!empty($error_message)): ?>
         <div class="alert alert-danger"><?php echo htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8'); ?></div>
     <?php endif; ?>
-    <?php if (!empty($_SESSION['forum_error'])): /* For errors from other forum pages redirecting here */ ?>
+    <?php if (!empty($_SESSION['forum_error'])): ?>
         <div class="alert alert-danger"><?php echo htmlspecialchars($_SESSION['forum_error']); unset($_SESSION['forum_error']); ?></div>
     <?php endif; ?>
 
-    <form method="POST" action="<?php echo BASE_URL; ?>forum_create_thread.php" id="createThreadForm" class="card" novalidate>
-        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generate_csrf_token(), ENT_QUOTES, 'UTF-8'); ?>">
+    <form method="POST" action="<?php echo BASE_URL; ?>forum_create_thread.php<?php echo isset($_GET['movie_id']) ? '?movie_id='.(int)$_GET['movie_id'].'&movie_title='.urlencode($_GET['movie_title'] ?? '') : ''; // Preserve GET params in action for refresh ?>" id="createThreadForm" class="card" novalidate>
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generate_csrf_token(), ENT_QUOTES, 'UTF-8'); // generate_csrf_token() now comes from functions.php ?>">
 
         <div class="form-group">
             <label for="movie_search_input">Film Associé:</label>
@@ -206,24 +189,24 @@ include_once 'includes/header.php';
 
 <script>
 // Basic JavaScript for TMDB Movie Search (Same as before)
+// ... your existing JavaScript for movie search ...
 const searchInput = document.getElementById('movie_search_input');
 const resultsContainer = document.getElementById('movie_search_results');
 const selectedMovieIdInput = document.getElementById('selected_movie_id');
 const selectedMovieTitleInput = document.getElementById('selected_movie_title_hidden');
 const selectedMovieDisplay = document.getElementById('selected_movie_display');
-const tmdbApiKey = '<?php echo defined('TMDB_API_KEY') ? TMDB_API_KEY : ""; ?>'; // Check if constant is defined
+const tmdbApiKey = '<?php echo defined('TMDB_API_KEY') ? TMDB_API_KEY : ""; ?>';
 
 let searchTimeout;
 
-if (searchInput && tmdbApiKey) { // Proceed only if input and API key are available
+if (searchInput && tmdbApiKey) {
     searchInput.addEventListener('keyup', function() {
         clearTimeout(searchTimeout);
         const query = this.value.trim();
 
-        if (query.length < 2) { // Reduced to 2 for quicker search start
+        if (query.length < 2) { 
             resultsContainer.innerHTML = '';
             resultsContainer.style.display = 'none';
-            // Also clear selected movie if search input is cleared significantly
             if (query.length === 0) {
                 selectedMovieIdInput.value = '';
                 selectedMovieTitleInput.value = '';
@@ -233,8 +216,6 @@ if (searchInput && tmdbApiKey) { // Proceed only if input and API key are availa
         }
 
         searchTimeout = setTimeout(() => {
-            // Consider using your api_tmdb_proxy.php if you want to hide API key from client-side or add caching
-            // For now, direct client-side call as in your original.
             const apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${tmdbApiKey}&language=fr-FR&query=${encodeURIComponent(query)}&page=1&include_adult=false`;
             
             fetch(apiUrl)
@@ -245,14 +226,14 @@ if (searchInput && tmdbApiKey) { // Proceed only if input and API key are availa
                     return response.json();
                 })
                 .then(data => {
-                    resultsContainer.innerHTML = ''; // Clear previous results
+                    resultsContainer.innerHTML = ''; 
                     if (data.results && data.results.length > 0) {
                         const ul = document.createElement('ul');
-                        ul.setAttribute('role', 'listbox'); // Accessibility
-                        data.results.slice(0, 5).forEach(movie => { // Show top 5 results
+                        ul.setAttribute('role', 'listbox'); 
+                        data.results.slice(0, 5).forEach(movie => { 
                             const li = document.createElement('li');
                             li.setAttribute('role', 'option');
-                            li.setAttribute('tabindex', '0'); // Make it focusable
+                            li.setAttribute('tabindex', '0'); 
                             const year = movie.release_date ? ` (${movie.release_date.substring(0,4)})` : '';
                             li.textContent = `${movie.title}${year}`;
                             li.dataset.movieId = movie.id;
@@ -260,19 +241,19 @@ if (searchInput && tmdbApiKey) { // Proceed only if input and API key are availa
                             
                             const selectMovieAction = () => {
                                 selectedMovieIdInput.value = movie.id;
-                                selectedMovieTitleInput.value = movie.title; // For form submission
+                                selectedMovieTitleInput.value = movie.title; 
                                 selectedMovieDisplay.innerHTML = `Film sélectionné : <strong>${movie.title}${year}</strong>`;
-                                searchInput.value = `${movie.title}${year}`; // Update input to show selection
+                                searchInput.value = `${movie.title}${year}`; 
                                 resultsContainer.innerHTML = '';
                                 resultsContainer.style.display = 'none';
                             };
 
                             li.addEventListener('click', selectMovieAction);
-                            li.addEventListener('keydown', (e) => { // Allow selection with Enter/Space
+                            li.addEventListener('keydown', (e) => { 
                                 if (e.key === 'Enter' || e.key === ' ') {
                                     e.preventDefault();
                                     selectMovieAction();
-                                    searchInput.focus(); // Return focus to search or next field
+                                    searchInput.focus(); 
                                 }
                             });
                             ul.appendChild(li);
@@ -280,9 +261,9 @@ if (searchInput && tmdbApiKey) { // Proceed only if input and API key are availa
                         resultsContainer.appendChild(ul);
                         resultsContainer.style.display = 'block';
                     } else {
-                        const li = document.createElement('li');
-                        li.textContent = 'Aucun film trouvé.';
-                        resultsContainer.appendChild(li);
+                        const liNoResult = document.createElement('li'); // Renamed variable to avoid conflict
+                        liNoResult.textContent = 'Aucun film trouvé.';
+                        resultsContainer.appendChild(liNoResult); // Append the new li
                         resultsContainer.style.display = 'block';
                     }
                 })
@@ -291,17 +272,15 @@ if (searchInput && tmdbApiKey) { // Proceed only if input and API key are availa
                     resultsContainer.innerHTML = '<li>Erreur de recherche. Veuillez réessayer.</li>';
                     resultsContainer.style.display = 'block';
                 });
-        }, 350); // Debounce API calls slightly more
+        }, 350); 
     });
 
-    // Hide results if clicked outside
     document.addEventListener('click', function(event) {
         if (resultsContainer && !resultsContainer.contains(event.target) && event.target !== searchInput) {
             resultsContainer.style.display = 'none';
         }
     });
 
-    // Handle clearing selection if search input is manually cleared
     searchInput.addEventListener('input', function() {
         if (this.value.trim() === '') {
             selectedMovieIdInput.value = '';
