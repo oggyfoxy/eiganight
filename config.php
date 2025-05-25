@@ -32,11 +32,12 @@ if (session_status() === PHP_SESSION_NONE) {
 // config.local.php or set local environment variables, or adjust these fallbacks
 // to match your local MAMP/XAMPP (e.g., user 'root', pass 'root' for MAMP).
 // THE FALLBACKS HERE SHOULD NOT BE YOUR PRODUCTION CREDENTIALS.
-define('DB_HOST', getenv('MYSQL_HOST') ?: '127.0.0.1');
-define('DB_PORT', (int)(getenv('MYSQL_PORT') ?: 3306)); // Or your local MAMP port like 8889
-define('DB_NAME', getenv('MYSQL_DATABASE') ?: 'eiganights'); // e.g., a local dev DB name
-define('DB_USER', getenv('MYSQL_USER') ?: 'local_db_user');       // e.g., 'root' or 'eigaapp_dev'
-define('DB_PASS', getenv('MYSQL_PASSWORD') ?: 'local_db_password'); // e.g., 'root' or an empty string ''
+//    Local fallbacks should match your MAMP setup.
+define('DB_HOST', getenv('MYSQL_HOST') ?: '127.0.0.1');        // This is usually fine for MAMP
+define('DB_PORT', (int)(getenv('MYSQL_PORT') ?: 3306));      // <<< CHANGE THIS if your MAMP MySQL is on port 8889 (MAMP default), or 3306 if you configured it to that.
+define('DB_NAME', getenv('MYSQL_DATABASE') ?: 'eiganights');   // <<< Use 'eiganights' if that's your local DB name
+define('DB_USER', getenv('MYSQL_USER') ?: 'root');            // <<< CHANGE THIS to 'root' for MAMP default
+define('DB_PASS', getenv('MYSQL_PASSWORD') ?: ''); 
 
 $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
 $conn = $mysqli;
@@ -71,7 +72,7 @@ if ($app_url_env) {
 }
 
 // Optional: Define SITE_NAME
-define('SITE_NAME', getenv('SITE_NAME') ?: 'eiganights (Dev)');
+define('SITE_NAME', getenv('SITE_NAME') ?: 'eiganight');
 
 
 // --- SMTP Configuration for PHPMailer ---

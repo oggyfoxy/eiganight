@@ -13,7 +13,6 @@ Desktop.ini
 
 # Composer dependencies (if you were using Composer)
 /vendor/
-composer.lock
 
 # PHPStorm specific
 .phpstorm.meta.php
