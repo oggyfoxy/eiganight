@@ -1,9 +1,4 @@
 <?php
-/*
- * view_profile.php
- * Displays the profile of a specified user.
- * (Version without 'blocked' status consideration)
- */
 include_once 'config.php'; 
 
 $profileUser = null;
@@ -93,7 +88,6 @@ if ($loggedInUserId && $loggedInUserId !== $profileUserId) {
                 } elseif ($friendshipDbStatus === 'declined') {
                     $friendAction = 'add_friend'; 
                 }
-                // 'blocked' status is no longer part of the ENUM or this logic
             } else { 
                 $friendAction = 'add_friend';
             }
@@ -155,7 +149,6 @@ if ($canViewFullProfile) {
             }
             $stmtProfileUserAnnotations->close();
         }
-    // The if ($canViewFullProfile) block continues or ends after this.
 
 $pageTitle = "Profil de " . htmlspecialchars($profileUser['username'], ENT_QUOTES, 'UTF-8') . " - Eiganights";
 include_once 'includes/header.php';
@@ -310,12 +303,12 @@ include_once 'includes/header.php';
             <p><?php echo htmlspecialchars($profileUser['username'], ENT_QUOTES, 'UTF-8'); ?> n'a pas encore créé d'annotations de scènes.</p>
         <?php endif; ?>
     </section>
-<?php elseif ($profileUser['profile_visibility'] === 'friends_only' && !$canViewFullProfile): // Not friends, so can't see annotations ?>
+<?php elseif ($profileUser['profile_visibility'] === 'friends_only' && !$canViewFullProfile):?>
     <section class="profile-annotations-private card">
         <h2>Annotations de Scènes</h2>
         <p><em>Les annotations de scènes de cet utilisateur sont visibles uniquement par ses amis.</em></p>
     </section>
-<?php elseif ($profileUser['profile_visibility'] === 'private'): // Profile is private ?>
+<?php elseif ($profileUser['profile_visibility'] === 'private'):?>
      <section class="profile-annotations-private card">
         <h2>Annotations de Scènes</h2>
         <p><em>Les annotations de scènes de cet utilisateur sont privées.</em></p>

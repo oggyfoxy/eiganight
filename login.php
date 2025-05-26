@@ -1,9 +1,5 @@
 <?php
-/*
- * login.php
- * Handles user login and authentication using reCAPTCHA v3.
- */
-include_once 'config.php'; // Includes session_start(), $conn, and RECAPTCHA keys
+include_once 'config.php';
 
 if (isset($_SESSION['user_id'])) {
     header('Location: profile.php');
@@ -15,7 +11,6 @@ $error_message = '';
 $username_value = '';
 
 $redirectAfterLogin = 'profile.php';
-// ... (logique de redirection existante) ...
 if (isset($_GET['redirect']) && !empty(trim($_GET['redirect']))) {
     $postedRedirectUrl = trim($_GET['redirect']);
     $urlComponents = parse_url($postedRedirectUrl);
@@ -28,28 +23,26 @@ if (isset($_GET['redirect']) && !empty(trim($_GET['redirect']))) {
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // --- reCAPTCHA v3 Verification ---
-    $recaptcha_token = $_POST['g-recaptcha-response'] ?? null; // reCAPTCHA v3 token
+    $recaptcha_token = $_POST['g-recaptcha-response'] ?? null;
     $recaptcha_valid = false;
-    $recaptcha_action = 'login'; // L'action que vous définirez côté client
+    $recaptcha_action = 'login';
 
-    // Utiliser les clés V3
     $recaptchaConfigured = defined('RECAPTCHA_SITE_KEY_V3') && RECAPTCHA_SITE_KEY_V3 &&
                            defined('RECAPTCHA_SECRET_KEY_V3') && RECAPTCHA_SECRET_KEY_V3;
 
     if ($recaptchaConfigured) {
         if (!empty($recaptcha_token)) {
             $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
-            $recaptcha_secret = RECAPTCHA_SECRET_KEY_V3; // Utiliser la clé secrète V3
+            $recaptcha_secret = RECAPTCHA_SECRET_KEY_V3;
             $recaptcha_remote_ip = $_SERVER['REMOTE_ADDR'];
 
             $recaptcha_data = [
                 'secret' => $recaptcha_secret,
-                'response' => $recaptcha_token, // c'est le token de reCAPTCHA v3
+                'response' => $recaptcha_token,
                 'remoteip' => $recaptcha_remote_ip
             ];
 
-            $options = [ /* ... (options HTTP comme avant) ... */ 
+            $options = [ 
                 'http' => [
                     'header' => "Content-type: application/x-www-form-urlencoded\r\n",
                     'method' => 'POST',
@@ -64,9 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 error_log("reCAPTCHA v3 verification failed (login.php): Could not connect.");
             } else {
                 $verify_response_data = json_decode($verify_response_json);
-                // Pour v3, vérifier success, score et action
                 if ($verify_response_data && $verify_response_data->success &&
-                    isset($verify_response_data->score) && $verify_response_data->score >= 0.5 && // Seuil de score, ajustez si besoin
+                    isset($verify_response_data->score) && $verify_response_data->score >= 0.5 &&
                     isset($verify_response_data->action) && $verify_response_data->action == $recaptcha_action) {
                     $recaptcha_valid = true;
                 } else {
@@ -79,12 +71,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else {
         error_log("AVERTISSEMENT (login.php): Les clés reCAPTCHA v3 ne sont pas configurées. Vérification ignorée.");
-        $recaptcha_valid = true; // Bypass pour dev. En PROD, mettre à false.
+        $recaptcha_valid = true;
     }
-    // --- End reCAPTCHA v3 Verification ---
 
     if ($recaptcha_valid) {
-        // ... (votre logique de connexion existante : vérification username/password) ...
         if (!isset($_POST['username'], $_POST['password']) || empty(trim($_POST['username'])) || empty($_POST['password']) ) {
             $error_message = "Nom d'utilisateur et mot de passe requis.";
         } else {
@@ -141,7 +131,6 @@ $fullPageTitle = htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') . ' - ' . $si
     <title><?php echo $fullPageTitle; ?></title>
     <link rel="stylesheet" href="<?php echo htmlspecialchars(BASE_URL . 'assets/style.css', ENT_QUOTES, 'UTF-8'); ?>" />
     <?php
-    // Script reCAPTCHA v3 pour la page de connexion
     if (defined('RECAPTCHA_SITE_KEY_V3') && RECAPTCHA_SITE_KEY_V3):
     ?>
         <script src="https://www.google.com/recaptcha/api.js?render=<?php echo htmlspecialchars(RECAPTCHA_SITE_KEY_V3, ENT_QUOTES, 'UTF-8'); ?>"></script>
@@ -169,7 +158,6 @@ $fullPageTitle = htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') . ' - ' . $si
 <body>
 
 <?php
-// Réplication manuelle du header
 $logoutText = "Déconnexion";
 $headerSearchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search']), ENT_QUOTES, 'UTF-8') : '';
 $logoPath = BASE_URL . 'assets/images/eiganights_logov2.png';
@@ -225,7 +213,7 @@ $logoPath = BASE_URL . 'assets/images/eiganights_logov2.png';
         <?php if (!empty($error_message)): ?>
             <div class="alert alert-danger"><?php echo htmlspecialchars($error_message); ?></div>
         <?php endif; ?>
-        <?php /* ... autres messages de session ... */ ?>
+        <?php ?>
          <?php if (!empty($_SESSION['message'])): ?>
             <div class="alert alert-success">
                 <?php echo htmlspecialchars($_SESSION['message']); unset($_SESSION['message']); ?>

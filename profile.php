@@ -1,30 +1,23 @@
 <?php
-/*
- * profile.php
- * Displays and manages the logged-in user's profile.
- */
-include_once 'config.php'; // Handles session_start(), $conn, TMDB_API_KEY
+include_once 'config.php';
 
-// Check if user is logged in; if not, redirect to login page
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['login_required_message'] = "Vous devez être connecté pour voir votre profil.";
-    header('Location: login.php?redirect=profile.php'); // Redirect back to profile after login
+    header('Location: login.php?redirect=profile.php');
     exit;
 }
 
 $loggedInUserId = (int)$_SESSION['user_id'];
-$user = null; // Will hold user's profile data
+$user = null;
 $watchlist = [];
 $pendingRequests = [];
 $friends = [];
-$pageTitle = "Mon Profil - Eiganights"; // Default
+$pageTitle = "Mon Profil - Eiganights";
 
-// --- Fetch User's Core Profile Data ---
 $stmtUser = $conn->prepare("SELECT id, username, bio, created_at, profile_visibility FROM users WHERE id = ?");
 if (!$stmtUser) {
     error_log("Prepare failed (PROF_USER_SEL): " . $conn->error);
     $_SESSION['error'] = "Erreur lors du chargement de votre profil. (P01)";
-    // Redirect to a safe page or show error on current page if header/footer can still load
     header('Location: index.php');
     exit;
 }
@@ -40,9 +33,8 @@ $resultUser = $stmtUser->get_result();
 if ($user = $resultUser->fetch_assoc()) {
     $pageTitle = "Profil de " . htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8') . " - Eiganights";
 } else {
-    // Should not happen if user_id in session is valid, but handle defensively
     error_log("User with ID $loggedInUserId not found in database, but session exists.");
-    session_destroy(); // Destroy potentially corrupt session
+    session_destroy();
     $_SESSION['error'] = "Erreur de session. Veuillez vous reconnecter.";
     header('Location: login.php');
     exit;
@@ -50,13 +42,11 @@ if ($user = $resultUser->fetch_assoc()) {
 $stmtUser->close();
 
 
-// --- Handle Profile Update (Bio and Visibility) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $updatePerformed = false;
 
-    // Update Bio
-    if (isset($_POST['bio'])) { // Presence of 'bio' key indicates intent to update it (even if empty)
-        $newBio = trim($_POST['bio']); // Allow empty bio
+    if (isset($_POST['bio'])) {
+        $newBio = trim($_POST['bio']);
 
         $stmtUpdateBio = $conn->prepare("UPDATE users SET bio = ? WHERE id = ?");
         if (!$stmtUpdateBio) {
@@ -66,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmtUpdateBio->bind_param("si", $newBio, $loggedInUserId);
             if ($stmtUpdateBio->execute()) {
                 $_SESSION['message'] = (isset($_SESSION['message']) ? $_SESSION['message'] . " " : "") . "Bio mise à jour.";
-                $user['bio'] = $newBio; // Update local $user array
+                $user['bio'] = $newBio;
                 $updatePerformed = true;
             } else {
                 error_log("Execute failed (PROF_BIO_UPD): " . $stmtUpdateBio->error);
@@ -76,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Update Profile Visibility
     if (isset($_POST['profile_visibility'])) {
         $newVisibility = trim($_POST['profile_visibility']);
         $allowedVisibilities = ['public', 'friends_only', 'private'];
@@ -90,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtUpdateVis->bind_param("si", $newVisibility, $loggedInUserId);
                 if ($stmtUpdateVis->execute()) {
                     $_SESSION['message'] = (isset($_SESSION['message']) ? $_SESSION['message'] . " " : "") . "Visibilité du profil mise à jour.";
-                    $user['profile_visibility'] = $newVisibility; // Update local $user array
+                    $user['profile_visibility'] = $newVisibility;
                     $updatePerformed = true;
                 } else {
                     error_log("Execute failed (PROF_VIS_UPD): " . $stmtUpdateVis->error);
@@ -104,19 +93,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($updatePerformed) {
-        // Redirect after POST to prevent form resubmission (Post/Redirect/Get pattern)
         header('Location: profile.php');
         exit;
     }
-    // If only errors occurred, no redirect here, errors will be shown on page reload.
 }
 
 
-// --- Fetch User's Watchlist ---
 $stmtWatchlist = $conn->prepare("SELECT movie_id, movie_title, poster_path FROM watchlist WHERE user_id = ? ORDER BY added_at DESC");
 if (!$stmtWatchlist) {
     error_log("Prepare failed (PROF_WL_SEL): " . $conn->error);
-    $_SESSION['error_watchlist'] = "Erreur lors du chargement de la watchlist. (P07)"; // Use specific error key
+    $_SESSION['error_watchlist'] = "Erreur lors du chargement de la watchlist. (P07)";
 } else {
     $stmtWatchlist->bind_param("i", $loggedInUserId);
     if ($stmtWatchlist->execute()) {
@@ -132,7 +118,6 @@ if (!$stmtWatchlist) {
 }
 
 
-// --- Fetch Pending Friend Requests (Requests sent TO the logged-in user) ---
 $sqlPending = "
     SELECT u.id, u.username 
     FROM friendships f
@@ -148,9 +133,6 @@ $sqlPending = "
       AND f.status = 'pending'
       AND f.action_user_id = f.user_two_id -- Action user is the sender
 ";
-// This complex query is due to the (user_one_id < user_two_id) constraint.
-// A simpler way might be to query friendships where loggedInUserId is user_one or user_two, status is pending,
-// AND action_user_id is NOT loggedInUserId.
 $sqlPendingSimplified = "
     SELECT u.id, u.username, f.action_user_id
     FROM friendships f
@@ -161,7 +143,7 @@ $sqlPendingSimplified = "
     WHERE (f.user_one_id = ? OR f.user_two_id = ?) 
       AND f.status = 'pending' 
       AND f.action_user_id != ? 
-    ORDER BY u.username"; // Order for consistent display
+    ORDER BY u.username";
 
 $stmtPending = $conn->prepare($sqlPendingSimplified);
 if (!$stmtPending) {
@@ -185,7 +167,6 @@ if (!$stmtPending) {
 }
 
 
-// --- Fetch Accepted Friends ---
 $sqlFriends = "
     SELECT u.id, u.username 
     FROM friendships f
@@ -195,7 +176,7 @@ $sqlFriends = "
                     END) = u.id
     WHERE (f.user_one_id = ? OR f.user_two_id = ?) 
       AND f.status = 'accepted'
-    ORDER BY u.username"; // Order for consistent display
+    ORDER BY u.username";
 
 $stmtFriends = $conn->prepare($sqlFriends);
 if (!$stmtFriends) {
@@ -244,7 +225,7 @@ include_once 'includes/header.php';
 <main class="container profile-page">
     <h1>Profil de <?php echo htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8'); ?></h1>
 
-    <?php // Display session messages ?>
+    <?php?>
     <?php if (!empty($_SESSION['message'])): ?>
         <div class="alert alert-success"><?php echo htmlspecialchars($_SESSION['message']); unset($_SESSION['message']); ?></div>
     <?php endif; ?>
@@ -339,7 +320,7 @@ include_once 'includes/header.php';
         <?php elseif (empty($_SESSION['error_friends']) || strpos($_SESSION['error_friends'], "(liste d'amis)") === false) : ?>
             <p>Vous n'avez pas encore d'amis. <a href="users_list.php">Trouvez des utilisateurs !</a></p>
         <?php endif; ?>
-         <?php if (isset($_SESSION['error_friends'])) unset($_SESSION['error_friends']); // Clear if partially displayed ?>
+         <?php if (isset($_SESSION['error_friends'])) unset($_SESSION['error_friends']);?>
     </section>
 
     <hr>
@@ -350,9 +331,9 @@ include_once 'includes/header.php';
             <div class="alert alert-danger"><?php echo htmlspecialchars($_SESSION['error_watchlist']); unset($_SESSION['error_watchlist']); ?></div>
         <?php endif; ?>
         <?php if (!empty($watchlist)): ?>
-            <div class="watchlist-grid movies-grid"> <?php // Re-use movies-grid for consistency ?>
+            <div class="watchlist-grid movies-grid"> <?php?>
                 <?php foreach ($watchlist as $movie): ?>
-                    <article class="movie-in-watchlist movie"> <?php // Re-use movie class ?>
+                    <article class="movie-in-watchlist movie"> <?php?>
                         <a href="movie_details.php?id=<?php echo (int)$movie['movie_id']; ?>">
                             <?php if (!empty($movie['poster_path'])): ?>
                                 <img src="https://image.tmdb.org/t/p/w300<?php echo htmlspecialchars($movie['poster_path'], ENT_QUOTES, 'UTF-8'); ?>" 
@@ -363,7 +344,7 @@ include_once 'includes/header.php';
                                      class="movie-poster-placeholder" loading="lazy" />
                             <?php endif; ?>
                         </a>
-                        <div class="movie-info-watchlist movie-info"> <?php // Re-use movie-info ?>
+                        <div class="movie-info-watchlist movie-info"> <?php?>
                             <h3 class="movie-title-watchlist movie-title">
                                  <a href="movie_details.php?id=<?php echo (int)$movie['movie_id']; ?>"><?php echo htmlspecialchars($movie['movie_title'], ENT_QUOTES, 'UTF-8'); ?></a>
                             </h3>
@@ -416,6 +397,5 @@ include_once 'includes/header.php';
 </section>
 
 <?php
-// $conn->close(); // Optional.
 include_once 'includes/footer.php';
 ?>

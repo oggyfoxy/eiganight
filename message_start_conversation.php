@@ -1,5 +1,4 @@
 <?php
-// message_start_conversation.php
 include_once 'config.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -12,7 +11,6 @@ $pageTitle = "Démarrer une Conversation - eiganights";
 $loggedInUserId = (int)$_SESSION['user_id'];
 $friends = [];
 
-// Fetch user's friends
 $sqlFriends = "
     SELECT u.id, u.username
     FROM friendships f
@@ -63,9 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['with_user_id'])) {
             exit;
         }
 
-        // Find existing conversation or create a new one
-        // A conversation is defined by its participants.
-        // We need to find a conversation_id where both loggedInUserId and friendUserId are participants.
         $sqlFindConvo = "SELECT cp1.conversation_id
                          FROM conversation_participants cp1
                          JOIN conversation_participants cp2 ON cp1.conversation_id = cp2.conversation_id
@@ -80,14 +75,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['with_user_id'])) {
             $stmtFind->close();
 
             if ($existing_convo) {
-                // Conversation already exists, redirect to it
                 header('Location: message_view_conversation.php?id=' . $existing_convo['conversation_id']);
                 exit;
             } else {
-                // Create new conversation
                 $conn->begin_transaction();
                 try {
-                    // 1. Create conversation entry
                     $stmtCreateConvo = $conn->prepare("INSERT INTO conversations (created_at, last_message_at) VALUES (NOW(), NOW())");
                     if (!$stmtCreateConvo || !$stmtCreateConvo->execute()) {
                         throw new Exception("Failed to create conversation record: " . ($stmtCreateConvo ? $stmtCreateConvo->error : $conn->error));
@@ -95,14 +87,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['with_user_id'])) {
                     $newConversationId = $conn->insert_id;
                     $stmtCreateConvo->close();
 
-                    // 2. Add logged-in user as participant
                     $stmtAddSelf = $conn->prepare("INSERT INTO conversation_participants (conversation_id, user_id) VALUES (?, ?)");
                     if (!$stmtAddSelf || !$stmtAddSelf->bind_param("ii", $newConversationId, $loggedInUserId) || !$stmtAddSelf->execute()) {
                          throw new Exception("Failed to add self to conversation: " . ($stmtAddSelf ? $stmtAddSelf->error : $conn->error));
                     }
                     $stmtAddSelf->close();
 
-                    // 3. Add friend as participant
                     $stmtAddFriend = $conn->prepare("INSERT INTO conversation_participants (conversation_id, user_id) VALUES (?, ?)");
                      if (!$stmtAddFriend || !$stmtAddFriend->bind_param("ii", $newConversationId, $friendUserId) || !$stmtAddFriend->execute()) {
                          throw new Exception("Failed to add friend to conversation: " . ($stmtAddFriend ? $stmtAddFriend->error : $conn->error));

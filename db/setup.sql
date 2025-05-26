@@ -129,7 +129,6 @@ CREATE TABLE forum_threads (
     movie_title VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL, -- This will be the user's title for the annotation/scene discussion
 
-    -- >> NEW SCENE-SPECIFIC COLUMNS <<
     scene_start_time VARCHAR(12) DEFAULT NULL, -- e.g., "00:45:12" (HH:MM:SS) or just seconds
     scene_end_time VARCHAR(12) DEFAULT NULL,   -- e.g., "00:46:05" (Optional for MVP)
     scene_description_short TEXT DEFAULT NULL, -- A brief user description of what happens in the scene

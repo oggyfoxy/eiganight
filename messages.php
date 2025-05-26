@@ -1,5 +1,4 @@
 <?php
-// messages.php
 include_once 'config.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -12,9 +11,6 @@ $pageTitle = "Mes Messages - eiganights";
 $loggedInUserId = (int)$_SESSION['user_id'];
 $conversations = [];
 
-// The SQL query needs to be adjusted to better fit a "subject-like" display.
-// For 1-on-1, the "subject" can be implicitly "Conversation avec [User]".
-// We'll use the last message content as a sort of subject/preview.
 $sql = "SELECT
             c.id as conversation_id,
             c.last_message_at,
@@ -35,7 +31,6 @@ if ($stmt) {
     if ($stmt->execute()) {
         $result = $stmt->get_result();
         while ($row = $result->fetch_assoc()) {
-            // Placeholder for actual unread logic
             $row['is_unread_placeholder'] = ($row['last_message_sender_id'] != $loggedInUserId && !empty($row['last_message_content']));
             $conversations[] = $row;
         }

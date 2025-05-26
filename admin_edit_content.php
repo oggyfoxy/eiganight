@@ -10,28 +10,24 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role
 $pageTitle = "Gérer le Contenu du Site - Admin";
 $edit_slug = null;
 $content_title = '';
-$content_body = ''; // HTML content
+$content_body = '';
 
-// Handle Form Submission (POST)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $content_slug = trim($_POST['content_slug'] ?? '');
     $content_title = trim($_POST['content_title'] ?? '');
-    $content_body = $_POST['content_body'] ?? ''; // Allow HTML, sanitize on display if needed or use WYSIWYG
+    $content_body = $_POST['content_body'] ?? '';
 
     if (empty($content_slug) || empty($content_title) || empty($content_body)) {
         $_SESSION['admin_error'] = "Le slug, le titre et le contenu sont requis.";
     } else {
-        // Check if slug exists for update, otherwise it's an error for now (no new content creation via this simple form)
         $stmt_check = $conn->prepare("SELECT id FROM site_content WHERE slug = ?");
         $stmt_check->bind_param("s", $content_slug);
         $stmt_check->execute();
         $stmt_check->store_result();
 
-        if ($stmt_check->num_rows > 0) { // Update existing content
+        if ($stmt_check->num_rows > 0) {
             $sql = "UPDATE site_content SET title = ?, content = ? WHERE slug = ?";
             $stmt = $conn->prepare($sql);
-            // Note: Be very careful with allowing HTML directly.
-            // Consider using a WYSIWYG editor that sanitizes or use a markdown parser.
             $stmt->bind_param("sss", $content_title, $content_body, $content_slug);
             if ($stmt->execute()) {
                 $_SESSION['admin_message'] = "Contenu '" . htmlspecialchars($content_title) . "' mis à jour avec succès.";
@@ -109,7 +105,7 @@ include_once 'includes/header.php';
             </div>
             <div class="form-group">
                 <label for="content_body">Contenu (HTML autorisé - Soyez prudent):</label>
-                <textarea name="content_body" id="content_body" rows="15" required><?php echo htmlspecialchars($content_body); // Escape for textarea display, but it's stored as HTML ?></textarea>
+                <textarea name="content_body" id="content_body" rows="15" required><?php echo htmlspecialchars($content_body);?></textarea>
                 <small>Pour les sauts de ligne, utilisez <p>paragraphes</p> ou <br>. Pour les titres, <h2>Titre</h2>, etc.</small>
             </div>
             <button type="submit" class="button-primary">Mettre à jour le Contenu</button>

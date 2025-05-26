@@ -1,15 +1,10 @@
 <?php
-/*
- * users_list.php
- * Displays a list of users and allows searching for users.
- */
-include_once 'config.php'; // Includes session_start(), $conn, TMDB_API_KEY
+include_once 'config.php';
 
-$loggedInUserId = $_SESSION['user_id'] ?? null; // Null if user is not logged in
+$loggedInUserId = $_SESSION['user_id'] ?? null;
 $users = [];
 $pageTitle = "Liste des Utilisateurs - Eiganights";
 
-// --- Handle User Search ---
 $searchUsernameParam = '';
 $searchUsernameDisplay = '';
 
@@ -21,10 +16,8 @@ if (isset($_GET['search_user'])) {
     }
 }
 
-// --- Fetch Users from Database ---
 if (!empty($searchUsernameParam)) {
-    $searchTermSQL = "%" . $searchUsernameParam . "%"; // Wildcards for LIKE search
-    // Exclude the logged-in user from search results if they are logged in
+    $searchTermSQL = "%" . $searchUsernameParam . "%";
     if ($loggedInUserId) {
         $sql = "SELECT id, username FROM users WHERE username LIKE ? AND id != ? AND role != 'admin' AND is_banned = 0 ORDER BY username ASC";
         $stmt = $conn->prepare($sql);
@@ -45,8 +38,8 @@ if (!empty($searchUsernameParam)) {
             $stmt->bind_param("s", $searchTermSQL);
         }
     }
-} else { // No search query, display a list of recent/all users (excluding logged-in user if applicable)
-    $limit = 20; // Limit the number of users displayed by default
+} else {
+    $limit = 20;
     if ($loggedInUserId) {
         $sql = "SELECT id, username FROM users WHERE id != ? AND role != 'admin' AND is_banned = 0 ORDER BY created_at DESC, username ASC LIMIT ?";
         $stmt = $conn->prepare($sql);
@@ -56,9 +49,8 @@ if (!empty($searchUsernameParam)) {
         } else {
             $stmt->bind_param("ii", $loggedInUserId, $limit);
         }
-    } else { // User not logged in, show generic list
+    } else {
         $sql = "SELECT id, username FROM users WHERE role != 'admin' AND is_banned = 0 ORDER BY created_at DESC, username ASC LIMIT ?";
-// No change to bind_param needed
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
             error_log("Prepare failed (UL_LIST_NOLID): " . $conn->error);
@@ -69,8 +61,7 @@ if (!empty($searchUsernameParam)) {
     }
 }
 
-// Execute statement and fetch results if statement was prepared successfully
-if (isset($stmt) && $stmt) { // Check if $stmt is not false (i.e., prepare was successful)
+if (isset($stmt) && $stmt) {
     if ($stmt->execute()) {
         $result = $stmt->get_result();
         while ($row = $result->fetch_assoc()) {
@@ -82,7 +73,6 @@ if (isset($stmt) && $stmt) { // Check if $stmt is not false (i.e., prepare was s
     }
     $stmt->close();
 }
-// If $stmt prepare failed, an error message should already be in $_SESSION['error']
 
 include_once 'includes/header.php';
 ?>
@@ -90,7 +80,7 @@ include_once 'includes/header.php';
 <main class="container users-list-page">
     <h1>Utilisateurs Eiganights</h1>
 
-    <?php // Display session messages ?>
+    <?php?>
     <?php if (!empty($_SESSION['message'])): ?>
         <div class="alert alert-success"><?php echo htmlspecialchars($_SESSION['message']); unset($_SESSION['message']); ?></div>
     <?php endif; ?>
@@ -123,7 +113,7 @@ include_once 'includes/header.php';
                         <a href="view_profile.php?id=<?php echo (int)$user['id']; ?>">
                             <?php echo htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8'); ?>
                         </a>
-                        <?php // Friend action buttons could be added here, but might require more complex logic/queries per user ?>
+                        <?php?>
                         <?php if ($loggedInUserId && $loggedInUserId !== (int)$user['id']): ?>
                             <a href="view_profile.php?id=<?php echo (int)$user['id']; ?>" class="button button-secondary button-small">Voir Profil</a>
                         <?php endif; ?>
@@ -132,7 +122,7 @@ include_once 'includes/header.php';
             </ul>
         <?php elseif (!empty($searchUsernameParam) && empty($_SESSION['error'])): ?>
             <p>Aucun utilisateur trouvé correspondant à votre recherche "<?php echo $searchUsernameDisplay; ?>".</p>
-        <?php elseif (empty($_SESSION['error'])): // No users found and no search, or no error from DB
+        <?php elseif (empty($_SESSION['error'])):
             ?>
             <p>Aucun utilisateur à afficher pour le moment. <a href="register.php">Soyez le premier à vous inscrire !</a></p>
         <?php endif; ?>
@@ -140,6 +130,5 @@ include_once 'includes/header.php';
 </main>
 
 <?php
-// $conn->close(); // Optional
 include_once 'includes/footer.php';
 ?>

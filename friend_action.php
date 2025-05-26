@@ -1,27 +1,19 @@
 <?php
-/*
- * friend_action.php
- * Handles all friendship-related actions: send, cancel, accept, decline, unfriend.
- */
-include_once 'config.php'; // Includes session_start(), db connection ($conn)
+include_once 'config.php';
 
-// Error reporting: should be set in config.php
-// For development, ensure errors are displayed. For production, they should be logged.
 
-// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['error'] = "Vous devez être connecté pour effectuer cette action.";
     header('Location: login.php');
     exit;
 }
 
-// Validate request method and essential parameters
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || 
     !isset($_POST['action'], $_POST['profile_user_id']) ||
     empty(trim($_POST['action'])) || !is_numeric($_POST['profile_user_id'])) {
     
     $_SESSION['error'] = "Requête invalide ou données manquantes.";
-    header('Location: index.php'); // Or a more appropriate default page
+    header('Location: index.php');
     exit;
 }
 
@@ -29,30 +21,25 @@ $loggedInUserId = (int)$_SESSION['user_id'];
 $profileUserId = (int)$_POST['profile_user_id'];
 $action = trim($_POST['action']);
 
-// Users cannot perform friend actions on themselves
 if ($loggedInUserId === $profileUserId) {
     $_SESSION['error'] = "Vous ne pouvez pas effectuer cette action avec vous-même.";
-    header('Location: profile.php'); // Redirect to their own profile
+    header('Location: profile.php');
     exit;
 }
 
-// For database consistency (user_one_id < user_two_id)
 $user_one_id = min($loggedInUserId, $profileUserId);
 $user_two_id = max($loggedInUserId, $profileUserId);
 
-// Determine redirect URL with security check
-$redirectUrl = 'view_profile.php?id=' . $profileUserId; // Default redirect
+$redirectUrl = 'view_profile.php?id=' . $profileUserId;
 if (isset($_POST['redirect_url']) && !empty(trim($_POST['redirect_url']))) {
     $postedRedirectUrl = trim($_POST['redirect_url']);
     $urlComponents = parse_url($postedRedirectUrl);
     if (empty($urlComponents['host']) || $urlComponents['host'] === $_SERVER['HTTP_HOST']) {
         $redirectUrl = $postedRedirectUrl;
     }
-    // If not a local path, $redirectUrl remains the default.
 }
 
 
-// --- Main switch logic for friendship actions ---
 switch ($action) {
     case 'send_request':
         $stmt_check = $conn->prepare("SELECT status FROM friendships WHERE user_one_id = ? AND user_two_id = ?");
@@ -70,7 +57,7 @@ switch ($action) {
         }
         $result_check = $stmt_check->get_result();
 
-        if ($row = $result_check->fetch_assoc()) { // Existing relationship
+        if ($row = $result_check->fetch_assoc()) {
             if ($row['status'] === 'accepted') {
                 $_SESSION['message'] = "Vous êtes déjà amis.";
             } elseif ($row['status'] === 'pending') {
@@ -88,7 +75,7 @@ switch ($action) {
             } elseif ($row['status'] === 'blocked') {
                  $_SESSION['error'] = "Impossible d'envoyer une demande à cet utilisateur pour le moment.";
             }
-        } else { // No existing relationship, insert new request
+        } else {
             $stmt_insert = $conn->prepare("INSERT INTO friendships (user_one_id, user_two_id, status, action_user_id) VALUES (?, ?, 'pending', ?)");
             if (!$stmt_insert) { error_log("Prepare failed (FS_INS_SR): " . $conn->error); $_SESSION['error'] = "Erreur système. (Code: FS05)"; $stmt_check->close(); break; }
             $stmt_insert->bind_param("iii", $user_one_id, $user_two_id, $loggedInUserId);
@@ -107,7 +94,7 @@ switch ($action) {
     case 'cancel_request':
         $stmt_delete = $conn->prepare("DELETE FROM friendships WHERE user_one_id = ? AND user_two_id = ? AND status = 'pending' AND action_user_id = ?");
         if (!$stmt_delete) { error_log("Prepare failed (FS_DEL_CR): " . $conn->error); $_SESSION['error'] = "Erreur système. (Code: FS07)"; break; }
-        $stmt_delete->bind_param("iii", $user_one_id, $user_two_id, $loggedInUserId); // LoggedInUser must be the action_user_id
+        $stmt_delete->bind_param("iii", $user_one_id, $user_two_id, $loggedInUserId);
         if ($stmt_delete->execute()) {
             $_SESSION['message'] = ($stmt_delete->affected_rows > 0) ? "Demande d'ami annulée." : "Aucune demande à annuler trouvée ou action non autorisée.";
         } else {
@@ -118,7 +105,6 @@ switch ($action) {
         break;
 
     case 'accept_request':
-        // Request was sent by $profileUserId, so $profileUserId should be the action_user_id in DB for 'pending' status
         $stmt_update = $conn->prepare("UPDATE friendships SET status = 'accepted', action_user_id = ?, updated_at = NOW() WHERE user_one_id = ? AND user_two_id = ? AND status = 'pending' AND action_user_id = ?");
         if (!$stmt_update) { error_log("Prepare failed (FS_UPD_AR): " . $conn->error); $_SESSION['error'] = "Erreur système. (Code: FS09)"; break; }
         $stmt_update->bind_param("iiii", $loggedInUserId, $user_one_id, $user_two_id, $profileUserId);
@@ -132,7 +118,6 @@ switch ($action) {
         break;
 
     case 'decline_request':
-        // Request was sent by $profileUserId
         $stmt_update = $conn->prepare("UPDATE friendships SET status = 'declined', action_user_id = ?, updated_at = NOW() WHERE user_one_id = ? AND user_two_id = ? AND status = 'pending' AND action_user_id = ?");
         if (!$stmt_update) { error_log("Prepare failed (FS_UPD_DR): " . $conn->error); $_SESSION['error'] = "Erreur système. (Code: FS11)"; break; }
         $stmt_update->bind_param("iiii", $loggedInUserId, $user_one_id, $user_two_id, $profileUserId);
@@ -162,13 +147,11 @@ switch ($action) {
     // case 'unblock_user':
         // Implement with similar error checking and logic if needed.
         // $_SESSION['error'] = "Cette fonctionnalité n'est pas encore disponible.";
-        // break;
 
     default:
         $_SESSION['error'] = "Action non reconnue ou invalide.";
 }
 
-// $conn->close(); // Optional: close if this is the absolute end of DB interaction for this request.
 header('Location: ' . $redirectUrl);
 exit;
 ?>

@@ -24,7 +24,6 @@ $context = stream_context_create([
 
 $response = file_get_contents($url, false, $context);
 
-// Facultatif : pour les appels JS cross-domain
 header("Access-Control-Allow-Origin: *");
 
 if ($response !== false) {

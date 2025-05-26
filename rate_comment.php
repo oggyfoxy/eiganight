@@ -1,50 +1,38 @@
 <?php
-/*
- * rate_comment.php
- * Handles saving/updating user ratings and comments for movies.
- */
-include_once 'config.php'; // Includes session_start(), $conn
+include_once 'config.php';
 
-// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['error'] = "Vous devez être connecté pour noter ou commenter un film.";
-    // If accessed directly without POST, or if login is required, redirect appropriately
     if (isset($_POST['redirect_url']) && !empty(trim($_POST['redirect_url']))) {
-        $redirectUrl = trim($_POST['redirect_url']); // Use this if available
-        // Basic validation for local redirect
+        $redirectUrl = trim($_POST['redirect_url']);
         $urlComponents = parse_url($redirectUrl);
         if (!empty($urlComponents['host']) && $urlComponents['host'] !== $_SERVER['HTTP_HOST']) {
-            $redirectUrl = 'index.php'; // Fallback to a safe page if redirect is external
+            $redirectUrl = 'index.php';
         }
     } else {
-        $redirectUrl = 'login.php'; // Default redirect if no other info
+        $redirectUrl = 'login.php';
     }
     header('Location: ' . $redirectUrl);
     exit;
 }
 
-// Default redirect URL if not specified or invalid
-$defaultRedirectUrl = 'profile.php'; // A sensible default if the specific movie page isn't known
+$defaultRedirectUrl = 'profile.php';
 $redirectUrl = $defaultRedirectUrl;
 
-// Validate and set redirect URL if provided in POST
 if (isset($_POST['redirect_url']) && !empty(trim($_POST['redirect_url']))) {
     $postedRedirectUrl = trim($_POST['redirect_url']);
     $urlComponents = parse_url($postedRedirectUrl);
     if (empty($urlComponents['host']) || $urlComponents['host'] === $_SERVER['HTTP_HOST']) {
         $redirectUrl = $postedRedirectUrl;
     }
-    // Else, $redirectUrl remains $defaultRedirectUrl
 }
 
-// This script should only process POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['error'] = "Requête invalide pour cette action.";
-    header('Location: ' . $redirectUrl); // Redirect to a safe page
+    header('Location: ' . $redirectUrl);
     exit;
 }
 
-// Validate required POST parameters
 if (!isset($_POST['movie_id']) || !is_numeric($_POST['movie_id'])) {
     $_SESSION['rate_comment_error'] = "ID du film manquant ou invalide.";
     header('Location: ' . $redirectUrl);
@@ -54,8 +42,7 @@ if (!isset($_POST['movie_id']) || !is_numeric($_POST['movie_id'])) {
 $loggedInUserId = (int)$_SESSION['user_id'];
 $movieId = (int)$_POST['movie_id'];
 
-// Rating processing
-$ratingInput = $_POST['rating'] ?? null; // Rating can be empty string if user wants to remove it
+$ratingInput = $_POST['rating'] ?? null;
 $rating = null;
 if ($ratingInput !== null && $ratingInput !== '') {
     $rating = (int)$ratingInput;
@@ -66,16 +53,13 @@ if ($ratingInput !== null && $ratingInput !== '') {
     }
 }
 
-// Comment processing
-$commentInput = trim($_POST['comment'] ?? ''); // Trim comment, allow empty
+$commentInput = trim($_POST['comment'] ?? '');
 
 $actionTakenRating = false;
 $actionTakenComment = false;
 
-// --- Handle Rating ---
-if ($ratingInput !== null) { // Process if 'rating' key was present in POST
-    if ($rating !== null) { // User submitted a valid rating (1-10)
-        // Check if a rating exists to decide on INSERT or UPDATE
+if ($ratingInput !== null) {
+    if ($rating !== null) {
         $sqlCheckRating = "SELECT id FROM ratings WHERE user_id = ? AND movie_id = ?";
         $stmtCheckRating = $conn->prepare($sqlCheckRating);
         if (!$stmtCheckRating) {
@@ -88,11 +72,11 @@ if ($ratingInput !== null) { // Process if 'rating' key was present in POST
                 $_SESSION['rate_comment_error'] = "Erreur système (note). (RC02)";
             } else {
                 $stmtCheckRating->store_result();
-                if ($stmtCheckRating->num_rows > 0) { // Rating exists, UPDATE
+                if ($stmtCheckRating->num_rows > 0) {
                     $stmtActionRating = $conn->prepare("UPDATE ratings SET rating = ?, rated_at = NOW() WHERE user_id = ? AND movie_id = ?");
                     if (!$stmtActionRating) { error_log("Prepare failed (RC_UPD_RAT): " . $conn->error); $_SESSION['rate_comment_error'] = "Erreur système (note). (RC03)"; }
                     else { $stmtActionRating->bind_param("iii", $rating, $loggedInUserId, $movieId); }
-                } else { // No rating, INSERT
+                } else {
                     $stmtActionRating = $conn->prepare("INSERT INTO ratings (user_id, movie_id, rating) VALUES (?, ?, ?)");
                      if (!$stmtActionRating) { error_log("Prepare failed (RC_INS_RAT): " . $conn->error); $_SESSION['rate_comment_error'] = "Erreur système (note). (RC04)"; }
                     else { $stmtActionRating->bind_param("iii", $loggedInUserId, $movieId, $rating); }
@@ -101,7 +85,7 @@ if ($ratingInput !== null) { // Process if 'rating' key was present in POST
                 if (isset($stmtActionRating) && $stmtActionRating->execute()) {
                     $_SESSION['rate_comment_message'] = "Note enregistrée.";
                     $actionTakenRating = true;
-                } elseif(isset($stmtActionRating)) { // Execute failed
+                } elseif(isset($stmtActionRating)) {
                     error_log("Execute failed (RC_ACTION_RAT): " . $stmtActionRating->error);
                     $_SESSION['rate_comment_error'] = (isset($_SESSION['rate_comment_error']) ? $_SESSION['rate_comment_error'] . " " : "") . "Erreur enregistrement note. (RC05)";
                 }
@@ -109,7 +93,7 @@ if ($ratingInput !== null) { // Process if 'rating' key was present in POST
             }
             $stmtCheckRating->close();
         }
-    } elseif ($ratingInput === '') { // User submitted an empty rating (wants to remove it)
+    } elseif ($ratingInput === '') {
         $sqlDeleteRating = "DELETE FROM ratings WHERE user_id = ? AND movie_id = ?";
         $stmtDeleteRating = $conn->prepare($sqlDeleteRating);
         if (!$stmtDeleteRating) {
@@ -122,7 +106,6 @@ if ($ratingInput !== null) { // Process if 'rating' key was present in POST
                     $_SESSION['rate_comment_message'] = "Note supprimée.";
                     $actionTakenRating = true;
                 }
-                // If no rows affected, it means no rating existed to delete, which is fine.
             } else {
                 error_log("Execute failed (RC_DEL_RAT): " . $stmtDeleteRating->error);
                 $_SESSION['rate_comment_error'] = (isset($_SESSION['rate_comment_error']) ? $_SESSION['rate_comment_error'] . " " : "") . "Erreur suppression note. (RC07)";
@@ -132,10 +115,8 @@ if ($ratingInput !== null) { // Process if 'rating' key was present in POST
     }
 }
 
-// --- Handle Comment ---
-// Process if 'comment' key was present in POST (even if empty string after trim)
 if (isset($_POST['comment'])) {
-    if (!empty($commentInput)) { // User submitted a non-empty comment
+    if (!empty($commentInput)) {
         $sqlCheckComment = "SELECT id FROM comments WHERE user_id = ? AND movie_id = ?";
         $stmtCheckComment = $conn->prepare($sqlCheckComment);
         if (!$stmtCheckComment) {
@@ -148,11 +129,11 @@ if (isset($_POST['comment'])) {
                 $_SESSION['rate_comment_error'] = (isset($_SESSION['rate_comment_error']) ? $_SESSION['rate_comment_error'] . " " : "") . "Erreur système (commentaire). (RC09)";
             } else {
                 $stmtCheckComment->store_result();
-                if ($stmtCheckComment->num_rows > 0) { // Comment exists, UPDATE
+                if ($stmtCheckComment->num_rows > 0) {
                     $stmtActionComment = $conn->prepare("UPDATE comments SET comment = ?, commented_at = NOW() WHERE user_id = ? AND movie_id = ?");
                     if (!$stmtActionComment) { error_log("Prepare failed (RC_UPD_COM): " . $conn->error); $_SESSION['rate_comment_error'] = (isset($_SESSION['rate_comment_error']) ? $_SESSION['rate_comment_error'] . " " : "") . "Erreur système (commentaire). (RC10)";}
                     else { $stmtActionComment->bind_param("sii", $commentInput, $loggedInUserId, $movieId); }
-                } else { // No comment, INSERT
+                } else {
                     $stmtActionComment = $conn->prepare("INSERT INTO comments (user_id, movie_id, comment) VALUES (?, ?, ?)");
                     if (!$stmtActionComment) { error_log("Prepare failed (RC_INS_COM): " . $conn->error); $_SESSION['rate_comment_error'] = (isset($_SESSION['rate_comment_error']) ? $_SESSION['rate_comment_error'] . " " : "") . "Erreur système (commentaire). (RC11)";}
                     else { $stmtActionComment->bind_param("iis", $loggedInUserId, $movieId, $commentInput); }
@@ -161,7 +142,7 @@ if (isset($_POST['comment'])) {
                 if (isset($stmtActionComment) && $stmtActionComment->execute()) {
                     $_SESSION['rate_comment_message'] = (isset($_SESSION['rate_comment_message']) ? trim($_SESSION['rate_comment_message'] . " ") : "") . "Commentaire enregistré.";
                     $actionTakenComment = true;
-                } elseif (isset($stmtActionComment)) { // Execute failed
+                } elseif (isset($stmtActionComment)) {
                     error_log("Execute failed (RC_ACTION_COM): " . $stmtActionComment->error);
                     $_SESSION['rate_comment_error'] = (isset($_SESSION['rate_comment_error']) ? $_SESSION['rate_comment_error'] . " " : "") . "Erreur enregistrement commentaire. (RC12)";
                 }
@@ -169,7 +150,7 @@ if (isset($_POST['comment'])) {
             }
             $stmtCheckComment->close();
         }
-    } elseif (isset($_POST['comment']) && $commentInput === '') { // User submitted an empty comment (wants to remove it)
+    } elseif (isset($_POST['comment']) && $commentInput === '') {
         $sqlDeleteComment = "DELETE FROM comments WHERE user_id = ? AND movie_id = ?";
         $stmtDeleteComment = $conn->prepare($sqlDeleteComment);
          if (!$stmtDeleteComment) {
@@ -182,7 +163,6 @@ if (isset($_POST['comment'])) {
                     $_SESSION['rate_comment_message'] = (isset($_SESSION['rate_comment_message']) ? trim($_SESSION['rate_comment_message'] . " ") : "") . "Commentaire supprimé.";
                     $actionTakenComment = true;
                 }
-                // If no rows affected, no comment existed to delete, which is fine.
             } else {
                 error_log("Execute failed (RC_DEL_COM): " . $stmtDeleteComment->error);
                 $_SESSION['rate_comment_error'] = (isset($_SESSION['rate_comment_error']) ? $_SESSION['rate_comment_error'] . " " : "") . "Erreur suppression commentaire. (RC14)";
@@ -192,12 +172,8 @@ if (isset($_POST['comment'])) {
     }
 }
 
-// If no action was successfully taken and no error was explicitly set for rating/comment part
 if (!$actionTakenRating && !$actionTakenComment && 
     !isset($_SESSION['rate_comment_error']) && !isset($_SESSION['rate_comment_message'])) {
-    // This implies that either no rating/comment data was submitted,
-    // or it was submitted but didn't lead to a change or specific error.
-    // Avoid overwriting specific messages if they were set.
     $_SESSION['rate_comment_warning'] = "Aucune modification n'a été soumise ou détectée.";
 }
 

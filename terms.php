@@ -1,9 +1,4 @@
 <?php
-/*
- * terms.php
- * Affiche les Conditions Générales d'Utilisation.
- * Utilise le contenu d'un fichier si disponible, sinon affiche un exemple codé en dur.
- */
 require_once 'config.php';
 
 $siteName = defined('SITE_NAME') ? SITE_NAME : "EigaNights";
@@ -28,10 +23,8 @@ if (file_exists($contentFilePath) && is_readable($contentFilePath)) {
     error_log("Fichier terms_content.html non trouvé. Utilisation du contenu d'exemple. Path: {$contentFilePath}");
 }
 
-// Si le contenu n'a pas été chargé depuis le fichier, utiliser l'exemple codé en dur.
 if ($termsContent === null) {
     $termsDisplayTitle = "Conditions Générales d'Utilisation"; // Titre pour l'affichage
-    // Contenu d'exemple HTML (celui que nous avions précédemment)
     $termsContent = '
         <p><strong>Dernière mise à jour :</strong> '.date('d F Y').' </em></p>
           <hr>
@@ -92,14 +85,12 @@ include_once 'includes/header.php';
 <main class="container static-page terms-page">
     <h1><?php echo htmlspecialchars($termsDisplayTitle); ?></h1>
 
-    <?php if (!$usingFileContent && !empty($termsContent)): // Afficher un petit avertissement si on utilise le contenu d'exemple ?>
+    <?php if (!$usingFileContent && !empty($termsContent)):?>
         
     <?php endif; ?>
 
     <article class="terms-content-container card">
         <?php
-        // $termsContent contient soit le contenu du fichier, soit l'exemple codé en dur.
-        // Il est supposé être du HTML sûr.
         echo $termsContent;
         ?>
     </article>

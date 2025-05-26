@@ -1,10 +1,9 @@
 <?php
-// forum.php
 include_once 'config.php';
-include_once 'includes/functions.php'; // For generate_csrf_token()
+include_once 'includes/functions.php';
 
 $pageTitle = "Forum des discussions - eiganights";
-$loggedInUserId = $_SESSION['user_id'] ?? null; // Get logged-in user ID
+$loggedInUserId = $_SESSION['user_id'] ?? null;
 $threads = [];
 
 $sql = "SELECT

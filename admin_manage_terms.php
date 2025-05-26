@@ -1,11 +1,6 @@
 <?php
-/*
- * admin_manage_terms.php
- * Gère l'édition du contenu des Conditions Générales d'Utilisation stockées dans un fichier.
- */
-require_once 'config.php'; // Pour session, droits admin, BASE_URL
+require_once 'config.php';
 
-// --- Contrôle d'accès Admin ---
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     $_SESSION['error'] = "Accès non autorisé. Droits admin requis.";
     header('Location: login.php');
@@ -15,15 +10,11 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role
 $pageTitle = "Gérer les Conditions d'Utilisation - Admin";
 $contentFilePath = __DIR__ . '/content/terms_content.html'; // Chemin vers le fichier de contenu
 
-// --- Gestion de la soumission du formulaire (POST) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['terms_content'])) {
         $newContent = $_POST['terms_content']; // Pas de htmlspecialchars ici, on stocke du HTML
                                               // La sécurité se fait à l'affichage si nécessaire,
-                                              // ou on assume que l'admin sait ce qu'il fait.
-                                              // Pour un WYSIWYG, il faudrait une librairie de sanitization.
 
-        // Écrire le nouveau contenu dans le fichier
         if (@file_put_contents($contentFilePath, $newContent) !== false) {
             $_SESSION['admin_message'] = "Conditions d'Utilisation mises à jour avec succès.";
         } else {
@@ -33,20 +24,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['admin_error'] = "Erreur lors de l'écriture du fichier des conditions. " . $permission_error_msg;
             error_log("Erreur file_put_contents pour {$contentFilePath}: " . $permission_error_msg);
         }
-        // Rediriger pour éviter la resoumission du formulaire
         header("Location: admin_manage_terms.php");
         exit;
     }
 }
 
-// --- Chargement du contenu actuel depuis le fichier ---
 $currentContent = '';
 if (file_exists($contentFilePath)) {
     $currentContent = @file_get_contents($contentFilePath);
     if ($currentContent === false) {
         $_SESSION['admin_warning'] = "Impossible de lire le fichier des conditions. Le fichier est peut-être inaccessible.";
         error_log("Erreur file_get_contents pour {$contentFilePath}");
-        $currentContent = ''; // S'assurer que c'est une chaîne vide
+        $currentContent = '';
     }
 } else {
     $_SESSION['admin_warning'] = "Le fichier des conditions ('content/terms_content.html') n'existe pas. Il sera créé lors de la première sauvegarde.";
@@ -75,7 +64,7 @@ include_once 'includes/header.php';
         <form method="POST" action="admin_manage_terms.php">
             <div class="form-group">
                 <label for="terms_content_editor">Contenu (HTML autorisé - Soyez prudent !) :</label>
-                <textarea name="terms_content" id="terms_content_editor" rows="20" class="terms-editor-textarea" required><?php echo htmlspecialchars($currentContent); // Échapper pour l'affichage dans le textarea ?></textarea>
+                <textarea name="terms_content" id="terms_content_editor" rows="20" class="terms-editor-textarea" required><?php echo htmlspecialchars($currentContent);?></textarea>
                 <small>Utilisez des balises HTML pour la mise en forme (par exemple, `<p>`, `<h2>`, `<ul>`, `<li>`, `<strong>`, `<br>`).</small>
             </div>
             <div class="form-group">

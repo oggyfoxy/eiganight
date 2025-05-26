@@ -1,8 +1,4 @@
 <?php
-/*
- * faq.php
- * Affiche les Questions Fréquemment Posées.
- */
 require_once 'config.php';
 
 $pageTitle = "FAQ - " . (defined('SITE_NAME') ? SITE_NAME : "EigaNights");
@@ -88,7 +84,7 @@ include_once 'includes/header.php';
     <?php if ($fetch_error): ?>
         <div class="alert alert-danger" role="alert">
             <p>Nous rencontrons des difficultés pour charger les FAQs actuellement.</p>
-            <?php if (ini_get('display_errors') && $fetch_error !== "Erreur de connexion à la base de données lors du chargement des FAQs."): // N'afficher que les erreurs de requête si display_errors est activé ?>
+            <?php if (ini_get('display_errors') && $fetch_error !== "Erreur de connexion à la base de données lors du chargement des FAQs."):?>
                 <p><small>Détail pour l'administrateur : <?php echo htmlspecialchars($fetch_error); ?></small></p>
             <?php endif; ?>
         </div>

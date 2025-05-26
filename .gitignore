@@ -12,6 +12,9 @@ Thumbs.db
 Desktop.ini
 
 # Composer dependencies (if you were using Composer)
+vendor/
+venv/
+
 
 # PHPStorm specific
 .phpstorm.meta.php
@@ -26,20 +29,6 @@ logs/
 php-error.log 
 
 
-# XAMPP or local server specific config files (if any are generated in project dir)
-# Usually not needed if your XAMPP config is global
-
-# Sensitive configuration files (IMPORTANT if you create a local config not for repo)
-# If you were to create a local_config.php that overrides config.php for your specific
-# machine (e.g., with different DB credentials not meant for the repository),
-# you would add it here.
-# Example:
-# local_config.php
-# config.local.php
-
-# Any build artifacts or uploaded files directory (if applicable, not in current structure)
-# /uploads/
-# /dist/
 
 # Node modules (if you ever add frontend build tools)
 node_modules/

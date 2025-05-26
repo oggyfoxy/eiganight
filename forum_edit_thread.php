@@ -1,7 +1,6 @@
 <?php
-// forum_edit_thread.php
 include_once 'config.php';
-include_once 'includes/functions.php'; // For CSRF
+include_once 'includes/functions.php';
 
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['error'] = "Vous devez être connecté pour modifier une discussion.";
@@ -40,7 +39,6 @@ if (!$thread_data) {
     exit;
 }
 
-// Authorization check: Only author or admin can edit
 $is_author = ($loggedInUserId === (int)$thread_data['user_id']);
 $is_admin = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin');
 

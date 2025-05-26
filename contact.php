@@ -1,9 +1,5 @@
 <?php
-/*
- * contact.php
- * Handles user contact submissions.
- */
-include_once 'config.php'; // Includes session_start(), $conn
+include_once 'config.php';
 
 $pageTitle = "Contactez-nous - Eiganights";
 $message_sent = false;
@@ -21,27 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!filter_var($form_data['email'], FILTER_VALIDATE_EMAIL)) {
         $error_message = "Veuillez fournir une adresse e-mail valide.";
     } else {
-        // For a minimal viable product, we'll simulate sending.
-        // In a real application, you would use PHP's mail() function or a library.
-        // $to = "admin@eiganights.com"; // Your admin email
-        // $email_subject = "Contact Eiganights: " . htmlspecialchars($form_data['subject']);
-        // $email_body = "Vous avez reçu un nouveau message de la part de " . htmlspecialchars($form_data['name']) . " (" . htmlspecialchars($form_data['email']) . ").\n\n" .
-        //               "Message:\n" . htmlspecialchars($form_data['message']);
-        // $headers = "From: noreply@eiganights.com\r\n"; // Or use the sender's email if your server allows
-        // $headers .= "Reply-To: " . htmlspecialchars($form_data['email']) . "\r\n";
-
-        // if (mail($to, $email_subject, $email_body, $headers)) {
-        //     $message_sent = true;
-        // } else {
-        //     $error_message = "Désolé, une erreur est survenue lors de l'envoi de votre message. Veuillez réessayer plus tard.";
-        //     error_log("Contact form mail() failed.");
-        // }
-
-        // --- MVP Simulation ---
-        $message_sent = true; // Simulate successful sending
-        // In a real app, you might save to DB or actually send email
+        $message_sent = true; 
         $_SESSION['contact_message_log'] = "Message de: {$form_data['name']} <{$form_data['email']}> Sujet: {$form_data['subject']} - {$form_data['message']}";
-        // Clear form data on success
         $form_data = ['name' => '', 'email' => '', 'subject' => '', 'message' => ''];
     }
 }
@@ -49,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include_once 'includes/header.php';
 ?>
 
-<main class="container auth-form-container"> <?php // Re-using auth form style for simplicity ?>
+<main class="container auth-form-container"> <?php?>
     <h1>Contactez-nous</h1>
 
     <?php if ($message_sent): ?>

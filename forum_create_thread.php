@@ -1,12 +1,7 @@
 <?php
-/*
- * forum_create_thread.php
- * Handles creation of new forum threads / scene annotations.
- */
-include_once 'config.php'; // Includes session_start(), $conn, TMDB_API_KEY, BASE_URL
-include_once 'includes/functions.php'; // <<< INCLUDE FUNCTIONS.PHP HERE
+include_once 'config.php';
+include_once 'includes/functions.php';
 
-// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['error'] = "Vous devez être connecté pour créer une discussion.";
     $redirectQuery = http_build_query($_GET);
@@ -38,8 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // CSRF Token Validation
-    if (!isset($_POST['csrf_token']) || !validate_csrf_token($_POST['csrf_token'])) { // validate_csrf_token() should now exist
+    if (!isset($_POST['csrf_token']) || !validate_csrf_token($_POST['csrf_token'])) {
         $error_message = "Erreur de sécurité (jeton invalide). Veuillez rafraîchir la page et réessayer.";
     } else {
         $movieId = filter_input(INPUT_POST, 'movie_id', FILTER_VALIDATE_INT);
@@ -94,11 +88,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $new_thread_id = $conn->insert_id;
                     $_SESSION['forum_message'] = "Discussion '" . htmlspecialchars($threadTitle, ENT_QUOTES, 'UTF-8') . "' créée avec succès !";
                     
-                    // Consume/regenerate CSRF token by unsetting it.
-                    // generate_csrf_token() will create a new one on the next page load or form display.
                     unset($_SESSION['csrf_token']);
                     
-                    header("Location: " . BASE_URL . "forum_view_thread.php?id=" . $new_thread_id); // Redirect to the new thread
+                    header("Location: " . BASE_URL . "forum_view_thread.php?id=" . $new_thread_id);
                     exit;
                 } else {
                     error_log("Execute failed (CREATE_THREAD_INS): " . $stmt->error);
@@ -108,18 +100,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    // If there was an error (CSRF or validation), the token in the session might still be the old one.
-    // For a robust system, if a CSRF token fails, you might want to invalidate it and force a new one
-    // to be generated when the form is re-displayed to prevent replay of the same failed token.
-    // The current generate_csrf_token() will re-issue the same token if it's still in session,
-    // or generate a new one if it was unset (e.g., after successful submission or if you unset it on error).
-    // For simplicity, if there's an error, we'll let the form re-render with a new token.
     if (!empty($error_message)) {
-        unset($_SESSION['csrf_token']); // Force new token generation on form redisplay after error
+        unset($_SESSION['csrf_token']);
     }
 }
 
-// No need for the fallback generate_csrf_token() here anymore if functions.php is included correctly.
 
 include_once 'includes/header.php';
 ?>
@@ -133,8 +118,8 @@ include_once 'includes/header.php';
         <div class="alert alert-danger"><?php echo htmlspecialchars($_SESSION['forum_error']); unset($_SESSION['forum_error']); ?></div>
     <?php endif; ?>
 
-    <form method="POST" action="<?php echo BASE_URL; ?>forum_create_thread.php<?php echo isset($_GET['movie_id']) ? '?movie_id='.(int)$_GET['movie_id'].'&movie_title='.urlencode($_GET['movie_title'] ?? '') : ''; // Preserve GET params in action for refresh ?>" id="createThreadForm" class="card" novalidate>
-        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generate_csrf_token(), ENT_QUOTES, 'UTF-8'); // generate_csrf_token() now comes from functions.php ?>">
+    <form method="POST" action="<?php echo BASE_URL; ?>forum_create_thread.php<?php echo isset($_GET['movie_id']) ? '?movie_id='.(int)$_GET['movie_id'].'&movie_title='.urlencode($_GET['movie_title'] ?? '') : '';?>" id="createThreadForm" class="card" novalidate>
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generate_csrf_token(), ENT_QUOTES, 'UTF-8');?>">
 
         <div class="form-group">
             <label for="movie_search_input">Film Associé:</label>

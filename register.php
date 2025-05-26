@@ -1,11 +1,6 @@
 <?php
-/*
- * register.php
- * Handles new user registration.
- */
-include_once 'config.php'; // Includes session_start(), $conn, and RECAPTCHA keys
+include_once 'config.php';
 
-// If user is already logged in, redirect them to their profile page
 if (isset($_SESSION['user_id'])) {
     header('Location: profile.php');
     exit;
@@ -27,19 +22,16 @@ if (isset($_GET['redirect']) && !empty(trim($_GET['redirect']))) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // --- reCAPTCHA v2 Verification ---
     $recaptcha_response = $_POST['g-recaptcha-response'] ?? null;
     $recaptcha_valid = false;
 
-    // Utiliser les clés V2
     $recaptchaConfigured = defined('RECAPTCHA_SITE_KEY_V2') && RECAPTCHA_SITE_KEY_V2 &&
                            defined('RECAPTCHA_SECRET_KEY_V2') && RECAPTCHA_SECRET_KEY_V2;
 
     if ($recaptchaConfigured) {
         if (!empty($recaptcha_response)) {
             $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
-            $recaptcha_secret = RECAPTCHA_SECRET_KEY_V2; // Utiliser la clé secrète V2
-            // ... (le reste de la logique de vérification reCAPTCHA v2 reste la même) ...
+            $recaptcha_secret = RECAPTCHA_SECRET_KEY_V2;
             $recaptcha_remote_ip = $_SERVER['REMOTE_ADDR'];
             $recaptcha_data = ['secret' => $recaptcha_secret, 'response' => $recaptcha_response, 'remoteip' => $recaptcha_remote_ip];
             $options = ['http' => ['header' => "Content-type: application/x-www-form-urlencoded\r\n", 'method' => 'POST', 'content' => http_build_query($recaptcha_data)]];
@@ -64,19 +56,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else {
         error_log("AVERTISSEMENT (register.php): Les clés reCAPTCHA v2 ne sont pas configurées. Vérification ignorée.");
-        $recaptcha_valid = true; // Bypass pour dev. En PROD, mettre à false et gérer l'erreur.
+        $recaptcha_valid = true;
     }
-    // --- End reCAPTCHA v2 Verification ---
 
     if ($recaptcha_valid) {
-        // ... (votre logique d'inscription existante à partir d'ici) ...
-        // S'assurer que la repopulation des champs $username_value et $email_value est correcte
         if (!isset($_POST['username'], $_POST['email'], $_POST['password'], $_POST['password_confirm']) ||
             empty(trim($_POST['username'])) || empty(trim($_POST['email'])) ||
             empty($_POST['password']) || empty($_POST['password_confirm'])) {
             $error_message = "Tous les champs sont requis.";
         } else {
-            // ... (le reste de votre code de validation et d'insertion utilisateur)
             $username = trim($_POST['username']);
             $email = trim($_POST['email']);
             $password = $_POST['password'];
@@ -98,7 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if (empty($error_message)) {
-                // Vérification utilisateur existant
                 $sqlCheckUser = "SELECT id FROM users WHERE username = ?";
                 $stmtCheckUser = $conn->prepare($sqlCheckUser);
                 if ($stmtCheckUser) {
@@ -128,7 +115,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } else { $error_message = "Erreur système (R01E)."; error_log("Prepare email check failed: ".$conn->error); }
                 }
                 
-                // Insertion si tout est OK
                 if (empty($error_message)) {
                     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
                     if ($hashedPassword === false) {
@@ -155,7 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    // Repopulation des champs si reCAPTCHA échoue ou autre erreur POST
     $username_value = isset($_POST['username']) ? htmlspecialchars(trim($_POST['username']), ENT_QUOTES, 'UTF-8') : $username_value;
     $email_value = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email']), ENT_QUOTES, 'UTF-8') : $email_value;
 }
@@ -172,7 +157,6 @@ $fullPageTitle = htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') . ' - ' . $si
     <title><?php echo $fullPageTitle; ?></title>
     <link rel="stylesheet" href="<?php echo htmlspecialchars(BASE_URL . 'assets/style.css', ENT_QUOTES, 'UTF-8'); ?>" />
     <?php
-    // Script reCAPTCHA v2 pour la page d'inscription
     if (defined('RECAPTCHA_SITE_KEY_V2') && RECAPTCHA_SITE_KEY_V2):
     ?>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -181,7 +165,6 @@ $fullPageTitle = htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') . ' - ' . $si
 <body>
 
 <?php
-// Réplication manuelle du header
 $logoutText = "Déconnexion";
 $headerSearchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search']), ENT_QUOTES, 'UTF-8') : '';
 $logoPath = BASE_URL . 'assets/images/eiganights_logov2.png';
@@ -275,7 +258,6 @@ $logoPath = BASE_URL . 'assets/images/eiganights_logov2.png';
             </div>
 
             <?php
-            // Widget reCAPTCHA v2 pour la page d'inscription
             if (defined('RECAPTCHA_SITE_KEY_V2') && RECAPTCHA_SITE_KEY_V2):
             ?>
             <div class="form-group" style="display: flex; justify-content: center; margin-top: var(--spacing-md); margin-bottom: var(--spacing-md);">

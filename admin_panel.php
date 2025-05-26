@@ -1,11 +1,6 @@
 <?php
-/*
- * admin_panel.php
- * Admin dashboard for user management.
- */
-include_once 'config.php'; // Includes session_start(), $conn
+include_once 'config.php';
 
-// --- Admin Access Control ---
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     $_SESSION['error'] = "Accès non autorisé.";
     header('Location: login.php');
@@ -108,7 +103,6 @@ include_once 'includes/header.php';
         <h2>Gestion des FAQs</h2>
         <p><a href="admin_edit_faq.php" class="button-primary">Gérer les FAQs</a></p>
         <?php
-            // Optional: Display a quick list of FAQs here
             $stmtFaqList = $conn->query("SELECT id, question FROM faq_items ORDER BY sort_order ASC LIMIT 5");
             if ($stmtFaqList && $stmtFaqList->num_rows > 0) {
                 echo "<ul>";
@@ -131,12 +125,9 @@ include_once 'includes/header.php';
         <li>
             <a href="admin_manage_terms.php" class="button button-secondary">Modifier les Conditions d'Utilisation (fichier)</a>
         </li>
-        <?php // Vous pourriez ajouter ici des liens vers d'autres pages gérées par fichier si besoin ?>
-        <?php /*
-        <li>
-            <a href="admin_manage_privacy.php" class="button button-secondary">Modifier la Politique de Confidentialité (fichier)</a>
-        </li>
-        */ ?>
+        <?php?>
+        <?php
+ ?>
     </ul>
 </section>
 
@@ -151,7 +142,6 @@ include_once 'includes/header.php';
         if ($stmtContentList && $stmtContentList->num_rows > 0) {
             echo "<ul>";
             while ($content_row = $stmtContentList->fetch_assoc()){
-                // Exclure 'terms-and-conditions' si vous le gérez par fichier maintenant
                 if ($content_row['slug'] !== 'terms-and-conditions') {
                      echo "<li>" . htmlspecialchars($content_row['title']) . " (" . htmlspecialchars($content_row['slug']). ")" .
                      " (<a href='admin_edit_content.php?edit_slug=" . htmlspecialchars($content_row['slug']) . "'>Modifier</a>)</li>";
