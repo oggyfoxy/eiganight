@@ -10,6 +10,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role
 $pageTitle = "Gérer les Conditions d'Utilisation - Admin";
 $contentFilePath = __DIR__ . '/content/terms_content.html'; // Chemin vers le fichier de contenu
 
+// --- Gestion de la soumission du formulaire (POST) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['terms_content'])) {
         $newContent = $_POST['terms_content']; // Pas de htmlspecialchars ici, on stocke du HTML

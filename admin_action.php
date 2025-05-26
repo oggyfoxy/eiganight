@@ -1,12 +1,18 @@
 <?php
-include_once 'config.php';
+/*
+ * admin_action.php
+ * Handles actions performed by admins, like banning/unbanning users.
+ */
+include_once 'config.php'; // Includes session_start(), db connection ($conn)
 
+// --- Admin Access Control ---
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     $_SESSION['admin_error'] = "Action non autorisée. Droits admin requis.";
-    header('Location: admin_panel.php');
+    header('Location: admin_panel.php'); // Or login.php if session totally invalid
     exit;
 }
 
+// --- Validate Request ---
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' ||
     !isset($_POST['action']) || !isset($_POST['user_id_to_manage']) ||
     !is_numeric($_POST['user_id_to_manage'])) {
@@ -20,6 +26,7 @@ $action = trim($_POST['action']);
 $userIdToManage = (int)$_POST['user_id_to_manage'];
 $loggedInAdminId = (int)$_SESSION['user_id'];
 
+// Admin cannot ban themselves
 if ($userIdToManage === $loggedInAdminId) {
     $_SESSION['admin_error'] = "Vous ne pouvez pas vous bannir vous-même.";
     header('Location: admin_panel.php');
@@ -27,9 +34,10 @@ if ($userIdToManage === $loggedInAdminId) {
 }
 
 
+// --- Perform Action ---
 switch ($action) {
     case 'ban_user':
-        $sql = "UPDATE users SET is_banned = 1 WHERE id = ? AND role != 'admin'";
+        $sql = "UPDATE users SET is_banned = 1 WHERE id = ? AND role != 'admin'"; // Prevent banning other admins easily
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
             error_log("Prepare failed (ADMIN_BAN): " . $conn->error);

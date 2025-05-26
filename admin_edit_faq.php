@@ -13,16 +13,17 @@ $question = '';
 $answer = '';
 $sort_order = 0;
 
+// Handle Form Submission (POST)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $question = trim($_POST['question'] ?? '');
     $answer = trim($_POST['answer'] ?? '');
     $sort_order = (int)($_POST['sort_order'] ?? 0);
-    $faq_id = (int)($_POST['faq_id'] ?? 0);
+    $faq_id = (int)($_POST['faq_id'] ?? 0); // For updates
 
     if (empty($question) || empty($answer)) {
         $_SESSION['admin_error'] = "La question et la réponse sont requises.";
     } else {
-        if ($faq_id > 0) {
+        if ($faq_id > 0) { // Update existing FAQ
             $sql = "UPDATE faq_items SET question = ?, answer = ?, sort_order = ? WHERE id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("ssii", $question, $answer, $sort_order, $faq_id);
@@ -31,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $_SESSION['admin_error'] = "Erreur lors de la mise à jour de la FAQ: " . $stmt->error;
             }
-        } else {
+        } else { // Insert new FAQ
             $sql = "INSERT INTO faq_items (question, answer, sort_order) VALUES (?, ?, ?)";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("ssi", $question, $answer, $sort_order);

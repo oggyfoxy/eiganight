@@ -25,13 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $recaptcha_response = $_POST['g-recaptcha-response'] ?? null;
     $recaptcha_valid = false;
 
-    $recaptchaConfigured = defined('RECAPTCHA_SITE_KEY_V2') && RECAPTCHA_SITE_KEY_V2 &&
-                           defined('RECAPTCHA_SECRET_KEY_V2') && RECAPTCHA_SECRET_KEY_V2;
+    $recaptchaConfigured = defined('RECAPTCHA_SITE_KEY_V3') && RECAPTCHA_SITE_KEY_V3 &&
+                           defined('RECAPTCHA_SECRET_KEY_V3') && RECAPTCHA_SECRET_KEY_V3;
 
     if ($recaptchaConfigured) {
         if (!empty($recaptcha_response)) {
             $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
-            $recaptcha_secret = RECAPTCHA_SECRET_KEY_V2;
+            $recaptcha_secret = RECAPTCHA_SECRET_KEY_v3;
             $recaptcha_remote_ip = $_SERVER['REMOTE_ADDR'];
             $recaptcha_data = ['secret' => $recaptcha_secret, 'response' => $recaptcha_response, 'remoteip' => $recaptcha_remote_ip];
             $options = ['http' => ['header' => "Content-type: application/x-www-form-urlencoded\r\n", 'method' => 'POST', 'content' => http_build_query($recaptcha_data)]];
@@ -40,22 +40,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($verify_response_json === false) {
                 $error_message = "Impossible de vérifier le reCAPTCHA. Veuillez réessayer. (REG-RC00)";
-                error_log("reCAPTCHA v2 verification failed (register.php): Could not connect to Google service.");
+                error_log("reCAPTCHA v3 verification failed (register.php): Could not connect to Google service.");
             } else {
                 $verify_response_data = json_decode($verify_response_json);
                 if ($verify_response_data && $verify_response_data->success) {
                     $recaptcha_valid = true;
                 } else {
-                    $error_message = "Vérification reCAPTCHA v2 échouée. Veuillez réessayer.";
+                    $error_message = "Vérification reCAPTCHA v3 échouée. Veuillez réessayer.";
                     $error_codes = $verify_response_data->{'error-codes'} ?? [];
-                    error_log("reCAPTCHA v2 verification failed (register.php): " . implode(', ', $error_codes));
+                    error_log("reCAPTCHA v3 verification failed (register.php): " . implode(', ', $error_codes));
                 }
             }
         } else {
-            $error_message = "Veuillez compléter la vérification reCAPTCHA v2.";
+            $error_message = "Veuillez compléter la vérification reCAPTCHA v3.";
         }
     } else {
-        error_log("AVERTISSEMENT (register.php): Les clés reCAPTCHA v2 ne sont pas configurées. Vérification ignorée.");
+        error_log("AVERTISSEMENT (register.php): Les clés reCAPTCHA v3 ne sont pas configurées. Vérification ignorée.");
         $recaptcha_valid = true;
     }
 
@@ -157,7 +157,7 @@ $fullPageTitle = htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') . ' - ' . $si
     <title><?php echo $fullPageTitle; ?></title>
     <link rel="stylesheet" href="<?php echo htmlspecialchars(BASE_URL . 'assets/style.css', ENT_QUOTES, 'UTF-8'); ?>" />
     <?php
-    if (defined('RECAPTCHA_SITE_KEY_V2') && RECAPTCHA_SITE_KEY_V2):
+    if (defined('RECAPTCHA_SITE_KEY_V3') && RECAPTCHA_SITE_KEY_v3):
     ?>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <?php endif; ?>
@@ -167,7 +167,7 @@ $fullPageTitle = htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') . ' - ' . $si
 <?php
 $logoutText = "Déconnexion";
 $headerSearchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search']), ENT_QUOTES, 'UTF-8') : '';
-$logoPath = BASE_URL . 'assets/images/eiganights_logov2.png';
+$logoPath = BASE_URL . 'assets/images/eiganights_logov3.png';
 ?>
 <header class="site-header">
     <div class="header-container container">
@@ -258,14 +258,14 @@ $logoPath = BASE_URL . 'assets/images/eiganights_logov2.png';
             </div>
 
             <?php
-            if (defined('RECAPTCHA_SITE_KEY_V2') && RECAPTCHA_SITE_KEY_V2):
+            if (defined('RECAPTCHA_SITE_KEY_V3') && RECAPTCHA_SITE_KEY_V3):
             ?>
             <div class="form-group" style="display: flex; justify-content: center; margin-top: var(--spacing-md); margin-bottom: var(--spacing-md);">
-                <div class="g-recaptcha" data-sitekey="<?php echo htmlspecialchars(RECAPTCHA_SITE_KEY_V2, ENT_QUOTES, 'UTF-8'); ?>"></div>
+                <div class="g-recaptcha" data-sitekey="<?php echo htmlspecialchars(RECAPTCHA_SITE_KEY_V3, ENT_QUOTES, 'UTF-8'); ?>"></div>
             </div>
-            <?php elseif (!defined('RECAPTCHA_SITE_KEY_V2') || !RECAPTCHA_SITE_KEY_V2): ?>
+            <?php elseif (!defined('RECAPTCHA_SITE_KEY_v3') || !RECAPTCHA_SITE_KEY_v3): ?>
             <div class="form-group">
-                <p class="alert alert-warning">reCAPTCHA v2 n'est pas configuré. Veuillez vérifier les clés API dans `config.php`.</p>
+                <p class="alert alert-warning">reCAPTCHA v3 n'est pas configuré. Veuillez vérifier les clés API dans `config.php`.</p>
             </div>
             <?php endif; ?>
 

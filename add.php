@@ -7,8 +7,9 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$redirectUrl = 'index.php';
+$redirectUrl = 'index.php'; // Default redirect
 if (isset($_POST['redirect_url']) && !empty($_POST['redirect_url'])) {
+    // Basic validation for local redirect
     if (parse_url($_POST['redirect_url'], PHP_URL_HOST) === null || parse_url($_POST['redirect_url'], PHP_URL_HOST) === $_SERVER['HTTP_HOST']) {
         $redirectUrl = $_POST['redirect_url'];
     }
@@ -21,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $movieTitle = $conn->real_escape_string($_POST['movie_title']);
     $posterPath = $conn->real_escape_string($_POST['poster_path']);
 
+    // Vérifier si le film est déjà dans la watchlist
     $stmtCheck = $conn->prepare("SELECT id FROM watchlist WHERE user_id = ? AND movie_id = ?");
     $stmtCheck->bind_param("ii", $userId, $movieId);
     $stmtCheck->execute();
